@@ -38,12 +38,16 @@ export default function HomePage() {
     }
   ];
 
+  const autoRotate = false;
+
   const [currentSlide, setCurrentSlide] = useState(1);
 
   // Auto-rotate carousel
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % liveShows.length);
+      if (autoRotate) {
+        setCurrentSlide((prev) => (prev + 1) % liveShows.length);
+      }
     }, 5000);
     return () => clearInterval(timer);
   }, [liveShows.length]);
@@ -81,13 +85,61 @@ export default function HomePage() {
     }
   ];
 
-  const premiumChairs = [
-    { id: 1, image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=300&q=80' },
-    { id: 2, image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&q=80' },
-    { id: 3, image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=300&q=80' },
-    { id: 4, image: 'https://images.unsplash.com/photo-1591825729269-caeb344f6df2?w=300&q=80' },
-    { id: 5, image: 'https://images.unsplash.com/photo-1580480055226-13c68314c2aa?w=300&q=80' },
-    { id: 6, image: 'https://images.unsplash.com/photo-1598300188881-74ebc72c0e86?w=300&q=80' }
+  const hotDeals = [
+    {
+      id: 1,
+      name: 'X-PRO ERGO CHAIR',
+      discount: 37,
+      originalPrice: 1290,
+      salePrice: 890,
+      image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&q=80',
+      features: ['3D Lumbar Support', 'Breathable Mesh', 'Adjustable Headrest']
+    },
+    {
+      id: 2,
+      name: 'DUAL BACK CHAIR',
+      discount: 32,
+      originalPrice: 1190,
+      salePrice: 810,
+      image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&q=80',
+      features: ['Dual Back Support', 'Soft Cushion Seat', 'Smooth Recline']
+    },
+    {
+      id: 3,
+      name: 'MESH LUXE CHAIR',
+      discount: 29,
+      originalPrice: 990,
+      salePrice: 699,
+      image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&q=80',
+      features: ['Ergonomic Design', 'Breathable Mesh', '360° Swivel']
+    },
+    {
+      id: 4,
+      name: 'EXECUTIVE PRO',
+      discount: 34,
+      originalPrice: 1390,
+      salePrice: 920,
+      image: 'https://images.unsplash.com/photo-1591825729269-caeb344f6df2?w=400&q=80',
+      features: ['Premium Padding', 'Strong Metal Base', 'Tilt & Lock']
+    },
+    {
+      id: 5,
+      name: 'COMFORT ELITE',
+      discount: 28,
+      originalPrice: 850,
+      salePrice: 612,
+      image: 'https://images.unsplash.com/photo-1580480055226-13c68314c2aa?w=400&q=80',
+      features: ['Memory Foam', 'Adjustable Arms', 'Heavy Duty']
+    },
+    {
+      id: 6,
+      name: 'PREMIUM MESH',
+      discount: 35,
+      originalPrice: 1150,
+      salePrice: 748,
+      image: 'https://images.unsplash.com/photo-1598300188881-74ebc72c0e86?w=400&q=80',
+      features: ['Full Mesh Back', 'Lumbar Control', 'Height Adjust']
+    }
   ];
 
   const chatMessages = [
@@ -516,36 +568,94 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Premium Chairs */}
-      <section className="py-12">
+      {/* Hot Live Deals */}
+      <section className="py-12 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-foreground mb-2">
-              PREMIUM CHAIRS WITHOUT THE PREMIUM PRICE
-            </h2>
-            <p className="text-muted-foreground">
-              Top quality chairs that in stores cost $1700+
-            </p>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🔥</span>
+              <h2 className="text-3xl font-bold text-foreground">
+                HOT LIVE DEALS
+              </h2>
+            </div>
+            <Button variant="outline" className="gap-2">
+              VIEW ALL
+              <ChevronRight className="w-4 h-4" />
+            </Button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            {premiumChairs.map((chair) => (
-              <Card key={chair.id} className="overflow-hidden hover:border-primary transition-colors cursor-pointer group">
-                <div className="relative aspect-square">
-                  <Image
-                    src={chair.image}
-                    alt="Premium chair"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform"
-                  />
-                </div>
-              </Card>
-            ))}
-          </div>
+          {/* Horizontal Scrolling Cards */}
+          <div className="relative">
+            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
+              {hotDeals.map((deal) => (
+                <Card key={deal.id} className="flex-shrink-0 w-[280px] overflow-hidden hover:border-primary transition-all hover:shadow-xl group">
+                  {/* Discount Badge */}
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 z-10">
+                      <Badge className="bg-red-600 text-white text-sm font-bold px-3 py-1">
+                        -{deal.discount}%
+                      </Badge>
+                    </div>
 
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
-            EXPLORE CHAIRS
-          </Button>
+                    {/* Product Image */}
+                    <div className="relative aspect-[4/5] bg-muted">
+                      <Image
+                        src={deal.image}
+                        alt={deal.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <h3 className="font-bold text-foreground mb-2">
+                        {deal.name}
+                      </h3>
+
+                      <div className="flex items-baseline gap-2 mb-3">
+                        <span className="text-xs text-muted-foreground line-through">
+                          ₪{deal.originalPrice.toLocaleString()}
+                        </span>
+                        <span className="text-2xl font-bold text-primary">
+                          ₪{deal.salePrice.toLocaleString()}
+                        </span>
+                      </div>
+
+                      {/* Features */}
+                      <ul className="space-y-1 mb-4">
+                        {deal.features.map((feature, idx) => (
+                          <li key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
+                            <span className="w-1 h-1 bg-muted-foreground rounded-full" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Button className="flex-1 bg-primary hover:bg-primary/90 font-bold">
+                        BUY NOW
+                      </Button>
+                      <Button variant="outline" className="flex-1 font-bold">
+                        WATCH IN LIVE
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            {/* Scroll Indicators */}
+            <div className="flex justify-center gap-2 mt-6">
+              {hotDeals.slice(0, 4).map((_, idx) => (
+                <div key={idx} className="w-2 h-2 rounded-full bg-muted" />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
