@@ -1,10 +1,39 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { CountdownTimer } from '@/components/countdown-timer';
 
 export default function HomePage() {
+  // Set countdown to 2 days from now for demo
+  const nextEventDate = new Date();
+  nextEventDate.setDate(nextEventDate.getDate() + 2);
+  nextEventDate.setHours(14, 0, 0, 0); // 2:00 PM
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="border-b border-border">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-2xl font-bold text-primary">
+              COLOSSEUM
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/shop" className="text-foreground hover:text-primary hidden sm:inline">
+                Shop
+              </Link>
+              <Link href="/live" className="text-foreground hover:text-primary hidden sm:inline">
+                Live Now
+              </Link>
+              <Link href="/login" className="text-foreground hover:text-primary">
+                Login
+              </Link>
+              <Button size="sm">Cart (0)</Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto px-4 py-16 sm:py-24 lg:py-32">
@@ -33,8 +62,12 @@ export default function HomePage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-6 text-lg">
-                JOIN LIVE NOW
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-6 text-lg"
+                asChild
+              >
+                <Link href="/live">JOIN LIVE NOW</Link>
               </Button>
               <Button size="lg" variant="outline" className="font-bold px-8 py-6 text-lg">
                 HOW IT WORKS
@@ -60,25 +93,7 @@ export default function HomePage() {
               NEXT LIVE EVENT
             </h2>
 
-            <div className="flex justify-center gap-4 sm:gap-8">
-              {[
-                { value: '02', label: 'Days' },
-                { value: '14', label: 'Hrs' },
-                { value: '27', label: 'Min' },
-                { value: '45', label: 'Sec' }
-              ].map((item) => (
-                <div key={item.label} className="flex flex-col items-center">
-                  <div className="bg-card border border-border rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-w-[60px] sm:min-w-[80px]">
-                    <span className="text-3xl sm:text-5xl font-bold text-primary">
-                      {item.value}
-                    </span>
-                  </div>
-                  <span className="text-sm sm:text-base text-muted-foreground mt-2">
-                    {item.label}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <CountdownTimer targetDate={nextEventDate} />
 
             <Button variant="secondary" size="lg" className="mt-4">
               Get Notified
@@ -108,7 +123,7 @@ export default function HomePage() {
                 icon: '🔥'
               }
             ].map((feature) => (
-              <div key={feature.title} className="bg-card border border-border rounded-lg p-6 space-y-4">
+              <div key={feature.title} className="bg-card border border-border rounded-lg p-6 space-y-4 hover:border-primary transition-colors">
                 <div className="text-4xl">{feature.icon}</div>
                 <h3 className="text-xl font-bold text-foreground">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
