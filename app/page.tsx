@@ -116,6 +116,9 @@ export default function HomePage() {
               <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 ALL CHAIRS
               </Link>
+              <Link href="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
+                FACTORIES
+              </Link>
               <Link href="#how-it-works" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 HOW IT WORKS
               </Link>
