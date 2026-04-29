@@ -4,384 +4,399 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CountdownTimer } from '@/components/countdown-timer';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard } from 'lucide-react';
 
 export default function HomePage() {
   const nextEventDate = new Date();
-  nextEventDate.setDate(nextEventDate.getDate() + 2);
-  nextEventDate.setHours(14, 0, 0, 0);
+  nextEventDate.setHours(nextEventDate.getHours() + 48);
 
-  // Featured products on homepage
-  const featuredProducts = [
+  const liveShows = [
     {
       id: '1',
-      name: 'Executive Office Chair',
-      price: 299.99,
-      compareAtPrice: 449.99,
-      imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=80',
-      badge: 'LIVE NOW',
-      viewers: 234
+      factory: 'FACTORY 01',
+      name: 'COLOSSEUM FURNITURE',
+      description: 'Premium Ergonomic Chairs',
+      viewers: 356,
+      image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&q=80'
     },
     {
       id: '2',
-      name: 'Standing Desk Pro',
-      price: 599.99,
-      compareAtPrice: 799.99,
-      imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=800&q=80',
-      badge: 'HOT DEAL',
-      savings: 25
+      factory: 'FACTORY 02',
+      name: 'GLOBAL SEATING',
+      description: 'Ergonomic Mesh & Executive Chairs',
+      viewers: 892,
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
+      featured: true
     },
     {
       id: '3',
-      name: 'Ergonomic Mesh Chair',
-      price: 249.99,
-      compareAtPrice: 399.99,
-      imageUrl: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800&q=80',
-      badge: 'BEST SELLER',
-      rating: 4.9
+      factory: 'FACTORY 03',
+      name: 'ULTIMATE CHAIRS',
+      description: 'Luxury & Designer Chairs',
+      viewers: 278,
+      image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=600&q=80'
+    }
+  ];
+
+  const upcomingShows = [
+    {
+      factory: 'FACTORY 01',
+      name: 'COLOSSEUM FURNITURE',
+      time: '10:00 AM',
+      type: 'Morning Show',
+      days: 2,
+      hours: 15,
+      minutes: 30
     },
     {
-      id: '4',
-      name: 'Conference Table',
-      price: 1299.99,
-      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-      badge: 'LAST CHANCE',
-      stock: 3
+      factory: 'FACTORY 02',
+      name: 'GLOBAL SEATING',
+      time: '02:00 PM',
+      type: 'Afternoon Show',
+      days: 2,
+      hours: 19,
+      minutes: 30
+    },
+    {
+      factory: 'FACTORY 03',
+      name: 'ULTIMATE CHAIRS',
+      time: '06:00 PM',
+      type: 'Evening Show',
+      days: 2,
+      hours: 23,
+      minutes: 30
     }
+  ];
+
+  const premiumChairs = [
+    { id: 1, image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=300&q=80' },
+    { id: 2, image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&q=80' },
+    { id: 3, image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=300&q=80' },
+    { id: 4, image: 'https://images.unsplash.com/photo-1591825729269-caeb344f6df2?w=300&q=80' },
+    { id: 5, image: 'https://images.unsplash.com/photo-1580480055226-13c68314c2aa?w=300&q=80' },
+    { id: 6, image: 'https://images.unsplash.com/photo-1598300188881-74ebc72c0e86?w=300&q=80' }
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-50">
+      {/* Header */}
+      <header className="border-b border-border bg-background sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              COLOSSEUM
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                <span className="text-2xl">🪑</span>
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-foreground">
+                  LIVE<span className="text-primary">CHAIRS</span>
+                </div>
+                <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+              </div>
             </Link>
-            <div className="flex items-center gap-6">
-              <Link href="/shop" className="text-foreground hover:text-primary hidden sm:inline">
-                Shop
+
+            <nav className="hidden lg:flex gap-8">
+              <Link href="/live" className="text-sm font-medium text-foreground hover:text-primary">
+                LIVE SHOWS
               </Link>
-              <Link href="/live" className="text-foreground hover:text-primary hidden sm:inline">
-                Live Now
+              <Link href="/shop" className="text-sm font-medium text-foreground hover:text-primary">
+                ALL CHAIRS
               </Link>
-              <Link href="/login" className="text-foreground hover:text-primary">
-                Login
+              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
+                FACTORIES
               </Link>
-              <Button size="sm" variant="outline">Cart (0)</Button>
+              <Link href="#how-it-works" className="text-sm font-medium text-foreground hover:text-primary">
+                HOW IT WORKS
+              </Link>
+              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
+                ABOUT US
+              </Link>
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                REGISTER FOR LIVE
+              </Button>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section with Live Event */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="container mx-auto px-4 py-12 sm:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Left: Hero Content */}
-            <div className="space-y-6 text-center lg:text-left">
-              <Badge className="bg-red-600 text-white px-4 py-2 animate-pulse">
-                🔴 LIVE NOW - Factory Tour
-              </Badge>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
-                <span className="text-primary">WATCH</span> factories.{' '}
-                <span className="text-primary">ASK</span> questions.{' '}
-                <span className="text-primary">BUY</span> direct.
-              </h1>
-
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
-                Get exclusive factory prices on premium office furniture. Watch live production,
-                ask manufacturers directly, and save up to 50%.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" className="text-lg px-8 py-6" asChild>
-                  <Link href="/live">
-                    Join Live Event
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-                  <Link href="/shop">
-                    Browse Products
-                  </Link>
-                </Button>
-              </div>
-
-              <div className="flex items-center gap-6 justify-center lg:justify-start text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">⭐</span>
-                  <span className="text-foreground font-semibold">4.9/5</span>
-                  <span className="text-muted-foreground">(2,847 reviews)</span>
-                </div>
-                <div className="text-muted-foreground">
-                  <span className="text-primary font-bold">234</span> watching now
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Live Preview */}
-            <div className="relative">
-              <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-primary/50">
-                <Image
-                  src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&q=80"
-                  alt="Live factory tour"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
-                {/* Live Badge */}
-                <Badge className="absolute top-4 left-4 bg-red-600 text-white animate-pulse">
-                  🔴 LIVE
-                </Badge>
-
-                {/* Quick Stats */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-black/80 backdrop-blur rounded-lg p-4 space-y-2">
-                    <p className="text-white font-semibold">Executive Office Chair</p>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-primary text-2xl font-bold">$299</span>
-                        <span className="text-white/60 line-through ml-2">$449</span>
-                      </div>
-                      <Button size="sm" className="bg-primary hover:bg-primary/90">
-                        Buy Now
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-12 sm:py-16">
+      {/* Hero Section with Live Shows */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Live Deals Right Now
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Exclusive prices available only during live events. Limited quantities!
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Left: Hero Text */}
+            <div className="lg:col-span-1 space-y-6">
+              <div>
+                <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                  3 LIVE SHOWS.<br />
+                  3 FACTORIES.<br />
+                  1 <span className="text-primary">UNBEATABLE<br />EXPERIENCE.</span>
+                </h1>
+                <p className="text-muted-foreground">
+                  Real products. Real prices.<br />Real time.
+                </p>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="group overflow-hidden hover:shadow-xl hover:border-primary transition-all">
-                <Link href={`/shop/${product.id}`}>
-                  {/* Product Image */}
-                  <div className="relative aspect-square overflow-hidden bg-muted">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-
-                    {/* Badge */}
-                    <Badge
-                      className={`absolute top-3 left-3 ${
-                        product.badge === 'LIVE NOW' ? 'bg-red-600 animate-pulse' :
-                        product.badge === 'HOT DEAL' ? 'bg-orange-600' :
-                        product.badge === 'BEST SELLER' ? 'bg-blue-600' :
-                        'bg-purple-600'
-                      } text-white font-bold`}
-                    >
-                      {product.badge}
-                    </Badge>
-
-                    {/* Quick Action on Hover */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button className="bg-primary hover:bg-primary/90">
-                        View Details →
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="p-4 space-y-3">
-                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-
-                    {/* Price */}
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-primary">
-                        ${product.price}
-                      </span>
-                      {product.compareAtPrice && (
-                        <>
-                          <span className="text-sm text-muted-foreground line-through">
-                            ${product.compareAtPrice}
-                          </span>
-                          <Badge variant="destructive" className="ml-auto">
-                            -{Math.round((1 - product.price / product.compareAtPrice) * 100)}%
-                          </Badge>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Additional Info */}
-                    <div className="flex items-center gap-2 text-sm">
-                      {product.viewers && (
-                        <span className="text-muted-foreground">
-                          👥 {product.viewers} watching
-                        </span>
-                      )}
-                      {product.rating && (
-                        <span className="text-foreground">
-                          ⭐ {product.rating}
-                        </span>
-                      )}
-                      {product.stock && (
-                        <span className="text-red-500 font-semibold">
-                          Only {product.stock} left!
-                        </span>
-                      )}
-                    </div>
-
-                    {/* CTA */}
-                    <Button className="w-full" size="sm">
-                      {product.badge === 'LIVE NOW' ? 'Watch & Buy' : 'Add to Cart'}
-                    </Button>
-                  </div>
-                </Link>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/shop">
-                View All Products →
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Countdown to Next Event */}
-      <section className="border-y border-border bg-card/30">
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-              🎯 Next Live Event
-            </h2>
-            <p className="text-muted-foreground">
-              Standing Desk Collection Launch - Don&apos;t miss exclusive launch prices!
-            </p>
-
-            <CountdownTimer targetDate={nextEventDate} />
-
-            <Button size="lg" variant="secondary">
-              Set Reminder
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section className="py-12 sm:py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-foreground mb-10">
-            What Our Customers Say
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Sarah Johnson',
-                role: 'Office Manager',
-                content: 'Bought 10 chairs during the live event. 40% cheaper than retail and quality is amazing!',
-                rating: 5,
-                image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80'
-              },
-              {
-                name: 'Michael Chen',
-                role: 'Startup Founder',
-                content: 'Being able to see the manufacturing process live gave me confidence. No middlemen!',
-                rating: 5,
-                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80'
-              },
-              {
-                name: 'Emily Rodriguez',
-                role: 'Interior Designer',
-                content: 'I can ask questions directly to the factory. This changed how I source furniture!',
-                rating: 5,
-                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80'
-              }
-            ].map((testimonial, idx) => (
-              <Card key={idx} className="p-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+              <Card className="bg-card border-primary border-2 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Clock className="w-6 h-6 text-primary" />
                   <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    <div className="text-sm font-bold text-foreground">48 HOURS ONLY</div>
+                    <div className="text-xs text-primary">TO REGISTER</div>
                   </div>
                 </div>
-                <div className="flex gap-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-primary">⭐</span>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 bg-muted rounded flex items-center justify-center">📅</div>
+                    <span>24-25 MAY</span>
+                  </div>
+                </div>
+                <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                  REGISTER NOW
+                </Button>
+              </Card>
+            </div>
+
+            {/* Center: Live Show Cards Carousel */}
+            <div className="lg:col-span-2">
+              <div className="relative">
+                {liveShows.map((show, idx) => (
+                  <Card
+                    key={show.id}
+                    className={`overflow-hidden cursor-pointer hover:shadow-2xl transition-all ${
+                      idx === 1 ? 'block' : 'hidden'
+                    }`}
+                  >
+                    <div className="relative aspect-[4/3]">
+                      <Image
+                        src={show.image}
+                        alt={show.name}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                      {/* Live Badge */}
+                      <Badge className="absolute top-4 left-4 bg-red-600 text-white animate-pulse">
+                        ● LIVE
+                      </Badge>
+                      <div className="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded text-white text-sm">
+                        ● {show.viewers} watching
+                      </div>
+
+                      {/* Factory Info */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <div className="text-xs text-white/80 mb-2">{show.factory}</div>
+                        <h3 className="text-2xl font-bold text-white mb-1">{show.name}</h3>
+                        <p className="text-sm text-white/90 mb-4">{show.description}</p>
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                          WATCH LIVE →
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+
+                {/* Carousel dots */}
+                <div className="flex justify-center gap-2 mt-4">
+                  {liveShows.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`w-2 h-2 rounded-full ${
+                        idx === 1 ? 'bg-primary' : 'bg-muted'
+                      }`}
+                    />
                   ))}
                 </div>
-                <p className="text-muted-foreground">&ldquo;{testimonial.content}&rdquo;</p>
+              </div>
+            </div>
+
+            {/* Right: Live Chat */}
+            <div className="lg:col-span-1">
+              <Card className="h-full p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-foreground">LIVE CHAT</h3>
+                  <Badge variant="outline">● 243 online</Badge>
+                </div>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-6 h-6 rounded-full bg-primary" />
+                      <span className="font-semibold text-foreground">Avi from Israel</span>
+                    </div>
+                    <p className="text-muted-foreground">Amazing quality! 🔥</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-6 h-6 rounded-full bg-blue-600" />
+                      <span className="font-semibold text-foreground">Sarah from USA</span>
+                    </div>
+                    <p className="text-muted-foreground">Just ordered 2 chairs!</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-6 h-6 rounded-full bg-green-600" />
+                      <span className="font-semibold text-foreground">John from UK</span>
+                    </div>
+                    <p className="text-muted-foreground">Best prices ever 💯</p>
+                  </div>
+                </div>
               </Card>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Trust Badges */}
-      <section className="border-y border-border py-8 bg-card/30">
+      <section className="border-y border-border bg-muted/30 py-6">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl mb-2">✓</div>
-              <p className="font-semibold text-foreground">Secure Payment</p>
-              <p className="text-sm text-muted-foreground">SSL Encrypted</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Tag className="w-8 h-8 text-primary" />
+              <div className="font-semibold text-sm text-foreground">FACTORY DIRECT</div>
+              <div className="text-xs text-muted-foreground">Best Prices Guaranteed</div>
             </div>
-            <div>
-              <div className="text-3xl mb-2">🚚</div>
-              <p className="font-semibold text-foreground">Free Shipping</p>
-              <p className="text-sm text-muted-foreground">Orders over $500</p>
+            <div className="flex flex-col items-center gap-2">
+              <MessageSquare className="w-8 h-8 text-primary" />
+              <div className="font-semibold text-sm text-foreground">LIVE AUCTIONS</div>
+              <div className="text-xs text-muted-foreground">Real-Time Deals</div>
             </div>
-            <div>
-              <div className="text-3xl mb-2">↩️</div>
-              <p className="font-semibold text-foreground">30-Day Returns</p>
-              <p className="text-sm text-muted-foreground">Money back guarantee</p>
+            <div className="flex flex-col items-center gap-2">
+              <Truck className="w-8 h-8 text-primary" />
+              <div className="font-semibold text-sm text-foreground">WORLDWIDE SHIPPING</div>
+              <div className="text-xs text-muted-foreground">Fast & Safe Delivery</div>
             </div>
-            <div>
-              <div className="text-3xl mb-2">⭐</div>
-              <p className="font-semibold text-foreground">5-Year Warranty</p>
-              <p className="text-sm text-muted-foreground">On all products</p>
+            <div className="flex flex-col items-center gap-2">
+              <Shield className="w-8 h-8 text-primary" />
+              <div className="font-semibold text-sm text-foreground">QUALITY CONTROL</div>
+              <div className="text-xs text-muted-foreground">Before Every Shipment</div>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <CreditCard className="w-8 h-8 text-primary" />
+              <div className="font-semibold text-sm text-foreground">SECURE PAYMENTS</div>
+              <div className="text-xs text-muted-foreground">100% Protected</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 bg-card/30">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p className="text-sm">
-            The world&apos;s first live factory shopping experience.
-          </p>
-          <p className="text-sm mt-2">
-            © 2024 Colosseum Live Factory. All rights reserved.
-          </p>
+      {/* Upcoming Shows */}
+      <section className="py-12 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-1">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                UPCOMING<br />LIVE SHOWS
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                See the chairs.<br />
+                Ask questions.<br />
+                Get exclusive<br />
+                factory prices.
+              </p>
+              <Button variant="outline" className="font-bold">
+                VIEW FULL SCHEDULE →
+              </Button>
+            </div>
+
+            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {upcomingShows.map((show, idx) => (
+                <Card key={idx} className="p-4 border-2 hover:border-primary transition-colors">
+                  <Badge className="bg-red-600 text-white mb-2">● LIVE</Badge>
+                  <div className="text-xs text-muted-foreground mb-1">{show.time}</div>
+                  <div className="text-sm font-semibold text-foreground mb-3">{show.type}</div>
+
+                  <div className="text-xs text-muted-foreground mb-2">{show.factory}</div>
+                  <div className="font-bold text-foreground mb-4">{show.name}</div>
+
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-foreground">{String(show.days).padStart(2, '0')}</div>
+                      <div className="text-xs text-muted-foreground">DAYS</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-foreground">{String(show.hours).padStart(2, '0')}</div>
+                      <div className="text-xs text-muted-foreground">HRS</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-foreground">{String(show.minutes).padStart(2, '0')}</div>
+                      <div className="text-xs text-muted-foreground">MIN</div>
+                    </div>
+                  </div>
+
+                  <Button variant="outline" size="sm" className="w-full">
+                    🔔 REMIND ME
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Premium Chairs */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-foreground mb-2">
+              PREMIUM CHAIRS WITHOUT THE PREMIUM PRICE
+            </h2>
+            <p className="text-muted-foreground">
+              Top quality chairs that in stores cost $1700+
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+            {premiumChairs.map((chair) => (
+              <Card key={chair.id} className="overflow-hidden hover:border-primary transition-colors cursor-pointer">
+                <div className="relative aspect-square">
+                  <Image
+                    src={chair.image}
+                    alt="Premium chair"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+            EXPLORE CHAIRS
+          </Button>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center text-foreground mb-12">
+            HOW IT WORKS
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+            {[
+              { step: '1. REGISTER', text: 'Register for free and join our live factory tours.' },
+              { step: '2. WATCH & ASK', text: 'Watch the products, ask questions in real-time.' },
+              { step: '3. GET LIVE PRICES', text: 'Receive exclusive prices only during the show.' },
+              { step: '4. ORDER & RELAX', text: 'We handle the rest and deliver to your door.' },
+              { step: '5. ENJOY YOUR CHAIR', text: 'Premium quality chairs at factory prices!' }
+            ].map((item, idx) => (
+              <div key={idx} className="text-center">
+                <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                  {idx + 1}
+                </div>
+                <h3 className="font-bold text-foreground mb-2">{item.step}</h3>
+                <p className="text-sm text-muted-foreground">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
