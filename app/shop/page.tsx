@@ -6,61 +6,113 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
 export default function ShopPage() {
-  // Mock products data
+  // Expanded product catalog
   const products = [
     {
       id: '1',
-      name: 'Executive Office Chair',
+      name: 'Executive Leather Office Chair',
       price: 299.99,
       compareAtPrice: 449.99,
-      imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=500',
+      imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=500&q=80',
       category: 'Chairs',
       status: 'live',
-      viewerCount: 234
+      viewerCount: 234,
+      rating: 4.9,
+      reviews: 187
     },
     {
       id: '2',
-      name: 'Standing Desk Pro',
+      name: 'Electric Standing Desk Pro',
       price: 599.99,
-      imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=500',
+      compareAtPrice: 799.99,
+      imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=500&q=80',
       category: 'Desks',
-      status: 'upcoming',
-      availableDate: '2 days'
+      status: 'live',
+      viewerCount: 156,
+      rating: 4.8,
+      reviews: 203
     },
     {
       id: '3',
-      name: 'Conference Table',
+      name: 'Large Conference Table',
       price: 1299.99,
-      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
+      compareAtPrice: 1799.99,
+      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80',
       category: 'Tables',
       status: 'purchase_window',
-      unitsLeft: 12
+      unitsLeft: 5,
+      rating: 4.9,
+      reviews: 89
     },
     {
       id: '4',
-      name: 'Ergonomic Keyboard',
+      name: 'Ergonomic Wireless Keyboard',
       price: 89.99,
       compareAtPrice: 129.99,
-      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500',
+      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80',
       category: 'Accessories',
       status: 'live',
-      viewerCount: 89
+      viewerCount: 89,
+      rating: 4.7,
+      reviews: 312
     },
     {
       id: '5',
-      name: 'Monitor Arm',
-      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500',
+      name: 'Dual Monitor Arm Mount',
+      price: 149.99,
+      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&q=80',
       category: 'Accessories',
-      status: 'ended'
+      status: 'ended',
+      rating: 4.6,
+      reviews: 145
     },
     {
       id: '6',
-      name: 'File Cabinet',
+      name: 'Modern File Cabinet',
       price: 199.99,
-      imageUrl: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500',
+      compareAtPrice: 279.99,
+      imageUrl: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&q=80',
       category: 'Storage',
       status: 'purchase_window',
-      unitsLeft: 5
+      unitsLeft: 3,
+      rating: 4.8,
+      reviews: 76
+    },
+    {
+      id: '7',
+      name: 'Ergonomic Mesh Chair',
+      price: 249.99,
+      compareAtPrice: 399.99,
+      imageUrl: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=500&q=80',
+      category: 'Chairs',
+      status: 'live',
+      viewerCount: 198,
+      rating: 4.9,
+      reviews: 267
+    },
+    {
+      id: '8',
+      name: 'L-Shaped Gaming Desk',
+      price: 449.99,
+      compareAtPrice: 599.99,
+      imageUrl: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=500&q=80',
+      category: 'Desks',
+      status: 'upcoming',
+      availableDate: '2 days',
+      rating: 4.7,
+      reviews: 134
+    },
+    {
+      id: '9',
+      name: 'Adjustable Laptop Stand',
+      price: 59.99,
+      compareAtPrice: 89.99,
+      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&q=80',
+      category: 'Accessories',
+      status: 'purchase_window',
+      unitsLeft: 12,
+      rating: 4.5,
+      reviews: 423
     }
   ];
 
@@ -75,29 +127,52 @@ export default function ShopPage() {
             </Link>
             <nav className="hidden sm:flex gap-6">
               <Link href="/" className="text-foreground hover:text-primary">Home</Link>
-              <Link href="/shop" className="text-primary">Shop</Link>
+              <Link href="/shop" className="text-primary font-semibold">Shop</Link>
               <Link href="/live" className="text-foreground hover:text-primary">Live Now</Link>
               <Link href="/login" className="text-foreground hover:text-primary">Login</Link>
             </nav>
-            <Button size="sm">Cart (0)</Button>
+            <Button size="sm" variant="outline">Cart (0)</Button>
           </div>
         </div>
       </header>
 
+      {/* Live Event Banner */}
+      <div className="bg-red-600 text-white py-3">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div className="flex items-center gap-3">
+              <Badge className="bg-white text-red-600 animate-pulse">🔴 LIVE</Badge>
+              <span className="font-semibold">Office Chair Factory Tour - Special Prices Now!</span>
+            </div>
+            <Button size="sm" variant="secondary" asChild>
+              <Link href="/live">Watch Live →</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Page Header */}
       <section className="border-b border-border">
         <div className="container mx-auto px-4 py-8 sm:py-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Product Catalog
-          </h1>
-          <p className="text-muted-foreground max-w-2xl">
-            Browse our collection of premium office furniture. Join live events for exclusive deals!
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+                Premium Office Furniture
+              </h1>
+              <p className="text-muted-foreground">
+                Factory-direct prices on {products.length} products. Up to 50% off retail!
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <Button variant="outline" size="sm">Price: Low to High</Button>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Filters & Search */}
-      <section className="border-b border-border">
+      <section className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <Input
@@ -105,11 +180,12 @@ export default function ShopPage() {
               className="flex-1"
             />
             <div className="flex gap-2 flex-wrap">
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">All</Badge>
+              <Badge variant="default" className="cursor-pointer bg-primary">All</Badge>
               <Badge variant="outline" className="cursor-pointer hover:bg-accent">Chairs</Badge>
               <Badge variant="outline" className="cursor-pointer hover:bg-accent">Desks</Badge>
               <Badge variant="outline" className="cursor-pointer hover:bg-accent">Tables</Badge>
               <Badge variant="outline" className="cursor-pointer hover:bg-accent">Storage</Badge>
+              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Accessories</Badge>
             </div>
           </div>
         </div>
@@ -120,7 +196,7 @@ export default function ShopPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary transition-colors">
+              <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary hover:shadow-xl transition-all">
                 <Link href={`/shop/${product.id}`}>
                   {/* Product Image */}
                   <div className="relative aspect-square bg-muted">
@@ -147,6 +223,20 @@ export default function ShopPage() {
                         Last Chance!
                       </Badge>
                     )}
+
+                    {/* Savings Badge */}
+                    {product.compareAtPrice && (
+                      <Badge className="absolute top-2 right-2 bg-green-600 text-white">
+                        Save {Math.round((1 - product.price / product.compareAtPrice) * 100)}%
+                      </Badge>
+                    )}
+
+                    {/* Quick View on Hover */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button className="bg-primary hover:bg-primary/90">
+                        Quick View
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Product Info */}
@@ -159,6 +249,22 @@ export default function ShopPage() {
                         {product.name}
                       </h3>
                     </div>
+
+                    {/* Rating */}
+                    {product.rating && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={i < Math.floor(product.rating) ? 'text-primary' : 'text-muted-foreground'}>
+                              ⭐
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {product.rating} ({product.reviews} reviews)
+                        </span>
+                      </div>
+                    )}
 
                     {/* Price or Status */}
                     {product.status === 'ended' ? (
@@ -190,14 +296,14 @@ export default function ShopPage() {
                     )}
                     {product.status === 'purchase_window' && product.unitsLeft && (
                       <p className="text-sm text-orange-500 font-semibold">
-                        Only {product.unitsLeft} units left!
+                        ⚡ Only {product.unitsLeft} units left!
                       </p>
                     )}
 
                     {/* CTA Button */}
                     {product.status === 'live' && (
-                      <Button className="w-full" size="sm">
-                        WATCH LIVE
+                      <Button className="w-full bg-red-600 hover:bg-red-700" size="sm">
+                        WATCH LIVE & BUY
                       </Button>
                     )}
                     {product.status === 'purchase_window' && (
@@ -219,6 +325,41 @@ export default function ShopPage() {
                 </Link>
               </Card>
             ))}
+          </div>
+
+          {/* Load More */}
+          <div className="text-center mt-12">
+            <Button size="lg" variant="outline">
+              Load More Products
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Banner */}
+      <section className="border-y border-border py-8 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl mb-2">🚚</div>
+              <p className="font-semibold text-foreground">Free Shipping</p>
+              <p className="text-sm text-muted-foreground">Orders over $500</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">↩️</div>
+              <p className="font-semibold text-foreground">30-Day Returns</p>
+              <p className="text-sm text-muted-foreground">Money back guarantee</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">⭐</div>
+              <p className="font-semibold text-foreground">5-Year Warranty</p>
+              <p className="text-sm text-muted-foreground">On all products</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">💬</div>
+              <p className="font-semibold text-foreground">Live Support</p>
+              <p className="text-sm text-muted-foreground">Chat with experts</p>
+            </div>
           </div>
         </div>
       </section>
