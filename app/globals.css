@@ -14,8 +14,8 @@
   --color-popover: oklch(1 0 0);
   --color-popover-foreground: oklch(0.15 0 0);
 
-  /* Primary - Orange/Gold for LiveChairs */
-  --color-primary: oklch(0.65 0.15 45);
+  /* Primary - Gold for LiveChairs (#e4a758) */
+  --color-primary: #e4a758;
   --color-primary-foreground: oklch(0.98 0 0);
 
   /* Secondary */
@@ -26,8 +26,8 @@
   --color-muted: oklch(0.96 0 0);
   --color-muted-foreground: oklch(0.45 0 0);
 
-  /* Accent - Orange for CTAs */
-  --color-accent: oklch(0.65 0.15 45);
+  /* Accent - Gold for CTAs */
+  --color-accent: #e4a758;
   --color-accent-foreground: oklch(0.98 0 0);
 
   /* Destructive */
@@ -37,7 +37,7 @@
   /* Border & Input */
   --color-border: oklch(0.89 0 0);
   --color-input: oklch(0.89 0 0);
-  --color-ring: oklch(0.65 0.15 45);
+  --color-ring: #e4a758;
 
   /* Border Radius */
   --radius-sm: 0.25rem;
@@ -54,7 +54,7 @@
   --color-popover: oklch(0.2 0 0);
   --color-popover-foreground: oklch(0.98 0 0);
 
-  --color-primary: oklch(0.75 0.15 45);
+  --color-primary: #e4a758;
   --color-primary-foreground: oklch(0.1 0 0);
 
   --color-secondary: oklch(0.3 0 0);
@@ -63,7 +63,7 @@
   --color-muted: oklch(0.3 0 0);
   --color-muted-foreground: oklch(0.65 0 0);
 
-  --color-accent: oklch(0.75 0.15 45);
+  --color-accent: #e4a758;
   --color-accent-foreground: oklch(0.98 0 0);
 
   --color-destructive: oklch(0.45 0.25 25);
@@ -71,7 +71,7 @@
 
   --color-border: oklch(0.3 0 0);
   --color-input: oklch(0.3 0 0);
-  --color-ring: oklch(0.75 0.15 45);
+  --color-ring: #e4a758;
 }
 
 /* Mobile-first optimizations */
@@ -136,8 +136,8 @@ body {
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
 
-  /* Primary - Orange/Gold */
-  --primary: oklch(0.65 0.15 45);
+  /* Primary - Gold (#e4a758) */
+  --primary: #e4a758;
   --primary-foreground: oklch(0.98 0 0);
 
   /* Secondary */
@@ -149,7 +149,7 @@ body {
   --muted-foreground: oklch(0.45 0 0);
 
   /* Accent */
-  --accent: oklch(0.65 0.15 45);
+  --accent: #e4a758;
   --accent-foreground: oklch(0.98 0 0);
 
   /* Destructive */
@@ -159,10 +159,10 @@ body {
   /* Border & Input */
   --border: oklch(0.89 0 0);
   --input: oklch(0.89 0 0);
-  --ring: oklch(0.65 0.15 45);
+  --ring: #e4a758;
 
   /* Chart colors */
-  --chart-1: oklch(0.65 0.15 45);
+  --chart-1: #e4a758;
   --chart-2: oklch(0.55 0.25 25);
   --chart-3: oklch(0.55 0.20 200);
   --chart-4: oklch(0.60 0.15 140);
@@ -171,12 +171,12 @@ body {
   /* Sidebar */
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.15 0 0);
-  --sidebar-primary: oklch(0.65 0.15 45);
+  --sidebar-primary: #e4a758;
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.96 0 0);
   --sidebar-accent-foreground: oklch(0.15 0 0);
   --sidebar-border: oklch(0.89 0 0);
-  --sidebar-ring: oklch(0.65 0.15 45);
+  --sidebar-ring: #e4a758;
 
   /* Border Radius */
   --radius: 0.5rem;
@@ -190,7 +190,7 @@ body {
   --popover: oklch(0.2 0 0);
   --popover-foreground: oklch(0.98 0 0);
 
-  --primary: oklch(0.75 0.15 45);
+  --primary: #e4a758;
   --primary-foreground: oklch(0.1 0 0);
 
   --secondary: oklch(0.3 0 0);
@@ -199,7 +199,7 @@ body {
   --muted: oklch(0.3 0 0);
   --muted-foreground: oklch(0.65 0 0);
 
-  --accent: oklch(0.75 0.15 45);
+  --accent: #e4a758;
   --accent-foreground: oklch(0.98 0 0);
 
   --destructive: oklch(0.45 0.25 25);
@@ -207,9 +207,9 @@ body {
 
   --border: oklch(0.3 0 0);
   --input: oklch(0.3 0 0);
-  --ring: oklch(0.75 0.15 45);
+  --ring: #e4a758;
 
-  --chart-1: oklch(0.75 0.15 45);
+  --chart-1: #e4a758;
   --chart-2: oklch(0.65 0.25 25);
   --chart-3: oklch(0.55 0.20 200);
   --chart-4: oklch(0.60 0.15 140);
@@ -217,12 +217,12 @@ body {
 
   --sidebar: oklch(0.2 0 0);
   --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.75 0.15 45);
+  --sidebar-primary: #e4a758;
   --sidebar-primary-foreground: oklch(0.1 0 0);
   --sidebar-accent: oklch(0.3 0 0);
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(0.3 0 0);
-  --sidebar-ring: oklch(0.75 0.15 45);
+  --sidebar-ring: #e4a758;
 }
 
 @layer base {
