@@ -157,20 +157,21 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 relative">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 relative">
                 <Image
                   src="/logo.png"
                   alt="LiveChairs Logo"
                   fill
                   className="object-contain"
+                  priority
                 />
               </div>
               <div className="text-left">
-                <div className="font-bold text-foreground text-lg">
+                <div className="font-bold text-foreground text-xl sm:text-2xl">
                   LIVE<span className="text-primary">CHAIRS</span>
                 </div>
-                <div className="text-[10px] text-muted-foreground tracking-wide">FACTORY LIVE</div>
+                <div className="text-xs sm:text-sm text-muted-foreground tracking-wide">FACTORY LIVE</div>
               </div>
             </Link>
 
