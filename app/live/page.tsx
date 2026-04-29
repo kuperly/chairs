@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LivePage() {
   // Mock live event and products
@@ -40,17 +41,27 @@ export default function LivePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="border-b border-border bg-background sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              COLOSSEUM
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                <span className="text-2xl">🪑</span>
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-foreground">
+                  LIVE<span className="text-primary">CHAIRS</span>
+                </div>
+                <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+              </div>
             </Link>
-            <div className="flex items-center gap-4">
+
+            <div className="flex items-center gap-3">
               <Badge className="bg-red-600 text-white animate-pulse hidden sm:flex">
                 🔴 LIVE NOW
               </Badge>
-              <Button size="sm">Cart (0)</Button>
+              <ThemeToggle />
+              <Button size="sm" variant="outline">Cart (0)</Button>
             </div>
           </div>
         </div>

@@ -5,18 +5,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8 relative">
       {/* Background Gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/5 to-transparent" />
 
+      {/* Theme Toggle - Top Right */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <Card className="w-full max-w-md p-8 space-y-6">
         {/* Logo */}
-        <div className="text-center space-y-2">
-          <Link href="/" className="text-3xl font-bold text-primary">
-            COLOSSEUM
+        <div className="text-center space-y-3">
+          <Link href="/" className="inline-flex items-center gap-2 justify-center">
+            <div className="w-12 h-12 bg-primary rounded flex items-center justify-center">
+              <span className="text-3xl">🪑</span>
+            </div>
+            <div className="text-left">
+              <div className="text-2xl font-bold text-foreground">
+                LIVE<span className="text-primary">CHAIRS</span>
+              </div>
+              <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+            </div>
           </Link>
           <p className="text-muted-foreground">
             Sign in to your account

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function DashboardPage() {
   // Mock data
@@ -33,8 +34,16 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/" className="text-2xl font-bold text-primary">
-                COLOSSEUM
+              <Link href="/" className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                  <span className="text-2xl">🪑</span>
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-foreground">
+                    LIVE<span className="text-primary">CHAIRS</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+                </div>
               </Link>
               <nav className="hidden md:flex gap-6">
                 <Link href="/dashboard" className="text-primary font-semibold">Dashboard</Link>
@@ -43,7 +52,8 @@ export default function DashboardPage() {
                 <Link href="/dashboard/orders" className="text-foreground hover:text-primary">Orders</Link>
               </nav>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
               <Button variant="outline" size="sm">Settings</Button>
               <Button size="sm">Logout</Button>
             </div>
