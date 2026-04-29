@@ -38,15 +38,56 @@ export default function HomePage() {
     }
   ];
 
-  const [currentSlide, setCurrentSlide] = useState(1); // Start with middle card
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   // Auto-rotate carousel
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % liveShows.length);
-    }, 5000);
+    }, 4000);
     return () => clearInterval(timer);
   }, [liveShows.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % liveShows.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + liveShows.length) % liveShows.length);
+  };
+
+  const getCardPosition = (index: number) => {
+    const diff = (index - currentSlide + liveShows.length) % liveShows.length;
+
+    if (diff === 0) {
+      // Center card
+      return {
+        transform: 'translateX(-50%) translateY(-50%) scale(1) rotateY(0deg)',
+        opacity: 1,
+        zIndex: 30,
+        left: '50%',
+        top: '50%'
+      };
+    } else if (diff === 1 || diff === -2) {
+      // Right card
+      return {
+        transform: 'translateY(-50%) scale(0.85) rotateY(-25deg)',
+        opacity: 0.7,
+        zIndex: 10,
+        left: '65%',
+        top: '50%'
+      };
+    } else {
+      // Left card
+      return {
+        transform: 'translateY(-50%) scale(0.85) rotateY(25deg)',
+        opacity: 0.7,
+        zIndex: 10,
+        left: '35%',
+        top: '50%'
+      };
+    }
+  };
 
   const upcomingShows = [
     {
@@ -210,85 +251,89 @@ export default function HomePage() {
             </div>
 
             {/* Center: 3D Carousel */}
-            <div className="lg:col-span-6 relative">
+            <div className="lg:col-span-6 relative" style={{ perspective: '1500px' }}>
               <div className="relative h-[400px] lg:h-[500px]">
-                {/* Left card */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[45%] opacity-90 transform -translate-x-8 scale-90 z-10">
-                  <Card className="overflow-hidden border-2 border-border shadow-xl">
-                    <div className="relative aspect-[3/4]">
-                      <Image src={liveShows[0].image} alt={liveShows[0].name} fill className="object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                      <Badge className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1">
-                        ● LIVE
-                      </Badge>
-                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-white text-xs">
-                        ● {liveShows[0].viewers} watching
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <div className="text-[10px] text-white/70 mb-1">{liveShows[0].factory}</div>
-                        <h3 className="text-sm font-bold text-white mb-1">{liveShows[0].name}</h3>
-                        <p className="text-xs text-white/80">{liveShows[0].description}</p>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
+                {liveShows.map((show, idx) => {
+                  const position = getCardPosition(idx);
+                  const isCenter = idx === currentSlide;
 
-                {/* Center card (main) */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] z-30">
-                  {/* Glowing ring effect */}
-                  <div className="absolute inset-0 -z-10">
-                    <div className="absolute inset-0 bg-primary/20 rounded-lg blur-3xl animate-pulse" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/40 to-primary/30 rounded-lg blur-2xl" />
-                  </div>
+                  return (
+                    <div
+                      key={show.id}
+                      className="absolute w-[55%] transition-all duration-700 ease-out"
+                      style={{
+                        ...position,
+                        transformStyle: 'preserve-3d'
+                      }}
+                    >
+                      {/* Glowing ring effect - only for center card */}
+                      {isCenter && (
+                        <div className="absolute -inset-8 -z-10">
+                          <div className="absolute inset-0 rounded-full">
+                            {/* Multiple pulsing rings */}
+                            <div className="absolute inset-0 bg-primary/30 rounded-full blur-3xl animate-pulse" />
+                            <div className="absolute inset-2 bg-primary/40 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+                            <div className="absolute inset-4 bg-primary/50 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }} />
+                            {/* Rotating gradient ring */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/60 via-primary/80 to-primary/60 rounded-full blur-2xl animate-spin" style={{ animationDuration: '3s' }} />
+                          </div>
+                        </div>
+                      )}
 
-                  <Card className="overflow-hidden border-2 border-primary/50 shadow-2xl">
-                    <div className="relative aspect-[3/4]">
-                      <Image src={liveShows[1].image} alt={liveShows[1].name} fill className="object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                      <Badge className="absolute top-4 left-4 bg-red-600 text-white text-sm px-3 py-1.5 animate-pulse">
-                        ● LIVE
-                      </Badge>
-                      <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded text-white text-sm font-medium">
-                        ● {liveShows[1].viewers} watching
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <div className="text-xs text-white/70 mb-2">{liveShows[1].factory}</div>
-                        <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">{liveShows[1].name}</h3>
-                        <p className="text-sm text-white/90 mb-4">{liveShows[1].description}</p>
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
-                          WATCH LIVE →
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
+                      <Card className={`overflow-hidden shadow-2xl transition-all duration-700 ${
+                        isCenter ? 'border-2 border-primary/50' : 'border-2 border-border/50'
+                      }`}>
+                        <div className="relative aspect-[3/4]">
+                          <Image
+                            src={show.image}
+                            alt={show.name}
+                            fill
+                            className="object-cover"
+                            priority={isCenter}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-                {/* Right card */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[45%] opacity-90 transform translate-x-8 scale-90 z-10">
-                  <Card className="overflow-hidden border-2 border-border shadow-xl">
-                    <div className="relative aspect-[3/4]">
-                      <Image src={liveShows[2].image} alt={liveShows[2].name} fill className="object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                      <Badge className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1">
-                        ● LIVE
-                      </Badge>
-                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-white text-xs">
-                        ● {liveShows[2].viewers} watching
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <div className="text-[10px] text-white/70 mb-1">{liveShows[2].factory}</div>
-                        <h3 className="text-sm font-bold text-white mb-1">{liveShows[2].name}</h3>
-                        <p className="text-xs text-white/80">{liveShows[2].description}</p>
-                      </div>
+                          <Badge className={`absolute ${isCenter ? 'top-4 left-4 text-sm px-3 py-1.5' : 'top-3 left-3 text-xs px-2 py-1'} bg-red-600 text-white animate-pulse`}>
+                            ● LIVE
+                          </Badge>
+
+                          <div className={`absolute ${isCenter ? 'top-4 right-4 px-3 py-1.5 text-sm' : 'top-3 right-3 px-2 py-1 text-xs'} bg-black/60 backdrop-blur-sm rounded text-white font-medium`}>
+                            ● {show.viewers} watching
+                          </div>
+
+                          <div className={`absolute bottom-0 left-0 right-0 ${isCenter ? 'p-6' : 'p-4'}`}>
+                            <div className={`${isCenter ? 'text-xs' : 'text-[10px]'} text-white/70 mb-1`}>
+                              {show.factory}
+                            </div>
+                            <h3 className={`${isCenter ? 'text-xl lg:text-2xl' : 'text-sm'} font-bold text-white mb-1`}>
+                              {show.name}
+                            </h3>
+                            <p className={`${isCenter ? 'text-sm mb-4' : 'text-xs mb-2'} text-white/90`}>
+                              {show.description}
+                            </p>
+                            {isCenter && (
+                              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                                WATCH LIVE →
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </Card>
                     </div>
-                  </Card>
-                </div>
+                  );
+                })}
 
                 {/* Navigation arrows */}
-                <button className="absolute left-0 top-1/2 -translate-y-1/2 z-40 w-8 h-8 bg-background border border-border rounded-full flex items-center justify-center hover:bg-muted">
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted hover:scale-110 transition-all shadow-lg"
+                >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button className="absolute right-0 top-1/2 -translate-y-1/2 z-40 w-8 h-8 bg-background border border-border rounded-full flex items-center justify-center hover:bg-muted">
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted hover:scale-110 transition-all shadow-lg"
+                >
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
@@ -298,9 +343,11 @@ export default function HomePage() {
                 {liveShows.map((_, idx) => (
                   <button
                     key={idx}
+                    onClick={() => setCurrentSlide(idx)}
                     className={`h-2 rounded-full transition-all ${
-                      idx === 1 ? 'bg-primary w-8' : 'bg-muted w-2 hover:bg-muted-foreground'
+                      idx === currentSlide ? 'bg-primary w-8' : 'bg-muted w-2 hover:bg-muted-foreground'
                     }`}
+                    aria-label={`Go to slide ${idx + 1}`}
                   />
                 ))}
               </div>
