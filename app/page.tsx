@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -6,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { CountdownTimer } from '@/components/countdown-timer';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
   const nextEventDate = new Date();
@@ -38,6 +41,16 @@ export default function HomePage() {
       image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=600&q=80'
     }
   ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % liveShows.length);
+    }, 4000); // Change slide every 4 seconds
+    return () => clearInterval(timer);
+  }, [liveShows.length]);
 
   const upcomingShows = [
     {
@@ -96,27 +109,21 @@ export default function HomePage() {
               </div>
             </Link>
 
-            <nav className="hidden lg:flex gap-8">
-              <Link href="/live" className="text-sm font-medium text-foreground hover:text-primary">
+            <nav className="hidden lg:flex gap-6">
+              <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 LIVE SHOWS
               </Link>
-              <Link href="/shop" className="text-sm font-medium text-foreground hover:text-primary">
+              <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 ALL CHAIRS
               </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
-                FACTORIES
-              </Link>
-              <Link href="#how-it-works" className="text-sm font-medium text-foreground hover:text-primary">
+              <Link href="#how-it-works" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 HOW IT WORKS
-              </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
-                ABOUT US
               </Link>
             </nav>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm px-6">
                 REGISTER FOR LIVE
               </Button>
             </div>
@@ -131,13 +138,15 @@ export default function HomePage() {
             {/* Left: Hero Text */}
             <div className="lg:col-span-1 space-y-6">
               <div>
-                <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                  3 LIVE SHOWS.<br />
-                  3 FACTORIES.<br />
-                  1 <span className="text-primary">UNBEATABLE<br />EXPERIENCE.</span>
+                <h1 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-4">
+                  PREMIUM CHAIRS<br />
+                  <span className="text-primary">WITHOUT THE<br />
+                  PREMIUM PRICE</span>
                 </h1>
-                <p className="text-muted-foreground">
-                  Real products. Real prices.<br />Real time.
+                <p className="text-lg text-muted-foreground">
+                  Factory-direct prices.<br />
+                  Live demonstrations.<br />
+                  Real savings.
                 </p>
               </div>
 
@@ -163,52 +172,60 @@ export default function HomePage() {
 
             {/* Center: Live Show Cards Carousel */}
             <div className="lg:col-span-2">
-              <div className="relative">
-                {liveShows.map((show, idx) => (
-                  <Card
-                    key={show.id}
-                    className={`overflow-hidden cursor-pointer hover:shadow-2xl transition-all ${
-                      idx === 1 ? 'block' : 'hidden'
-                    }`}
-                  >
-                    <div className="relative aspect-[4/3]">
-                      <Image
-                        src={show.image}
-                        alt={show.name}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="relative overflow-hidden">
+                <div className="relative aspect-[4/3]">
+                  {liveShows.map((show, idx) => (
+                    <Card
+                      key={show.id}
+                      className={`absolute inset-0 overflow-hidden cursor-pointer transition-all duration-700 ease-in-out ${
+                        idx === currentSlide
+                          ? 'opacity-100 translate-x-0'
+                          : idx < currentSlide
+                            ? 'opacity-0 -translate-x-full'
+                            : 'opacity-0 translate-x-full'
+                      }`}
+                    >
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={show.image}
+                          alt={show.name}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                      {/* Live Badge */}
-                      <Badge className="absolute top-4 left-4 bg-red-600 text-white animate-pulse">
-                        ● LIVE
-                      </Badge>
-                      <div className="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded text-white text-sm">
-                        ● {show.viewers} watching
-                      </div>
+                        {/* Live Badge */}
+                        <Badge className="absolute top-4 left-4 bg-red-600 text-white animate-pulse">
+                          ● LIVE
+                        </Badge>
+                        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded text-white text-sm">
+                          ● {show.viewers} watching
+                        </div>
 
-                      {/* Factory Info */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <div className="text-xs text-white/80 mb-2">{show.factory}</div>
-                        <h3 className="text-2xl font-bold text-white mb-1">{show.name}</h3>
-                        <p className="text-sm text-white/90 mb-4">{show.description}</p>
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
-                          WATCH LIVE →
-                        </Button>
+                        {/* Factory Info */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                          <div className="text-xs text-white/80 mb-2">{show.factory}</div>
+                          <h3 className="text-2xl font-bold text-white mb-1">{show.name}</h3>
+                          <p className="text-sm text-white/90 mb-4">{show.description}</p>
+                          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                            WATCH LIVE →
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  ))}
+                </div>
 
                 {/* Carousel dots */}
                 <div className="flex justify-center gap-2 mt-4">
                   {liveShows.map((_, idx) => (
-                    <div
+                    <button
                       key={idx}
-                      className={`w-2 h-2 rounded-full ${
-                        idx === 1 ? 'bg-primary' : 'bg-muted'
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        idx === currentSlide ? 'bg-primary w-6' : 'bg-muted hover:bg-muted-foreground'
                       }`}
+                      aria-label={`Go to slide ${idx + 1}`}
                     />
                   ))}
                 </div>
@@ -343,10 +360,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-foreground mb-2">
-              PREMIUM CHAIRS WITHOUT THE PREMIUM PRICE
+              FEATURED CHAIRS
             </h2>
             <p className="text-muted-foreground">
-              Top quality chairs that in stores cost $1700+
+              Top quality chairs that in stores cost $1700+ — yours for a fraction of the price
             </p>
           </div>
 
