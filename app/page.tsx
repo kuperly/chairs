@@ -209,41 +209,51 @@ export default function HomePage() {
               </Card>
             </div>
 
-            {/* Center: 3D Carousel */}
-            <div className="lg:col-span-6 relative overflow-hidden">
-              <div className="relative h-[450px] lg:h-[550px]">
+            {/* Center: Scale Carousel (Embla-style) */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative h-[450px] lg:h-[550px] overflow-visible">
                 {/* Glowing ring background - always visible */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                  <div className="relative w-[70%] h-[70%]">
-                    {/* Multiple glowing rings */}
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.3s' }} />
-                    <div className="absolute inset-0 bg-primary/40 rounded-full blur-xl" />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                  <div className="relative w-[60%] h-[70%]">
+                    <div className="absolute inset-0 bg-primary/25 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute inset-0 bg-primary/35 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.3s' }} />
+                    <div className="absolute inset-0 bg-primary/45 rounded-full blur-xl" />
                   </div>
                 </div>
 
-                {/* Cards Container - Sliding */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div
-                    className="flex items-center gap-6 transition-transform duration-700 ease-out"
-                    style={{
-                      transform: `translateX(calc(-${currentSlide * 100}% - ${currentSlide * 1.5}rem))`
-                    }}
-                  >
+                {/* Cards Container with Scale Effect */}
+                <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                  <div className="relative w-full h-full flex items-center justify-center">
                     {liveShows.map((show, idx) => {
-                      const isCenter = idx === currentSlide;
+                      // Calculate distance from current slide
+                      let distance = idx - currentSlide;
+
+                      // Handle wrap-around for smooth infinite scroll
+                      if (distance > liveShows.length / 2) {
+                        distance -= liveShows.length;
+                      } else if (distance < -liveShows.length / 2) {
+                        distance += liveShows.length;
+                      }
+
+                      // Calculate scale based on distance (center is 1, sides scale down)
+                      const scale = 1 - Math.abs(distance) * 0.15;
+                      const opacity = distance === 0 ? 1 : 0.5 + (1 - Math.abs(distance) * 0.3);
+                      const translateX = distance * 420; // Spacing between cards
+                      const zIndex = 30 - Math.abs(distance) * 10;
 
                       return (
                         <div
                           key={show.id}
-                          className={`flex-shrink-0 transition-all duration-700 ${
-                            isCenter
-                              ? 'w-[450px] opacity-100 scale-100 z-30'
-                              : 'w-[350px] opacity-60 scale-90 z-10'
-                          }`}
+                          className="absolute transition-all duration-700 ease-out"
+                          style={{
+                            transform: `translateX(${translateX}px) scale(${scale})`,
+                            opacity: opacity,
+                            zIndex: zIndex,
+                            width: '380px'
+                          }}
                         >
-                          <Card className={`overflow-hidden shadow-2xl ${
-                            isCenter ? 'border-2 border-primary/50' : 'border border-border/50'
+                          <Card className={`overflow-hidden shadow-2xl transition-all duration-700 ${
+                            distance === 0 ? 'border-2 border-primary/60' : 'border border-border/50'
                           }`}>
                             <div className="relative aspect-[3/4]">
                               <Image
@@ -251,37 +261,47 @@ export default function HomePage() {
                                 alt={show.name}
                                 fill
                                 className="object-cover"
-                                priority={isCenter}
+                                priority={distance === 0}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-                              <Badge className={`absolute ${
-                                isCenter ? 'top-4 left-4 text-sm px-3 py-1.5' : 'top-3 left-3 text-xs px-2 py-1'
+                              <Badge className={`absolute transition-all duration-700 ${
+                                distance === 0 ? 'top-4 left-4 text-sm px-3 py-1.5' : 'top-3 left-3 text-xs px-2 py-1'
                               } bg-red-600 text-white animate-pulse`}>
                                 ● LIVE
                               </Badge>
 
-                              <div className={`absolute ${
-                                isCenter ? 'top-4 right-4 px-3 py-1.5 text-sm' : 'top-3 right-3 px-2 py-1 text-xs'
+                              <div className={`absolute transition-all duration-700 ${
+                                distance === 0 ? 'top-4 right-4 px-3 py-1.5 text-sm' : 'top-3 right-3 px-2 py-1 text-xs'
                               } bg-black/60 backdrop-blur-sm rounded text-white font-medium`}>
                                 ● {show.viewers} watching
                               </div>
 
-                              <div className={`absolute bottom-0 left-0 right-0 ${isCenter ? 'p-6' : 'p-4'}`}>
-                                <div className={`${isCenter ? 'text-xs' : 'text-[10px]'} text-white/60 mb-1`}>
+                              <div className={`absolute bottom-0 left-0 right-0 transition-all duration-700 ${
+                                distance === 0 ? 'p-6' : 'p-4'
+                              }`}>
+                                <div className={`transition-all duration-700 ${
+                                  distance === 0 ? 'text-xs' : 'text-[10px]'
+                                } text-white/60 mb-1`}>
                                   {show.factory}
                                 </div>
-                                <h3 className={`${isCenter ? 'text-xl lg:text-2xl' : 'text-sm'} font-bold text-white mb-1`}>
+                                <h3 className={`transition-all duration-700 ${
+                                  distance === 0 ? 'text-xl lg:text-2xl' : 'text-sm'
+                                } font-bold text-white mb-1`}>
                                   {show.name}
                                 </h3>
-                                <p className={`${isCenter ? 'text-sm mb-4' : 'text-xs mb-2'} text-white/90`}>
+                                <p className={`transition-all duration-700 ${
+                                  distance === 0 ? 'text-sm mb-4 opacity-100' : 'text-xs mb-2 opacity-80'
+                                } text-white/90`}>
                                   {show.description}
                                 </p>
-                                {isCenter && (
+                                <div className={`transition-all duration-700 ${
+                                  distance === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                                }`}>
                                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
                                     WATCH LIVE →
                                   </Button>
-                                )}
+                                </div>
                               </div>
                             </div>
                           </Card>
