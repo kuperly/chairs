@@ -169,9 +169,11 @@ export default function ShopPage() {
               <Badge className="bg-white text-red-600 animate-pulse">🔴 LIVE</Badge>
               <span className="font-semibold">Office Chair Factory Tour - Special Prices Now!</span>
             </div>
-            <Button size="sm" variant="secondary" asChild>
-              <Link href="/live">Watch Live →</Link>
-            </Button>
+            <Link href="/live">
+              <Button size="sm" variant="secondary">
+                Watch Live →
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

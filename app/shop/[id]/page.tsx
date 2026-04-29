@@ -126,9 +126,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <Badge className="bg-white text-red-600 animate-pulse">🔴 LIVE</Badge>
                 <span className="font-semibold">This product is on LIVE right now! <span className="font-bold">{product.viewerCount}</span> watching</span>
               </div>
-              <Button size="sm" variant="secondary" asChild>
-                <Link href="/live">Watch Live →</Link>
-              </Button>
+              <Link href="/live">
+                <Button size="sm" variant="secondary">
+                  Watch Live →
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -260,9 +262,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                         <span className="text-primary font-semibold">{product.viewerCount}</span> people watching now
                       </p>
                     </div>
-                    <Button size="sm" className="bg-red-600 hover:bg-red-700 whitespace-nowrap" asChild>
-                      <Link href="/live">Join Live</Link>
-                    </Button>
+                    <Link href="/live">
+                      <Button size="sm" className="bg-red-600 hover:bg-red-700 whitespace-nowrap">
+                        Join Live
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               )}
