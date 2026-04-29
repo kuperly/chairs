@@ -210,11 +210,11 @@ export default function HomePage() {
             </div>
 
             {/* Center: 3D Carousel */}
-            <div className="lg:col-span-6 relative">
+            <div className="lg:col-span-6 relative overflow-hidden">
               <div className="relative h-[450px] lg:h-[550px]">
                 {/* Glowing ring background - always visible */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="relative w-[85%] h-[85%]">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                  <div className="relative w-[70%] h-[70%]">
                     {/* Multiple glowing rings */}
                     <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse" />
                     <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.3s' }} />
@@ -222,98 +222,85 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Cards Container */}
+                {/* Cards Container - Sliding */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Left Card */}
-                  <div className="absolute left-[5%] top-1/2 -translate-y-1/2 w-[35%] z-10 opacity-80 scale-90">
-                    <Card className="overflow-hidden border border-border shadow-xl">
-                      <div className="relative aspect-[3/4]">
-                        <Image
-                          src={liveShows[(currentSlide - 1 + liveShows.length) % liveShows.length].image}
-                          alt="Previous show"
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                        <Badge className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1">
-                          ● LIVE
-                        </Badge>
-                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-white text-xs">
-                          ● {liveShows[(currentSlide - 1 + liveShows.length) % liveShows.length].viewers} watching
+                  <div
+                    className="flex items-center gap-6 transition-transform duration-700 ease-out"
+                    style={{
+                      transform: `translateX(calc(-${currentSlide * 100}% - ${currentSlide * 1.5}rem))`
+                    }}
+                  >
+                    {liveShows.map((show, idx) => {
+                      const isCenter = idx === currentSlide;
+
+                      return (
+                        <div
+                          key={show.id}
+                          className={`flex-shrink-0 transition-all duration-700 ${
+                            isCenter
+                              ? 'w-[450px] opacity-100 scale-100 z-30'
+                              : 'w-[350px] opacity-60 scale-90 z-10'
+                          }`}
+                        >
+                          <Card className={`overflow-hidden shadow-2xl ${
+                            isCenter ? 'border-2 border-primary/50' : 'border border-border/50'
+                          }`}>
+                            <div className="relative aspect-[3/4]">
+                              <Image
+                                src={show.image}
+                                alt={show.name}
+                                fill
+                                className="object-cover"
+                                priority={isCenter}
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+                              <Badge className={`absolute ${
+                                isCenter ? 'top-4 left-4 text-sm px-3 py-1.5' : 'top-3 left-3 text-xs px-2 py-1'
+                              } bg-red-600 text-white animate-pulse`}>
+                                ● LIVE
+                              </Badge>
+
+                              <div className={`absolute ${
+                                isCenter ? 'top-4 right-4 px-3 py-1.5 text-sm' : 'top-3 right-3 px-2 py-1 text-xs'
+                              } bg-black/60 backdrop-blur-sm rounded text-white font-medium`}>
+                                ● {show.viewers} watching
+                              </div>
+
+                              <div className={`absolute bottom-0 left-0 right-0 ${isCenter ? 'p-6' : 'p-4'}`}>
+                                <div className={`${isCenter ? 'text-xs' : 'text-[10px]'} text-white/60 mb-1`}>
+                                  {show.factory}
+                                </div>
+                                <h3 className={`${isCenter ? 'text-xl lg:text-2xl' : 'text-sm'} font-bold text-white mb-1`}>
+                                  {show.name}
+                                </h3>
+                                <p className={`${isCenter ? 'text-sm mb-4' : 'text-xs mb-2'} text-white/90`}>
+                                  {show.description}
+                                </p>
+                                {isCenter && (
+                                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                                    WATCH LIVE →
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </Card>
                         </div>
-                      </div>
-                    </Card>
-                  </div>
-
-                  {/* Center Card (Main) */}
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[45%] z-30 transition-all duration-500">
-                    <Card className="overflow-hidden border-2 border-primary/40 shadow-2xl">
-                      <div className="relative aspect-[3/4]">
-                        <Image
-                          src={liveShows[currentSlide].image}
-                          alt={liveShows[currentSlide].name}
-                          fill
-                          className="object-cover"
-                          priority
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-
-                        <Badge className="absolute top-4 left-4 bg-red-600 text-white text-sm px-3 py-1.5 animate-pulse">
-                          ● LIVE
-                        </Badge>
-
-                        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded text-white text-sm font-medium">
-                          ● {liveShows[currentSlide].viewers} watching
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 p-6">
-                          <div className="text-xs text-white/60 mb-2">{liveShows[currentSlide].factory}</div>
-                          <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">
-                            {liveShows[currentSlide].name}
-                          </h3>
-                          <p className="text-sm text-white/90 mb-4">
-                            {liveShows[currentSlide].description}
-                          </p>
-                          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
-                            WATCH LIVE →
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
-                  </div>
-
-                  {/* Right Card */}
-                  <div className="absolute right-[5%] top-1/2 -translate-y-1/2 w-[35%] z-10 opacity-80 scale-90">
-                    <Card className="overflow-hidden border border-border shadow-xl">
-                      <div className="relative aspect-[3/4]">
-                        <Image
-                          src={liveShows[(currentSlide + 1) % liveShows.length].image}
-                          alt="Next show"
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                        <Badge className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1">
-                          ● LIVE
-                        </Badge>
-                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-white text-xs">
-                          ● {liveShows[(currentSlide + 1) % liveShows.length].viewers} watching
-                        </div>
-                      </div>
-                    </Card>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Navigation arrows */}
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev - 1 + liveShows.length) % liveShows.length)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted transition-all shadow-lg"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted hover:scale-110 transition-all shadow-lg"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev + 1) % liveShows.length)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted transition-all shadow-lg"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 bg-background/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center hover:bg-muted hover:scale-110 transition-all shadow-lg"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
