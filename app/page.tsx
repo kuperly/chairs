@@ -715,6 +715,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* We Are The Factory */}
+      <section className="relative h-64 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80"
+            alt="Factory"
+            fill
+            className="object-cover brightness-75"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60" />
+        </div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 h-full relative z-10">
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center max-w-3xl">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                WE ARE <span className="text-primary">THE FACTORY</span>
+              </h2>
+              <p className="text-lg md:text-xl text-white/90">
+                No middleman. No extra cost.<br />
+                You deal directly with us and we ship directly to you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer Trust Badges */}
       <section className="border-t border-border bg-black text-white py-8">
         <div className="container mx-auto px-4">
