@@ -606,81 +606,56 @@ export default function HomePage() {
       </section>
 
       {/* Hot Live Deals */}
-      <section className="py-12 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
+      <section className="py-12 bg-black">
+        <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <span className="text-3xl animate-pulse">🔥</span>
-                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-              </div>
-              <h2 className="text-3xl font-bold text-foreground">
+              <span className="text-3xl">🔥</span>
+              <h2 className="text-3xl font-bold text-white">
                 HOT LIVE DEALS
               </h2>
             </div>
-            <Button variant="outline" className="gap-2 border-primary/50 hover:bg-primary hover:text-white">
-              VIEW ALL
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+            <button className="text-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+              VIEW ALL <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Horizontal Scrolling Cards */}
           <div className="relative">
-            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
-              {hotDeals.map((deal, idx) => (
-                <Card key={deal.id} className="flex-shrink-0 w-[280px] overflow-hidden border-2 border-transparent hover:border-primary transition-all hover:shadow-2xl group relative animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
-                  {/* Shimmer effect overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-20" />
-
-                  {/* Glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 rounded-lg opacity-0 group-hover:opacity-100 blur transition-opacity duration-500 -z-10" />
-
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
+              {hotDeals.map((deal) => (
+                <Card key={deal.id} className="flex-shrink-0 w-[280px] bg-zinc-800/50 border-zinc-700 overflow-hidden hover:border-primary/50 transition-all">
                   {/* Discount Badge */}
                   <div className="relative">
                     <div className="absolute top-3 left-3 z-10">
-                      <Badge className="bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-bold px-3 py-1 shadow-lg animate-pulse">
+                      <div className="bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded">
                         -{deal.discount}%
-                      </Badge>
-                    </div>
-
-                    {/* "HOT" indicator */}
-                    <div className="absolute top-3 right-3 z-10">
-                      <div className="bg-primary/90 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
-                        🔥 HOT
                       </div>
                     </div>
 
                     {/* Product Image */}
-                    <div className="relative aspect-[4/5] bg-gradient-to-br from-muted to-muted/50">
+                    <div className="relative aspect-square bg-gradient-to-br from-zinc-600 to-zinc-700">
                       <Image
                         src={deal.image}
                         alt={deal.name}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-contain p-4"
                       />
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-4 space-y-3 bg-gradient-to-b from-card to-card/95">
+                  <div className="p-4 space-y-3">
                     <div>
-                      <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-bold text-white text-sm mb-3">
                         {deal.name}
                       </h3>
 
                       <div className="flex items-baseline gap-2 mb-3">
-                        <span className="text-xs text-muted-foreground line-through">
+                        <span className="text-sm text-zinc-400 line-through">
                           ₪{deal.originalPrice.toLocaleString()}
                         </span>
-                        <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                        <span className="text-2xl font-bold text-primary">
                           ₪{deal.salePrice.toLocaleString()}
                         </span>
                       </div>
@@ -688,9 +663,9 @@ export default function HomePage() {
                       {/* Features */}
                       <ul className="space-y-1 mb-4">
                         {deal.features.map((feature, idx) => (
-                          <li key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
-                            <span className="w-1 h-1 bg-primary rounded-full" />
-                            {feature}
+                          <li key={idx} className="text-xs text-zinc-400 flex items-start gap-2">
+                            <span className="mt-1.5">•</span>
+                            <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -698,22 +673,15 @@ export default function HomePage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2">
-                      <Button className="flex-1 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary font-bold shadow-lg hover:shadow-primary/50 transition-all">
+                      <Button className="flex-1 bg-primary hover:bg-primary/90 text-black font-bold text-xs">
                         BUY NOW
                       </Button>
-                      <Button variant="outline" className="flex-1 font-bold border-primary/30 hover:bg-primary/10 hover:border-primary transition-all">
-                        WATCH LIVE
+                      <Button variant="outline" className="flex-1 font-bold text-xs border-zinc-600 text-white hover:bg-zinc-700">
+                        WATCH IN LIVE
                       </Button>
                     </div>
                   </div>
                 </Card>
-              ))}
-            </div>
-
-            {/* Scroll Indicators */}
-            <div className="flex justify-center gap-2 mt-6">
-              {hotDeals.slice(0, 4).map((_, idx) => (
-                <div key={idx} className="w-2 h-2 rounded-full bg-muted hover:bg-primary transition-colors cursor-pointer" />
               ))}
             </div>
           </div>
