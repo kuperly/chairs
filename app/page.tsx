@@ -606,87 +606,90 @@ export default function HomePage() {
       </section>
 
       {/* Hot Live Deals */}
-      <section className="py-12 bg-black">
+      <section className="py-12 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <span className="text-3xl">🔥</span>
-              <h2 className="text-3xl font-bold text-white">
+              <h2 className="text-3xl font-bold text-foreground">
                 HOT LIVE DEALS
               </h2>
             </div>
-            <button className="text-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-              VIEW ALL <ChevronRight className="w-4 h-4" />
-            </button>
+            <Button variant="outline" className="gap-2">
+              VIEW ALL
+              <ChevronRight className="w-4 h-4" />
+            </Button>
           </div>
 
           {/* Horizontal Scrolling Cards */}
           <div className="relative">
-            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
+            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
               {hotDeals.map((deal) => (
-                <Card key={deal.id} className="flex-shrink-0 w-[280px] bg-zinc-800/50 border-zinc-700 overflow-hidden hover:border-primary/50 transition-all">
-                  {/* Card content with image and overlay */}
-                  <div className="relative aspect-[3/4]">
-                    {/* Discount Badge */}
-                    <div className="absolute top-3 left-3 z-20">
-                      <div className="bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded">
+                <Card key={deal.id} className="flex-shrink-0 w-[280px] overflow-hidden hover:border-primary transition-all hover:shadow-xl group">
+                  {/* Discount Badge */}
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 z-10">
+                      <Badge className="bg-red-600 text-white text-sm font-bold px-3 py-1">
                         -{deal.discount}%
-                      </div>
+                      </Badge>
                     </div>
 
                     {/* Product Image */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-zinc-600 to-zinc-700">
+                    <div className="relative aspect-[4/5] bg-muted">
                       <Image
                         src={deal.image}
                         alt={deal.name}
                         fill
-                        className="object-contain p-4"
+                        className="object-cover group-hover:scale-105 transition-transform"
                       />
                     </div>
+                  </div>
 
-                    {/* Product Info Overlay - bottom portion of image */}
-                    <div className="absolute bottom-0 left-0 right-0 z-10">
-                      {/* Gradient overlay for text readability */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                  {/* Product Info */}
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <h3 className="font-bold text-foreground mb-2">
+                        {deal.name}
+                      </h3>
 
-                      {/* Product details */}
-                      <div className="relative p-4 space-y-2">
-                        <h3 className="font-bold text-white text-sm">
-                          {deal.name}
-                        </h3>
-
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-sm text-zinc-400 line-through">
-                            ₪{deal.originalPrice.toLocaleString()}
-                          </span>
-                          <span className="text-2xl font-bold text-primary">
-                            ₪{deal.salePrice.toLocaleString()}
-                          </span>
-                        </div>
-
-                        {/* Features */}
-                        <ul className="space-y-0.5">
-                          {deal.features.map((feature, idx) => (
-                            <li key={idx} className="text-xs text-zinc-300 flex items-start gap-2">
-                              <span className="mt-1">•</span>
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="flex items-baseline gap-2 mb-3">
+                        <span className="text-xs text-muted-foreground line-through">
+                          ₪{deal.originalPrice.toLocaleString()}
+                        </span>
+                        <span className="text-2xl font-bold text-primary">
+                          ₪{deal.salePrice.toLocaleString()}
+                        </span>
                       </div>
+
+                      {/* Features */}
+                      <ul className="space-y-1 mb-4">
+                        {deal.features.map((feature, idx) => (
+                          <li key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
+                            <span className="w-1 h-1 bg-muted-foreground rounded-full" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Button className="flex-1 bg-primary hover:bg-primary/90 font-bold">
+                        BUY NOW
+                      </Button>
+                      <Button variant="outline" className="flex-1 font-bold">
+                        WATCH IN LIVE
+                      </Button>
                     </div>
                   </div>
-
-                  {/* Action Buttons - below image */}
-                  <div className="p-3 flex gap-2 bg-zinc-800/50">
-                    <Button className="flex-1 bg-primary hover:bg-primary/90 text-black font-bold text-xs">
-                      BUY NOW
-                    </Button>
-                    <Button variant="outline" className="flex-1 font-bold text-xs border-zinc-600 text-white hover:bg-zinc-700">
-                      WATCH IN LIVE
-                    </Button>
-                  </div>
                 </Card>
+              ))}
+            </div>
+
+            {/* Scroll Indicators */}
+            <div className="flex justify-center gap-2 mt-6">
+              {hotDeals.slice(0, 4).map((_, idx) => (
+                <div key={idx} className="w-2 h-2 rounded-full bg-muted" />
               ))}
             </div>
           </div>
