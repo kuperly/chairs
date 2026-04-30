@@ -728,7 +728,7 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80"
+            src="/factory-banner.jpg"
             alt="Factory"
             fill
             className="object-cover brightness-75"
