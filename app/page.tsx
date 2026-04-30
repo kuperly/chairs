@@ -625,16 +625,17 @@ export default function HomePage() {
             <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
               {hotDeals.map((deal) => (
                 <Card key={deal.id} className="flex-shrink-0 w-[280px] bg-zinc-800/50 border-zinc-700 overflow-hidden hover:border-primary/50 transition-all">
-                  {/* Discount Badge */}
-                  <div className="relative">
-                    <div className="absolute top-3 left-3 z-10">
+                  {/* Card content with image and overlay */}
+                  <div className="relative aspect-[3/4]">
+                    {/* Discount Badge */}
+                    <div className="absolute top-3 left-3 z-20">
                       <div className="bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded">
                         -{deal.discount}%
                       </div>
                     </div>
 
                     {/* Product Image */}
-                    <div className="relative aspect-square bg-gradient-to-br from-zinc-600 to-zinc-700">
+                    <div className="absolute inset-0 bg-gradient-to-br from-zinc-600 to-zinc-700">
                       <Image
                         src={deal.image}
                         alt={deal.name}
@@ -642,44 +643,48 @@ export default function HomePage() {
                         className="object-contain p-4"
                       />
                     </div>
+
+                    {/* Product Info Overlay - bottom portion of image */}
+                    <div className="absolute bottom-0 left-0 right-0 z-10">
+                      {/* Gradient overlay for text readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+
+                      {/* Product details */}
+                      <div className="relative p-4 space-y-2">
+                        <h3 className="font-bold text-white text-sm">
+                          {deal.name}
+                        </h3>
+
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-sm text-zinc-400 line-through">
+                            ₪{deal.originalPrice.toLocaleString()}
+                          </span>
+                          <span className="text-2xl font-bold text-primary">
+                            ₪{deal.salePrice.toLocaleString()}
+                          </span>
+                        </div>
+
+                        {/* Features */}
+                        <ul className="space-y-0.5">
+                          {deal.features.map((feature, idx) => (
+                            <li key={idx} className="text-xs text-zinc-300 flex items-start gap-2">
+                              <span className="mt-1">•</span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Product Info */}
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <h3 className="font-bold text-white text-sm mb-3">
-                        {deal.name}
-                      </h3>
-
-                      <div className="flex items-baseline gap-2 mb-3">
-                        <span className="text-sm text-zinc-400 line-through">
-                          ₪{deal.originalPrice.toLocaleString()}
-                        </span>
-                        <span className="text-2xl font-bold text-primary">
-                          ₪{deal.salePrice.toLocaleString()}
-                        </span>
-                      </div>
-
-                      {/* Features */}
-                      <ul className="space-y-1 mb-4">
-                        {deal.features.map((feature, idx) => (
-                          <li key={idx} className="text-xs text-zinc-400 flex items-start gap-2">
-                            <span className="mt-1.5">•</span>
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <Button className="flex-1 bg-primary hover:bg-primary/90 text-black font-bold text-xs">
-                        BUY NOW
-                      </Button>
-                      <Button variant="outline" className="flex-1 font-bold text-xs border-zinc-600 text-white hover:bg-zinc-700">
-                        WATCH IN LIVE
-                      </Button>
-                    </div>
+                  {/* Action Buttons - below image */}
+                  <div className="p-3 flex gap-2 bg-zinc-800/50">
+                    <Button className="flex-1 bg-primary hover:bg-primary/90 text-black font-bold text-xs">
+                      BUY NOW
+                    </Button>
+                    <Button variant="outline" className="flex-1 font-bold text-xs border-zinc-600 text-white hover:bg-zinc-700">
+                      WATCH IN LIVE
+                    </Button>
                   </div>
                 </Card>
               ))}
