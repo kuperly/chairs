@@ -170,7 +170,7 @@ export default function HomePage() {
             </Link>
 
             {/* Navigation */}
-            <nav className="hidden lg:flex gap-8">
+            <nav className="hidden lg:flex items-center gap-8">
               <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 LIVE SHOWS
               </Link>
