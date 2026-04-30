@@ -88,11 +88,11 @@ export default function HomePage() {
   const hotDeals = [
     {
       id: 1,
-      name: 'X-PRO ERGO CHAIR',
+      name: 'M105C',
       discount: 37,
       originalPrice: 1290,
       salePrice: 890,
-      image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2026/03/M105（白底主图）1600x1600-4-768x768.jpg',
       features: ['3D Lumbar Support', 'Breathable Mesh', 'Adjustable Headrest']
     },
     {
@@ -101,7 +101,7 @@ export default function HomePage() {
       discount: 32,
       originalPrice: 1190,
       salePrice: 810,
-      image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2025/12/带脚踏1-768x768.png',
       features: ['Dual Back Support', 'Soft Cushion Seat', 'Smooth Recline']
     },
     {
@@ -110,7 +110,7 @@ export default function HomePage() {
       discount: 29,
       originalPrice: 990,
       salePrice: 699,
-      image: 'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2024/04/1-tic-8.webp',
       features: ['Ergonomic Design', 'Breathable Mesh', '360° Swivel']
     },
     {
@@ -119,7 +119,7 @@ export default function HomePage() {
       discount: 34,
       originalPrice: 1390,
       salePrice: 920,
-      image: 'https://images.unsplash.com/photo-1591825729269-caeb344f6df2?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2024/04/1-tic-18.webp',
       features: ['Premium Padding', 'Strong Metal Base', 'Tilt & Lock']
     },
     {
@@ -128,7 +128,7 @@ export default function HomePage() {
       discount: 28,
       originalPrice: 850,
       salePrice: 612,
-      image: 'https://images.unsplash.com/photo-1580480055226-13c68314c2aa?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2026/01/画板-1-1-768x768.jpg',
       features: ['Memory Foam', 'Adjustable Arms', 'Heavy Duty']
     },
     {
@@ -137,7 +137,7 @@ export default function HomePage() {
       discount: 35,
       originalPrice: 1150,
       salePrice: 748,
-      image: 'https://images.unsplash.com/photo-1598300188881-74ebc72c0e86?w=400&q=80',
+      image: 'https://www.sihoo.com/en/wp-content/uploads/2024/04/C79A1031-tic.webp',
       features: ['Full Mesh Back', 'Lumbar Control', 'Height Adjust']
     }
   ];
@@ -475,64 +475,85 @@ export default function HomePage() {
       </section>
 
       {/* Upcoming Shows */}
-      <section className="py-12 bg-gradient-to-b from-black to-black/95 text-white">
+      <section className="py-16 bg-black text-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left */}
-            <div className="lg:col-span-3">
-              <h2 className="text-3xl font-bold mb-6">
-                <Badge className="bg-red-600 text-white mb-3 text-xs">● LIVE</Badge>
-                <br />
-                UPCOMING<br />
-                LIVE SHOWS
-              </h2>
-              <div className="space-y-2 text-sm text-white/70 mb-6">
-                <p>See the chairs.</p>
-                <p>Ask questions.</p>
-                <p>Get exclusive</p>
-                <p>factory prices.</p>
+            <div className="lg:col-span-3 flex flex-col justify-between">
+              <div>
+                <h2 className="text-3xl font-bold mb-6 leading-tight">
+                  UPCOMING<br />
+                  LIVE SHOWS
+                </h2>
+                <div className="space-y-1 text-base text-white/60 mb-8">
+                  <p>See the chairs.</p>
+                  <p>Ask questions.</p>
+                  <p>Get exclusive</p>
+                  <p>factory prices.</p>
+                </div>
               </div>
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white font-bold">
-                VIEW FULL SCHEDULE →
-              </Button>
+              <div>
+                <button className="text-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+                  VIEW FULL SCHEDULE <span>→</span>
+                </button>
+              </div>
             </div>
 
             {/* Center - Show Cards */}
             <div className="lg:col-span-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               {upcomingShows.map((show, idx) => (
-                <Card key={idx} className="bg-black/50 border-white/10 overflow-hidden">
-                  <div className="relative h-32">
-                    <Image src={show.image} alt={show.name} fill className="object-cover opacity-40" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                    <Badge className="absolute top-2 left-2 bg-red-600 text-white text-xs">
-                      ● LIVE
-                    </Badge>
+                <Card key={idx} className="bg-zinc-900/50 border-zinc-800 overflow-hidden hover:border-primary/50 transition-all">
+                  {/* Header with LIVE badge and time */}
+                  <div className="relative h-48">
+                    <Image src={show.image} alt={show.name} fill className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+
+                    {/* LIVE badge */}
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-red-600 text-white text-xs font-bold px-2 py-1 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                        LIVE
+                      </Badge>
+                    </div>
+
+                    {/* Time and type */}
+                    <div className="absolute top-3 right-3 text-right">
+                      <div className="text-white font-bold text-lg">{show.time}</div>
+                      <div className="text-white/70 text-xs">{show.type}</div>
+                    </div>
+
+                    {/* Factory and name at bottom */}
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <div className="bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs text-white/70 inline-block mb-1">
+                        {show.factory}
+                      </div>
+                      <div className="font-bold text-white text-base">
+                        {show.name}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <div className="text-xs text-white/50">{show.time}</div>
-                      <div className="text-sm font-semibold text-white">{show.type}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-white/50">{show.factory}</div>
-                      <div className="font-bold text-white text-sm">{show.name}</div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 py-3">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">{String(show.days).padStart(2, '0')}</div>
-                        <div className="text-[10px] text-white/50">DAYS</div>
+
+                  {/* Countdown */}
+                  <div className="p-4 space-y-4">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-black/50 rounded-lg p-3 text-center border border-zinc-800">
+                        <div className="text-3xl font-bold text-white">{String(show.days).padStart(2, '0')}</div>
+                        <div className="text-[10px] text-white/50 font-medium mt-1">DAYS</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">{String(show.hours).padStart(2, '0')}</div>
-                        <div className="text-[10px] text-white/50">HRS</div>
+                      <div className="bg-black/50 rounded-lg p-3 text-center border border-zinc-800">
+                        <div className="text-3xl font-bold text-white">{String(show.hours).padStart(2, '0')}</div>
+                        <div className="text-[10px] text-white/50 font-medium mt-1">HRS</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">{String(show.minutes).padStart(2, '0')}</div>
-                        <div className="text-[10px] text-white/50">MIN</div>
+                      <div className="bg-black/50 rounded-lg p-3 text-center border border-zinc-800">
+                        <div className="text-3xl font-bold text-white">{String(show.minutes).padStart(2, '0')}</div>
+                        <div className="text-[10px] text-white/50 font-medium mt-1">MIN</div>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary hover:text-white">
-                      🔔 REMIND ME
+
+                    {/* Remind me button */}
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold text-sm py-2.5">
+                      <span className="mr-2">🔔</span>
+                      REMIND ME
                     </Button>
                   </div>
                 </Card>
@@ -541,25 +562,41 @@ export default function HomePage() {
 
             {/* Right - Exclusive Deals */}
             <div className="lg:col-span-3">
-              <Card className="bg-gradient-to-b from-black to-black/80 border-primary/30 p-6 text-center h-full flex flex-col justify-between">
+              <Card className="bg-zinc-900/50 border-zinc-800 p-6 text-center h-full flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-primary mb-2">EXCLUSIVE</h3>
-                  <h3 className="text-2xl font-bold text-primary mb-3">LIVE ONLY</h3>
-                  <h3 className="text-2xl font-bold text-primary mb-6">DEALS</h3>
-                  <p className="text-sm text-white/70 mb-6">
+                  <h3 className="text-3xl font-bold text-primary mb-2 leading-tight">
+                    EXCLUSIVE<br />
+                    LIVE ONLY<br />
+                    DEALS
+                  </h3>
+                  <p className="text-sm text-primary/80 mb-6">
                     Prices you won't<br />
                     find anywhere else.
                   </p>
                 </div>
-                <div className="relative h-40 mb-6">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-32 h-32 rounded-full border-4 border-primary/30 animate-pulse" />
+
+                {/* Chair with golden ring */}
+                <div className="relative h-48 mb-6">
+                  {/* Golden ring glow */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-3">
+                    <div className="w-full h-full rounded-full bg-gradient-to-r from-transparent via-primary to-transparent blur-md opacity-60" />
+                    <div className="absolute inset-0 rounded-full border-2 border-primary/50" style={{ transform: 'perspective(100px) rotateX(60deg)' }} />
                   </div>
+
+                  {/* Chair image */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-6xl">🪑</span>
+                    <div className="relative w-32 h-32">
+                      <Image
+                        src="https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&q=80"
+                        alt="Exclusive chair"
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                      />
+                    </div>
                   </div>
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 text-white font-bold">
+
+                <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
                   JOIN THE LIVE
                 </Button>
               </Card>
