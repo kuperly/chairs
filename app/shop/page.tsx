@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -5,117 +7,36 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useProducts, useProductCategories } from '@/hooks/useProducts';
+import { useState } from 'react';
 
 export default function ShopPage() {
-  // Expanded product catalog
-  const products = [
-    {
-      id: '1',
-      name: 'Executive Leather Office Chair',
-      price: 299.99,
-      compareAtPrice: 449.99,
-      imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=500&q=80',
-      category: 'Chairs',
-      status: 'live',
-      viewerCount: 234,
-      rating: 4.9,
-      reviews: 187
-    },
-    {
-      id: '2',
-      name: 'Electric Standing Desk Pro',
-      price: 599.99,
-      compareAtPrice: 799.99,
-      imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=500&q=80',
-      category: 'Desks',
-      status: 'live',
-      viewerCount: 156,
-      rating: 4.8,
-      reviews: 203
-    },
-    {
-      id: '3',
-      name: 'Large Conference Table',
-      price: 1299.99,
-      compareAtPrice: 1799.99,
-      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80',
-      category: 'Tables',
-      status: 'purchase_window',
-      unitsLeft: 5,
-      rating: 4.9,
-      reviews: 89
-    },
-    {
-      id: '4',
-      name: 'Ergonomic Wireless Keyboard',
-      price: 89.99,
-      compareAtPrice: 129.99,
-      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80',
-      category: 'Accessories',
-      status: 'live',
-      viewerCount: 89,
-      rating: 4.7,
-      reviews: 312
-    },
-    {
-      id: '5',
-      name: 'Dual Monitor Arm Mount',
-      price: 149.99,
-      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&q=80',
-      category: 'Accessories',
-      status: 'ended',
-      rating: 4.6,
-      reviews: 145
-    },
-    {
-      id: '6',
-      name: 'Modern File Cabinet',
-      price: 199.99,
-      compareAtPrice: 279.99,
-      imageUrl: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&q=80',
-      category: 'Storage',
-      status: 'purchase_window',
-      unitsLeft: 3,
-      rating: 4.8,
-      reviews: 76
-    },
-    {
-      id: '7',
-      name: 'Ergonomic Mesh Chair',
-      price: 249.99,
-      compareAtPrice: 399.99,
-      imageUrl: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=500&q=80',
-      category: 'Chairs',
-      status: 'live',
-      viewerCount: 198,
-      rating: 4.9,
-      reviews: 267
-    },
-    {
-      id: '8',
-      name: 'L-Shaped Gaming Desk',
-      price: 449.99,
-      compareAtPrice: 599.99,
-      imageUrl: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=500&q=80',
-      category: 'Desks',
-      status: 'upcoming',
-      availableDate: '2 days',
-      rating: 4.7,
-      reviews: 134
-    },
-    {
-      id: '9',
-      name: 'Adjustable Laptop Stand',
-      price: 59.99,
-      compareAtPrice: 89.99,
-      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&q=80',
-      category: 'Accessories',
-      status: 'purchase_window',
-      unitsLeft: 12,
-      rating: 4.5,
-      reviews: 423
-    }
-  ];
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Fetch products with filters
+  const { products, loading, error, total } = useProducts({
+    category: selectedCategory,
+    search: searchQuery,
+    isActive: true,
+    limit: 20,
+  });
+
+  // Fetch categories
+  const { categories } = useProductCategories();
+
+  // Calculate savings percentage
+  const getSavingsPercent = (price: number, compareAt: number | null) => {
+    if (!compareAt) return 0;
+    return Math.round((1 - price / compareAt) * 100);
+  };
+
+  // Get product status based on live events (simplified for now)
+  const getProductStatus = () => {
+    // TODO: Integrate with live events to determine product status
+    // For now, all active products are available
+    return 'available';
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -170,7 +91,7 @@ export default function ShopPage() {
         </div>
       </header>
 
-      {/* Live Event Banner */}
+      {/* Live Event Banner - TODO: Fetch from API */}
       <div className="bg-red-600 text-white py-3">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -196,7 +117,7 @@ export default function ShopPage() {
                 Premium Office Furniture
               </h1>
               <p className="text-muted-foreground">
-                Factory-direct prices on {products.length} products. Up to 50% off retail!
+                {loading ? 'Loading...' : `Factory-direct prices on ${total} products. Up to 50% off retail!`}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -214,14 +135,27 @@ export default function ShopPage() {
             <Input
               placeholder="Search products..."
               className="flex-1"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div className="flex gap-2 flex-wrap">
-              <Badge variant="default" className="cursor-pointer bg-primary">All</Badge>
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Chairs</Badge>
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Desks</Badge>
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Tables</Badge>
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Storage</Badge>
-              <Badge variant="outline" className="cursor-pointer hover:bg-accent">Accessories</Badge>
+              <Badge
+                variant={!selectedCategory ? "default" : "outline"}
+                className={`cursor-pointer ${!selectedCategory ? 'bg-primary' : 'hover:bg-accent'}`}
+                onClick={() => setSelectedCategory(undefined)}
+              >
+                All
+              </Badge>
+              {categories.map((category) => (
+                <Badge
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  className={`cursor-pointer ${selectedCategory === category ? 'bg-primary' : 'hover:bg-accent'}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </Badge>
+              ))}
             </div>
           </div>
         </div>
@@ -230,145 +164,131 @@ export default function ShopPage() {
       {/* Product Grid */}
       <section className="py-8 sm:py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary hover:shadow-xl transition-all">
-                <Link href={`/shop/${product.id}`}>
-                  {/* Product Image */}
-                  <div className="relative aspect-square bg-muted">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform"
-                    />
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-muted-foreground">Loading products...</p>
+            </div>
+          )}
 
-                    {/* Status Badge */}
-                    {product.status === 'live' && (
-                      <Badge className="absolute top-2 left-2 bg-red-600 text-white animate-pulse">
-                        🔴 LIVE
-                      </Badge>
-                    )}
-                    {product.status === 'upcoming' && (
-                      <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
-                        Coming Soon
-                      </Badge>
-                    )}
-                    {product.status === 'purchase_window' && (
-                      <Badge className="absolute top-2 left-2 bg-orange-600 text-white">
-                        Last Chance!
-                      </Badge>
-                    )}
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-12">
+              <div className="text-red-500 text-lg mb-4">⚠️ Error loading products</div>
+              <p className="text-muted-foreground">{error.message}</p>
+            </div>
+          )}
 
-                    {/* Savings Badge */}
-                    {product.compareAtPrice && (
-                      <Badge className="absolute top-2 right-2 bg-green-600 text-white">
-                        Save {Math.round((1 - product.price / product.compareAtPrice) * 100)}%
-                      </Badge>
-                    )}
+          {/* Products Grid */}
+          {!loading && !error && (
+            <>
+              {products.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-lg">No products found</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {products.map((product) => (
+                    <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary hover:shadow-xl transition-all">
+                      <Link href={`/shop/${product.id}`}>
+                        {/* Product Image */}
+                        <div className="relative aspect-square bg-muted">
+                          <Image
+                            src={product.imageUrls[0] || '/placeholder-product.jpg'}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform"
+                          />
 
-                    {/* Quick View on Hover */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
-                        Quick View
-                      </Button>
-                    </div>
-                  </div>
+                          {/* Savings Badge */}
+                          {product.compareAtPrice && (
+                            <Badge className="absolute top-2 right-2 bg-green-600 text-white">
+                              Save {getSavingsPercent(product.price, product.compareAtPrice)}%
+                            </Badge>
+                          )}
 
-                  {/* Product Info */}
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <Badge variant="secondary" className="mb-2 text-xs">
-                        {product.category}
-                      </Badge>
-                      <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                        {product.name}
-                      </h3>
-                    </div>
+                          {/* Low Stock Warning */}
+                          {product.stockQuantity > 0 && product.stockQuantity < 10 && (
+                            <Badge className="absolute top-2 left-2 bg-orange-600 text-white">
+                              Only {product.stockQuantity} left!
+                            </Badge>
+                          )}
 
-                    {/* Rating */}
-                    {product.rating && (
-                      <div className="flex items-center gap-2">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className={i < Math.floor(product.rating) ? 'text-primary' : 'text-muted-foreground'}>
-                              ⭐
-                            </span>
-                          ))}
+                          {/* Out of Stock */}
+                          {product.stockQuantity === 0 && (
+                            <Badge className="absolute top-2 left-2 bg-gray-600 text-white">
+                              Out of Stock
+                            </Badge>
+                          )}
+
+                          {/* Quick View on Hover */}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
+                              Quick View
+                            </Button>
+                          </div>
                         </div>
-                        <span className="text-sm text-muted-foreground">
-                          {product.rating} ({product.reviews} reviews)
-                        </span>
-                      </div>
-                    )}
 
-                    {/* Price or Status */}
-                    {product.status === 'ended' ? (
-                      <p className="text-sm text-muted-foreground italic">
-                        Price revealed during live event
-                      </p>
-                    ) : product.status === 'upcoming' ? (
-                      <p className="text-sm text-muted-foreground">
-                        Available in {product.availableDate}
-                      </p>
-                    ) : (
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold text-primary">
-                          ₪{product.price.toLocaleString()}
-                        </span>
-                        {product.compareAtPrice && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            ₪{product.compareAtPrice.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                        {/* Product Info */}
+                        <div className="p-4 space-y-3">
+                          <div>
+                            <Badge variant="secondary" className="mb-2 text-xs">
+                              {product.category}
+                            </Badge>
+                            <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+                              {product.name}
+                            </h3>
+                          </div>
 
-                    {/* Action Info */}
-                    {product.status === 'live' && product.viewerCount && (
-                      <p className="text-sm text-muted-foreground">
-                        <span className="text-primary font-semibold">{product.viewerCount}</span> watching now
-                      </p>
-                    )}
-                    {product.status === 'purchase_window' && product.unitsLeft && (
-                      <p className="text-sm text-orange-500 font-semibold">
-                        ⚡ Only {product.unitsLeft} units left!
-                      </p>
-                    )}
+                          {/* Price */}
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-bold text-primary">
+                              ₪{product.price.toLocaleString()}
+                            </span>
+                            {product.compareAtPrice && (
+                              <span className="text-sm text-muted-foreground line-through">
+                                ₪{product.compareAtPrice.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
 
-                    {/* CTA Button */}
-                    {product.status === 'live' && (
-                      <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold" size="sm">
-                        WATCH LIVE & BUY
-                      </Button>
-                    )}
-                    {product.status === 'purchase_window' && (
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold" size="sm">
-                        BUY NOW
-                      </Button>
-                    )}
-                    {product.status === 'upcoming' && (
-                      <Button variant="outline" className="w-full font-bold" size="sm">
-                        Get Notified
-                      </Button>
-                    )}
-                    {product.status === 'ended' && (
-                      <Button variant="secondary" className="w-full font-bold" size="sm" disabled>
-                        Event Ended
-                      </Button>
-                    )}
-                  </div>
-                </Link>
-              </Card>
-            ))}
-          </div>
+                          {/* Stock Status */}
+                          {product.stockQuantity > 0 ? (
+                            <p className="text-sm text-green-600 font-semibold">
+                              ✓ In Stock
+                            </p>
+                          ) : (
+                            <p className="text-sm text-red-600 font-semibold">
+                              ✗ Out of Stock
+                            </p>
+                          )}
 
-          {/* Load More */}
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" className="font-bold">
-              Load More Products
-            </Button>
-          </div>
+                          {/* CTA Button */}
+                          <Button
+                            className="w-full bg-primary hover:bg-primary/90 text-black font-bold"
+                            size="sm"
+                            disabled={product.stockQuantity === 0}
+                          >
+                            {product.stockQuantity > 0 ? 'BUY NOW' : 'Notify Me'}
+                          </Button>
+                        </div>
+                      </Link>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Load More - TODO: Implement pagination */}
+              {products.length > 0 && products.length < total && (
+                <div className="text-center mt-12">
+                  <Button size="lg" variant="outline" className="font-bold">
+                    Load More Products
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
