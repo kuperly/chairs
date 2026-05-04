@@ -1,5 +1,9 @@
 import 'reflect-metadata';
+import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
+
+// Load environment variables from .env.local
+config({ path: '.env.local' });
 
 export const dataSource = new DataSource({
   type: 'postgres',

@@ -30,6 +30,7 @@
     "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.4.2",
     "i18next": "^26.0.8",
     "launchdarkly-node-server-sdk": "^7.0.4",
     "launchdarkly-react-client-sdk": "^3.9.0",
