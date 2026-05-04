@@ -23,15 +23,15 @@ export default function LivePage() {
       {
         id: '1',
         name: 'Executive Office Chair',
-        price: 299.99,
-        compareAtPrice: 449.99,
+        price: 890,
+        compareAtPrice: 1290,
         imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=300&q=80'
       },
       {
         id: '2',
-        name: 'Ergonomic Keyboard',
-        price: 89.99,
-        compareAtPrice: 129.99,
+        name: 'Ergonomic Mesh Chair',
+        price: 699,
+        compareAtPrice: 990,
         imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&q=80'
       }
     ]
@@ -52,15 +52,16 @@ export default function LivePage() {
       <header className="border-b border-border bg-background sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-                <span className="text-2xl">🪑</span>
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-foreground text-lg">
-                  LIVE<span className="text-primary">CHAIRS</span>
-                </div>
-                <div className="text-[10px] text-muted-foreground tracking-wide">FACTORY LIVE</div>
+            {/* Logo */}
+            <Link href="/">
+              <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
+                <Image
+                  src="/logo.png"
+                  alt="LiveChairs Logo"
+                  fill
+                  className="object-contain object-left"
+                  priority
+                />
               </div>
             </Link>
 
@@ -129,13 +130,13 @@ export default function LivePage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Button className="bg-primary hover:bg-primary/90">
+                <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
                   </svg>
                   Share Event
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" className="font-bold">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>
@@ -169,15 +170,15 @@ export default function LivePage() {
                             </h3>
                             <div className="flex items-baseline gap-2 mb-2">
                               <span className="text-xl font-bold text-primary">
-                                ${product.price}
+                                ₪{product.price.toLocaleString()}
                               </span>
                               <span className="text-sm text-muted-foreground line-through">
-                                ${product.compareAtPrice}
+                                ₪{product.compareAtPrice.toLocaleString()}
                               </span>
                             </div>
                           </div>
-                          <Button size="sm" className="w-full bg-primary hover:bg-primary/90">
-                            Add to Cart
+                          <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-black font-bold">
+                            BUY NOW
                           </Button>
                         </div>
                       </div>
@@ -237,7 +238,7 @@ export default function LivePage() {
                     onChange={(e) => setMessage(e.target.value)}
                     className="flex-1"
                   />
-                  <Button size="icon" className="bg-primary hover:bg-primary/90">
+                  <Button size="icon" className="bg-primary hover:bg-primary/90 text-black">
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
