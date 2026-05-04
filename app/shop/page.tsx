@@ -121,39 +121,48 @@ export default function ShopPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-background sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-                <span className="text-2xl">🪑</span>
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-foreground">
-                  LIVE<span className="text-primary">CHAIRS</span>
-                </div>
-                <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+            {/* Logo */}
+            <Link href="/">
+              <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
+                <Image
+                  src="/logo.png"
+                  alt="LiveChairs Logo"
+                  fill
+                  className="object-contain object-left"
+                  priority
+                />
               </div>
             </Link>
 
-            <nav className="hidden lg:flex gap-8">
-              <Link href="/live" className="text-sm font-medium text-foreground hover:text-primary">
+            <nav className="hidden lg:flex items-center gap-8">
+              <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 LIVE SHOWS
               </Link>
-              <Link href="/shop" className="text-sm font-medium text-primary">
+              <Link href="/shop" className="text-sm font-semibold text-primary">
                 ALL CHAIRS
               </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
+              <Link href="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 FACTORIES
               </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
+              <Link href="/#how-it-works" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 HOW IT WORKS
               </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
+              <Link href="#" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                 ABOUT US
               </Link>
             </nav>
 
             <div className="flex items-center gap-3">
+              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary">
+                🌐 EN
+              </button>
+              <button className="p-2 hover:bg-muted rounded-full">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
               <ThemeToggle />
               <Button size="sm" variant="outline">Cart (0)</Button>
             </div>
@@ -170,7 +179,7 @@ export default function ShopPage() {
               <span className="font-semibold">Office Chair Factory Tour - Special Prices Now!</span>
             </div>
             <Link href="/live">
-              <Button size="sm" variant="secondary">
+              <Button size="sm" className="bg-white text-black font-bold hover:bg-white/90">
                 Watch Live →
               </Button>
             </Link>
@@ -260,7 +269,7 @@ export default function ShopPage() {
 
                     {/* Quick View on Hover */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button className="bg-primary hover:bg-primary/90">
+                      <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
                         Quick View
                       </Button>
                     </div>
@@ -305,11 +314,11 @@ export default function ShopPage() {
                     ) : (
                       <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-bold text-primary">
-                          ${product.price}
+                          ₪{product.price.toLocaleString()}
                         </span>
                         {product.compareAtPrice && (
                           <span className="text-sm text-muted-foreground line-through">
-                            ${product.compareAtPrice}
+                            ₪{product.compareAtPrice.toLocaleString()}
                           </span>
                         )}
                       </div>
@@ -329,22 +338,22 @@ export default function ShopPage() {
 
                     {/* CTA Button */}
                     {product.status === 'live' && (
-                      <Button className="w-full bg-red-600 hover:bg-red-700" size="sm">
+                      <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold" size="sm">
                         WATCH LIVE & BUY
                       </Button>
                     )}
                     {product.status === 'purchase_window' && (
-                      <Button className="w-full" size="sm">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-black font-bold" size="sm">
                         BUY NOW
                       </Button>
                     )}
                     {product.status === 'upcoming' && (
-                      <Button variant="outline" className="w-full" size="sm">
+                      <Button variant="outline" className="w-full font-bold" size="sm">
                         Get Notified
                       </Button>
                     )}
                     {product.status === 'ended' && (
-                      <Button variant="secondary" className="w-full" size="sm" disabled>
+                      <Button variant="secondary" className="w-full font-bold" size="sm" disabled>
                         Event Ended
                       </Button>
                     )}
@@ -356,7 +365,7 @@ export default function ShopPage() {
 
           {/* Load More */}
           <div className="text-center mt-12">
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" className="font-bold">
               Load More Products
             </Button>
           </div>
@@ -364,28 +373,28 @@ export default function ShopPage() {
       </section>
 
       {/* Trust Banner */}
-      <section className="border-y border-border py-8 bg-card/30">
+      <section className="border-t border-border py-8 bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl mb-2">🚚</div>
-              <p className="font-semibold text-foreground">Free Shipping</p>
-              <p className="text-sm text-muted-foreground">Orders over $500</p>
+              <p className="font-semibold">WORLDWIDE SHIPPING</p>
+              <p className="text-sm text-white/70">Fast & Safe Delivery</p>
             </div>
             <div>
-              <div className="text-3xl mb-2">↩️</div>
-              <p className="font-semibold text-foreground">30-Day Returns</p>
-              <p className="text-sm text-muted-foreground">Money back guarantee</p>
+              <div className="text-3xl mb-2">🛡️</div>
+              <p className="font-semibold">30-DAY WARRANTY</p>
+              <p className="text-sm text-white/70">Quality Guaranteed</p>
             </div>
             <div>
-              <div className="text-3xl mb-2">⭐</div>
-              <p className="font-semibold text-foreground">5-Year Warranty</p>
-              <p className="text-sm text-muted-foreground">On all products</p>
+              <div className="text-3xl mb-2">💳</div>
+              <p className="font-semibold">SECURE PAYMENTS</p>
+              <p className="text-sm text-white/70">100% Protected</p>
             </div>
             <div>
               <div className="text-3xl mb-2">💬</div>
-              <p className="font-semibold text-foreground">Live Support</p>
-              <p className="text-sm text-muted-foreground">Chat with experts</p>
+              <p className="font-semibold">24/7 SUPPORT</p>
+              <p className="text-sm text-white/70">We're Here to Help</p>
             </div>
           </div>
         </div>
