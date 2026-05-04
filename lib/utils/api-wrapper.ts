@@ -26,11 +26,11 @@ export interface ApiSuccess<T = any> {
  * });
  */
 export function withErrorHandling(
-  handler: (req: Request) => Promise<Response>
+  handler: (req: Request, context?: any) => Promise<Response>
 ) {
-  return async (req: Request): Promise<Response> => {
+  return async (req: Request, context?: any): Promise<Response> => {
     try {
-      return await handler(req);
+      return await handler(req, context);
     } catch (error) {
       console.error('API Error:', error);
 
