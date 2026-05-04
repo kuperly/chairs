@@ -14,6 +14,7 @@
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d lib/db/data-source.ts",
     "seed": "tsx lib/db/seed.ts",
     "seed:clear": "tsx lib/db/seed.ts --clear",
+    "seed:events": "tsx lib/db/seed-events.ts",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
