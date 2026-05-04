@@ -56,8 +56,8 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
 
       const response = await productsApi.list(options);
 
-      setProducts(response.products || []);
-      setTotal(response.pagination?.total || 0);
+      setProducts(response.data.products || []);
+      setTotal(response.data.pagination?.total || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch products'));
       setProducts([]);
@@ -143,7 +143,7 @@ export function useProductCategories() {
         setError(null);
 
         const response = await productsApi.categories();
-        setCategories(response.data.categories || []);
+        setCategories(response.data?.categories || []);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch categories'));
         setCategories([]);
