@@ -1,20 +1,45 @@
 /**
  * Seed events to the database
- * Run with: npx tsx lib/db/seed-events.ts
+ * Run with: npm run seed:events
  */
 
-import { getSupabaseAdmin } from '../auth/supabase';
+// Load environment variables FIRST before any imports
+import { config } from 'dotenv';
+import { resolve } from 'path';
+config({ path: resolve(process.cwd(), '.env.local') });
 
-const supabase = getSupabaseAdmin();
+// Now import after env vars are loaded
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('❌ Missing Supabase environment variables');
+  console.error('Please make sure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in .env.local');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+});
 
 async function seedEvents() {
   console.log('🚀 Starting to seed events...\n');
 
   // Get manufacturer ID
-  const { data: manufacturers } = await supabase
+  const { data: manufacturers, error: mfgError } = await supabase
     .from('manufacturers')
     .select('id')
     .limit(1);
+
+  if (mfgError) {
+    console.error('❌ Error fetching manufacturers:', mfgError);
+    process.exit(1);
+  }
 
   if (!manufacturers || manufacturers.length === 0) {
     console.error('❌ No manufacturers found. Please run seed script first.');
