@@ -739,13 +739,17 @@ export default function HomePage() {
         {/* Content */}
         <div className="container mx-auto px-4 h-full relative z-10">
           <div className="h-full flex items-center justify-center">
-            <div className="text-center max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                WE ARE <span className="text-primary">THE FACTORY</span>
+            <div className="max-w-3xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
+                WE ARE
               </h2>
-              <p className="text-lg md:text-xl text-white/90">
-                No middleman. No extra cost.<br />
-                You deal directly with us and we ship directly to you.
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 text-primary">
+                <span className="text-primary">THE FACTORY</span>
+              </h2>
+              <p className="text-md md:text-xl text-white/90">
+                No middleman. No extra cost.<br/>
+                You deal directly with us <br/>
+                and we ship directly to you.
               </p>
             </div>
           </div>
