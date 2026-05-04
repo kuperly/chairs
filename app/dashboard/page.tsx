@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -8,17 +9,17 @@ import { ThemeToggle } from '@/components/theme-toggle';
 export default function DashboardPage() {
   // Mock data
   const stats = [
-    { label: 'Total Revenue', value: '$45,231.00', change: '+20.1% from last month' },
+    { label: 'Total Revenue', value: '₪145,231', change: '+20.1% from last month' },
     { label: 'Active Events', value: '3', change: '2 live now' },
     { label: 'Total Orders', value: '124', change: '+12 this week' },
     { label: 'Products', value: '48', change: '8 low stock' }
   ];
 
   const recentOrders = [
-    { id: 'ORD-001', customer: 'John Doe', product: 'Executive Chair', amount: 299.99, status: 'paid' },
-    { id: 'ORD-002', customer: 'Sarah Miller', product: 'Standing Desk', amount: 599.99, status: 'processing' },
-    { id: 'ORD-003', customer: 'Mike Ross', product: 'Keyboard', amount: 89.99, status: 'paid' },
-    { id: 'ORD-004', customer: 'Lisa Kim', product: 'Monitor Arm', amount: 149.99, status: 'shipped' }
+    { id: 'ORD-001', customer: 'John Doe', product: 'Executive Chair', amount: 890, status: 'paid' },
+    { id: 'ORD-002', customer: 'Sarah Miller', product: 'Standing Desk', amount: 1599, status: 'processing' },
+    { id: 'ORD-003', customer: 'Mike Ross', product: 'Keyboard', amount: 299, status: 'paid' },
+    { id: 'ORD-004', customer: 'Lisa Kim', product: 'Monitor Arm', amount: 449, status: 'shipped' }
   ];
 
   const upcomingEvents = [
@@ -31,31 +32,40 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-                  <span className="text-2xl">🪑</span>
-                </div>
-                <div className="text-left">
-                  <div className="font-bold text-foreground">
-                    LIVE<span className="text-primary">CHAIRS</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
+              {/* Logo */}
+              <Link href="/">
+                <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
+                  <Image
+                    src="/logo.png"
+                    alt="LiveChairs Logo"
+                    fill
+                    className="object-contain object-left"
+                    priority
+                  />
                 </div>
               </Link>
-              <nav className="hidden md:flex gap-6">
-                <Link href="/dashboard" className="text-primary font-semibold">Dashboard</Link>
-                <Link href="/dashboard/events" className="text-foreground hover:text-primary">Events</Link>
-                <Link href="/dashboard/products" className="text-foreground hover:text-primary">Products</Link>
-                <Link href="/dashboard/orders" className="text-foreground hover:text-primary">Orders</Link>
+              <nav className="hidden md:flex items-center gap-6">
+                <Link href="/dashboard" className="text-primary font-semibold text-sm">Dashboard</Link>
+                <Link href="/dashboard/events" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Events</Link>
+                <Link href="/dashboard/products" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Products</Link>
+                <Link href="/dashboard/orders" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Orders</Link>
               </nav>
             </div>
             <div className="flex items-center gap-3">
+              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary">
+                🌐 EN
+              </button>
+              <button className="p-2 hover:bg-muted rounded-full">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
               <ThemeToggle />
-              <Button variant="outline" size="sm">Settings</Button>
-              <Button size="sm">Logout</Button>
+              <Button variant="outline" size="sm" className="font-bold">Settings</Button>
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-black font-bold">Logout</Button>
             </div>
           </div>
         </div>
@@ -73,7 +83,7 @@ export default function DashboardPage() {
               Welcome back! Here&apos;s what&apos;s happening today.
             </p>
           </div>
-          <Button className="mt-4 sm:mt-0">
+          <Button className="mt-4 sm:mt-0 bg-primary hover:bg-primary/90 text-black font-bold">
             Create Event
           </Button>
         </div>
@@ -104,7 +114,7 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-foreground">
                 Recent Orders
               </h2>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="font-bold">
                 View All
               </Button>
             </div>
@@ -135,7 +145,7 @@ export default function DashboardPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-primary font-semibold">
-                      ${order.amount}
+                      ₪{order.amount.toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -165,7 +175,7 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-foreground">
                 Upcoming Events
               </h2>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="font-bold">
                 View All
               </Button>
             </div>
@@ -194,7 +204,7 @@ export default function DashboardPage() {
                   <Button
                     size="sm"
                     variant={event.status === 'live' ? 'default' : 'outline'}
-                    className={event.status === 'live' ? 'bg-red-600 hover:bg-red-700' : ''}
+                    className={event.status === 'live' ? 'bg-red-600 hover:bg-red-700 text-white font-bold' : 'font-bold'}
                   >
                     {event.status === 'live' ? 'Join' : 'Manage'}
                   </Button>
@@ -210,19 +220,19 @@ export default function DashboardPage() {
             Quick Actions
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-24 flex-col gap-2">
+            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
               <span className="text-3xl">📦</span>
               <span>Add Product</span>
             </Button>
-            <Button variant="outline" className="h-24 flex-col gap-2">
+            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
               <span className="text-3xl">📅</span>
               <span>Schedule Event</span>
             </Button>
-            <Button variant="outline" className="h-24 flex-col gap-2">
+            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
               <span className="text-3xl">📊</span>
               <span>View Analytics</span>
             </Button>
-            <Button variant="outline" className="h-24 flex-col gap-2">
+            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
               <span className="text-3xl">⚙️</span>
               <span>Settings</span>
             </Button>
