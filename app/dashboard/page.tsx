@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -5,28 +7,87 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useEvents, useLiveEvents } from '@/hooks/useEvents';
+import { useProducts } from '@/hooks/useProducts';
+import { useRecentOrders } from '@/hooks/useOrders';
+import { useMemo } from 'react';
 
 export default function DashboardPage() {
-  // Mock data
-  const stats = [
-    { label: 'Total Revenue', value: '₪145,231', change: '+20.1% from last month' },
-    { label: 'Active Events', value: '3', change: '2 live now' },
-    { label: 'Total Orders', value: '124', change: '+12 this week' },
-    { label: 'Products', value: '48', change: '8 low stock' }
-  ];
+  // Fetch real data
+  const { events: allEvents, loading: eventsLoading } = useEvents({ limit: 100 });
+  const { events: liveEvents } = useLiveEvents();
+  const { products, loading: productsLoading } = useProducts({ limit: 100 });
+  const { orders, loading: ordersLoading, total: totalOrders } = useRecentOrders(5);
 
-  const recentOrders = [
-    { id: 'ORD-001', customer: 'John Doe', product: 'Executive Chair', amount: 890, status: 'paid' },
-    { id: 'ORD-002', customer: 'Sarah Miller', product: 'Standing Desk', amount: 1599, status: 'processing' },
-    { id: 'ORD-003', customer: 'Mike Ross', product: 'Keyboard', amount: 299, status: 'paid' },
-    { id: 'ORD-004', customer: 'Lisa Kim', product: 'Monitor Arm', amount: 449, status: 'shipped' }
-  ];
+  // Calculate stats from real data
+  const stats = useMemo(() => {
+    // Calculate total revenue from orders
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
 
-  const upcomingEvents = [
-    { id: '1', title: 'Office Chair Showcase', date: 'Today, 2:00 PM', status: 'live' },
-    { id: '2', title: 'Desk Collection Launch', date: 'Tomorrow, 10:00 AM', status: 'scheduled' },
-    { id: '3', title: 'Ergonomic Accessories', date: 'Dec 5, 3:00 PM', status: 'scheduled' }
-  ];
+    // Count live events
+    const liveCount = liveEvents.length;
+
+    // Count low stock products (< 10)
+    const lowStockCount = products.filter(p => p.stockQuantity < 10 && p.stockQuantity > 0).length;
+
+    return [
+      {
+        label: 'Total Revenue',
+        value: `$${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        change: `From ${totalOrders} orders`,
+        loading: ordersLoading,
+      },
+      {
+        label: 'Active Events',
+        value: allEvents.length.toString(),
+        change: liveCount > 0 ? `${liveCount} live now` : 'No live events',
+        loading: eventsLoading,
+      },
+      {
+        label: 'Total Orders',
+        value: totalOrders.toString(),
+        change: orders.length > 0 ? `${orders.length} recent` : 'No recent orders',
+        loading: ordersLoading,
+      },
+      {
+        label: 'Products',
+        value: products.length.toString(),
+        change: lowStockCount > 0 ? `${lowStockCount} low stock` : 'All stocked',
+        loading: productsLoading,
+      },
+    ];
+  }, [orders, ordersLoading, totalOrders, allEvents, eventsLoading, liveEvents, products, productsLoading]);
+
+  // Filter upcoming events (scheduled or live)
+  const upcomingEvents = useMemo(() => {
+    return allEvents
+      .filter(event => event.status === 'scheduled' || event.status === 'live')
+      .slice(0, 3)
+      .map(event => {
+        const scheduledTime = new Date(event.scheduledStartTime);
+        const now = new Date();
+        const isToday = scheduledTime.toDateString() === now.toDateString();
+        const isTomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString() === scheduledTime.toDateString();
+
+        let dateStr = '';
+        if (event.status === 'live') {
+          dateStr = 'Live Now';
+        } else if (isToday) {
+          dateStr = `Today, ${scheduledTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+        } else if (isTomorrow) {
+          dateStr = `Tomorrow, ${scheduledTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+        } else {
+          dateStr = scheduledTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        }
+
+        return {
+          id: event.id,
+          title: event.title,
+          date: dateStr,
+          status: event.status,
+        };
+      });
+  }, [allEvents]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,9 +157,13 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground">
                   {stat.label}
                 </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {stat.value}
-                </p>
+                {stat.loading ? (
+                  <div className="h-9 bg-muted animate-pulse rounded"></div>
+                ) : (
+                  <p className="text-3xl font-bold text-foreground">
+                    {stat.value}
+                  </p>
+                )}
                 <p className="text-sm text-primary">
                   {stat.change}
                 </p>
@@ -119,54 +184,72 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">
-                      {order.id}
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium text-foreground">
-                          {order.customer}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {order.product}
-                        </p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-primary font-semibold">
-                      ₪{order.amount.toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          order.status === 'paid' ? 'default' :
-                          order.status === 'shipped' ? 'secondary' :
-                          'outline'
-                        }
-                        className={
-                          order.status === 'paid' ? 'bg-green-600' :
-                          order.status === 'shipped' ? 'bg-blue-600' :
-                          ''
-                        }
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
+            {ordersLoading ? (
+              <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-16 bg-muted animate-pulse rounded"></div>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No orders yet</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Order</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order) => {
+                    // Get first product from order items
+                    const firstItem = order.order_items?.[0];
+                    const productName = firstItem?.productSnapshot?.name || 'Unknown Product';
+
+                    return (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-medium">
+                          {order.id.slice(0, 8)}
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium text-foreground">
+                              {order.customers?.fullName || 'Unknown'}
+                            </p>
+                            <p className="text-sm text-muted-foreground truncate max-w-[150px]">
+                              {productName}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-primary font-semibold">
+                          ${order.totalAmount.toFixed(2)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              order.status === 'paid' || order.status === 'delivered' ? 'default' :
+                              order.status === 'shipped' || order.status === 'processing' ? 'secondary' :
+                              'outline'
+                            }
+                            className={
+                              order.status === 'paid' || order.status === 'delivered' ? 'bg-green-600' :
+                              order.status === 'shipped' || order.status === 'processing' ? 'bg-blue-600' :
+                              ''
+                            }
+                          >
+                            {order.status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
           </Card>
 
           {/* Upcoming Events */}
@@ -180,37 +263,51 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            <div className="space-y-4">
-              {upcomingEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary transition-colors cursor-pointer"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-foreground">
-                        {event.title}
-                      </h3>
-                      {event.status === 'live' && (
-                        <Badge className="bg-red-600 text-white animate-pulse">
-                          🔴 LIVE
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {event.date}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant={event.status === 'live' ? 'default' : 'outline'}
-                    className={event.status === 'live' ? 'bg-red-600 hover:bg-red-700 text-white font-bold' : 'font-bold'}
+            {eventsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-20 bg-muted animate-pulse rounded"></div>
+                ))}
+              </div>
+            ) : upcomingEvents.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No upcoming events</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {upcomingEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary transition-colors cursor-pointer"
                   >
-                    {event.status === 'live' ? 'Join' : 'Manage'}
-                  </Button>
-                </div>
-              ))}
-            </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-foreground">
+                          {event.title}
+                        </h3>
+                        {event.status === 'live' && (
+                          <Badge className="bg-red-600 text-white animate-pulse">
+                            🔴 LIVE
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {event.date}
+                      </p>
+                    </div>
+                    <Link href={event.status === 'live' ? '/live' : '#'}>
+                      <Button
+                        size="sm"
+                        variant={event.status === 'live' ? 'default' : 'outline'}
+                        className={event.status === 'live' ? 'bg-red-600 hover:bg-red-700 text-white font-bold' : 'font-bold'}
+                      >
+                        {event.status === 'live' ? 'Join' : 'Manage'}
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
         </div>
 
