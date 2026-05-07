@@ -17,6 +17,8 @@ interface RouteParams {
  * Get a single manufacturer by ID
  * Public endpoint (hides if manufacturer is hidden and user is not admin)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await getSession();

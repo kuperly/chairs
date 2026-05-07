@@ -17,6 +17,8 @@ interface RouteParams {
  * Start broadcasting an event
  * Requires: event.broadcast permission
  */
+export const dynamic = 'force-dynamic';
+
 export const POST = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await requireSession();

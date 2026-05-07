@@ -7,6 +7,8 @@ import { supabase } from '@/lib/auth/supabase';
  * Get all unique product categories
  * Public endpoint
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   // Get distinct categories from products
   const { data: products, error } = await supabase

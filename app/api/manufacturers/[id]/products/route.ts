@@ -24,6 +24,8 @@ const querySchema = z.object({
  * Get all products for a manufacturer
  * Public endpoint (filters inactive products for non-admins)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await getSession();

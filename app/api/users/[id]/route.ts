@@ -17,6 +17,8 @@ interface RouteParams {
  * Get a single user by ID
  * Requires: user.read permission (admin only)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await requireSession();

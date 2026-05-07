@@ -17,6 +17,8 @@ interface RouteParams {
  * Get a single product by ID
  * Public endpoint
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
 

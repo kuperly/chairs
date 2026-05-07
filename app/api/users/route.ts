@@ -11,6 +11,8 @@ import { supabase } from '@/lib/auth/supabase';
  * List users
  * Requires: user.read permission (admin only)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   const session = await requireSession();
 

@@ -11,6 +11,8 @@ import { supabase } from '@/lib/auth/supabase';
  * List products with optional filtering
  * Public endpoint (no auth required)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   // Parse query parameters
   const searchParams = Object.fromEntries(req.nextUrl.searchParams);

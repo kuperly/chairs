@@ -17,6 +17,8 @@ interface RouteParams {
  * Get a single order by ID
  * Requires: order.read.own (own order) OR order.read.all (any order)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await requireSession();

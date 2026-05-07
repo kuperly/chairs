@@ -11,6 +11,8 @@ import { supabase } from '@/lib/auth/supabase';
  * List manufacturers
  * Public endpoint (filters hidden manufacturers for non-admins)
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   const session = await getSession();
 

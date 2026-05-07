@@ -21,6 +21,8 @@ const confirmPaymentSchema = z.object({
  * For POC: Mock payment confirmation
  * For Production: Would be triggered by Stripe webhook
  */
+export const dynamic = 'force-dynamic';
+
 export const POST = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
   const session = await requireSession();

@@ -10,6 +10,8 @@ import { getUserPermissions } from '@/lib/permissions/check';
  * Get current user's profile
  * Requires: authentication only
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   const session = await requireSession();
 

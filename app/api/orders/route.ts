@@ -11,6 +11,8 @@ import { supabase } from '@/lib/auth/supabase';
  * List orders
  * Customers see only their orders, admins see all
  */
+export const dynamic = 'force-dynamic';
+
 export const GET = withErrorHandling(async (req: NextRequest) => {
   const session = await requireSession();
 
