@@ -4,7 +4,7 @@ import { requireSession } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions/check';
 import { PERMISSIONS } from '@/lib/permissions/definitions';
 import { updateEventSchema } from '@/lib/validation/event';
-import { supabase } from '@/lib/auth/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 interface RouteParams {
   params: {
@@ -19,6 +19,8 @@ interface RouteParams {
  */
 export const GET = withErrorHandling(async (req: NextRequest, { params }: RouteParams) => {
   const { id } = params;
+
+  const supabase = await createClient();
 
   const { data: event, error } = await supabase
     .from('live_events')
@@ -52,6 +54,8 @@ export const PUT = withErrorHandling(async (req: NextRequest, { params }: RouteP
 
   // Check permission
   await requirePermission(session.user.id, PERMISSIONS.EVENT_UPDATE);
+
+  const supabase = await createClient();
 
   // Get existing event
   const { data: existingEvent, error: fetchError } = await supabase
@@ -153,6 +157,8 @@ export const DELETE = withErrorHandling(async (req: NextRequest, { params }: Rou
 
   // Check permission
   await requirePermission(session.user.id, PERMISSIONS.EVENT_DELETE);
+
+  const supabase = await createClient();
 
   // Check if event exists
   const { data: existingEvent, error: fetchError } = await supabase

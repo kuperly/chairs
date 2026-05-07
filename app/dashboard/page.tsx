@@ -144,9 +144,11 @@ export default function DashboardPage() {
               Welcome back! Here&apos;s what&apos;s happening today.
             </p>
           </div>
-          <Button className="mt-4 sm:mt-0 bg-primary hover:bg-primary/90 text-black font-bold">
-            Create Event
-          </Button>
+          <Link href="/dashboard/events/create">
+            <Button className="mt-4 sm:mt-0 bg-primary hover:bg-primary/90 text-black font-bold">
+              Create Event
+            </Button>
+          </Link>
         </div>
 
         {/* Stats Grid */}
@@ -258,9 +260,11 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-foreground">
                 Upcoming Events
               </h2>
-              <Button variant="outline" size="sm" className="font-bold">
-                View All
-              </Button>
+              <Link href="/dashboard/events">
+                <Button variant="outline" size="sm" className="font-bold">
+                  View All
+                </Button>
+              </Link>
             </div>
 
             {eventsLoading ? (
@@ -295,13 +299,13 @@ export default function DashboardPage() {
                         {event.date}
                       </p>
                     </div>
-                    <Link href={event.status === 'live' ? '/live' : '#'}>
+                    <Link href={event.status === 'live' ? `/dashboard/broadcast/${event.id}` : '/dashboard/events'}>
                       <Button
                         size="sm"
                         variant={event.status === 'live' ? 'default' : 'outline'}
                         className={event.status === 'live' ? 'bg-red-600 hover:bg-red-700 text-white font-bold' : 'font-bold'}
                       >
-                        {event.status === 'live' ? 'Join' : 'Manage'}
+                        {event.status === 'live' ? 'Enter Broadcast' : 'Manage'}
                       </Button>
                     </Link>
                   </div>
@@ -321,10 +325,12 @@ export default function DashboardPage() {
               <span className="text-3xl">📦</span>
               <span>Add Product</span>
             </Button>
-            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
-              <span className="text-3xl">📅</span>
-              <span>Schedule Event</span>
-            </Button>
+            <Link href="/dashboard/events/create">
+              <Button variant="outline" className="h-24 flex-col gap-2 font-bold w-full">
+                <span className="text-3xl">📅</span>
+                <span>Schedule Event</span>
+              </Button>
+            </Link>
             <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
               <span className="text-3xl">📊</span>
               <span>View Analytics</span>

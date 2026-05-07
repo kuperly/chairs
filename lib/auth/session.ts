@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { supabase, getSupabaseAdmin } from './supabase';
+import { createClient } from '@/utils/supabase/server';
 import { Session } from './types';
 
 /**
@@ -9,6 +9,9 @@ import { Session } from './types';
  */
 export async function getSession(): Promise<Session | null> {
   try {
+    // Create SSR Supabase client
+    const supabase = await createClient();
+
     // Get session from Supabase
     const {
       data: { session },
@@ -19,11 +22,11 @@ export async function getSession(): Promise<Session | null> {
       return null;
     }
 
-    // Get our database user
+    // Get our database user - use 'id' not 'supabaseAuthId'
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('*')
-      .eq('supabaseAuthId', session.user.id)
+      .eq('id', session.user.id)
       .single();
 
     if (userError || !user) {

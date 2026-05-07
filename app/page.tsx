@@ -6,13 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar, Send } from 'lucide-react';
+import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar, Send, User, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { useLiveEvents, useUpcomingEvents } from '@/hooks/useEvents';
 import { useProducts } from '@/hooks/useProducts';
+import { useAuth } from '@/lib/auth/context';
 
 export default function HomePage() {
+  // Auth
+  const { user, isAuthenticated, signOut } = useAuth();
+
   // Fetch real data from APIs
   const { events: liveEvents, loading: liveLoading } = useLiveEvents();
   const { events: upcomingEvents, loading: upcomingLoading } = useUpcomingEvents(3);
@@ -22,6 +26,7 @@ export default function HomePage() {
   });
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Auto-rotate carousel - disabled for now
   const autoRotate = false;
@@ -143,15 +148,50 @@ export default function HomePage() {
               <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary">
                 🌐 EN
               </button>
-              <button className="p-2 hover:bg-muted rounded-full">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </button>
+
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="p-2 hover:bg-muted rounded-full flex items-center gap-2"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="text-sm font-medium hidden lg:inline">{user?.email?.split('@')[0]}</span>
+                  </button>
+
+                  {showUserMenu && (
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-md shadow-lg py-1 z-50">
+                      <Link href="/dashboard" className="block px-4 py-2 text-sm hover:bg-muted">
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          signOut();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <User className="w-4 h-4" />
+                    Login
+                  </Button>
+                </Link>
+              )}
+
               <ThemeToggle />
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm px-6">
-                REGISTER FOR LIVE
-              </Button>
+              <Link href={isAuthenticated ? "/live" : "/register"}>
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm px-6">
+                  {isAuthenticated ? 'JOIN LIVE' : 'REGISTER FOR LIVE'}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

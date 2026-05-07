@@ -1,13 +1,39 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useAuth } from '@/lib/auth/context';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const { signIn } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const { error } = await signIn(email, password);
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      router.push('/dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8 relative">
       {/* Background Gradient */}
@@ -37,8 +63,15 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
+            <div className="text-sm text-red-800 dark:text-red-200">{error}</div>
+          </div>
+        )}
+
         {/* Login Form */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -46,6 +79,9 @@ export default function LoginPage() {
               type="email"
               placeholder="you@example.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
 
@@ -64,11 +100,14 @@ export default function LoginPage() {
               type="password"
               placeholder="••••••••"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
 
-          <Button type="submit" className="w-full" size="lg">
-            Sign In
+          <Button type="submit" className="w-full" size="lg" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
 
@@ -85,7 +124,7 @@ export default function LoginPage() {
         </div>
 
         {/* Social Login */}
-        <Button variant="outline" className="w-full" size="lg">
+        <Button variant="outline" className="w-full" size="lg" disabled>
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -104,8 +143,18 @@ export default function LoginPage() {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          Continue with Google
+          Continue with Google (Coming Soon)
         </Button>
+
+        {/* Test Accounts */}
+        <div className="text-sm text-center space-y-2">
+          <p className="text-muted-foreground font-medium">Test Accounts:</p>
+          <div className="space-y-1 text-xs text-muted-foreground">
+            <p>Admin: admin@test.com / admin123</p>
+            <p>Manufacturer: manufacturer@test.com / manu123</p>
+            <p>Customer: customer@test.com / customer123</p>
+          </div>
+        </div>
 
         {/* Sign Up Link */}
         <div className="text-center text-sm">
@@ -116,11 +165,6 @@ export default function LoginPage() {
             Sign up
           </Link>
         </div>
-
-        {/* Note */}
-        <p className="text-xs text-center text-muted-foreground">
-          Authentication will be integrated with Supabase
-        </p>
       </Card>
     </div>
   );
