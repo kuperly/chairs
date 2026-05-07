@@ -253,7 +253,7 @@ export default function UsersManagementPage() {
                 className="pl-10"
               />
             </div>
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <Select value={roleFilter} onValueChange={(value) => value && setRoleFilter(value)}>
               <SelectTrigger className="w-full sm:w-[200px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
@@ -310,7 +310,7 @@ export default function UsersManagementPage() {
                           <Select
                             value={user.role?.id || ''}
                             onValueChange={(value) =>
-                              updateUserRole(user.id, value)
+                              value && updateUserRole(user.id, value)
                             }
                           >
                             <SelectTrigger className="w-[140px]">
