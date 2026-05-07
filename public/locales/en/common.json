@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "liveNow": "Live Now",
+    "categories": "Categories",
+    "forPartners": "For Partners",
+    "aboutUs": "About Us",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "cart": "Cart"
+  },
+  "hero": {
+    "watch": "WATCH",
+    "ask": "ASK",
+    "buy": "BUY",
+    "subtitle": "Real factories. Real people. Real deals – Live.",
+    "joinLive": "JOIN LIVE NOW",
+    "howItWorks": "HOW IT WORKS",
+    "nextLive": "NEXT LIVE EVENT",
+    "watchingNow": "{{count}} watching now"
+  },
+  "countdown": {
+    "nextEvent": "Next Event:",
+    "days": "Days",
+    "hours": "Hrs",
+    "minutes": "Min",
+    "seconds": "Sec",
+    "liveNow": "LIVE NOW"
+  },
+  "footer": {
+    "tagline": "The world's first live factory shopping experience.",
+    "copyright": "© 2024 Colosseum Live Factory. All rights reserved."
+  }
+}

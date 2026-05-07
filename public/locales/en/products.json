@@ -1,0 +1,15 @@
+{
+  "title": "Products",
+  "search": "Search products...",
+  "card": {
+    "buyNow": "BUY NOW",
+    "watchLive": "WATCH LIVE",
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "unitsLeft": "{{count}} units left",
+    "priceRevealed": "Price revealed during live event",
+    "availableOn": "Available on {{date}}",
+    "getNotified": "Get Notified",
+    "soldOut": "Sold Out"
+  }
+}

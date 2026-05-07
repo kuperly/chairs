@@ -1,0 +1,15 @@
+{
+  "title": "Live Events",
+  "upcoming": "Upcoming Events",
+  "past": "Past Events",
+  "createEvent": "Create Event",
+  "startBroadcast": "Start Broadcast",
+  "endBroadcast": "End Broadcast",
+  "status": {
+    "draft": "Draft",
+    "scheduled": "Scheduled",
+    "live": "Live",
+    "ended": "Ended",
+    "closed": "Closed"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Dashboard",
+  "admin": {
+    "title": "Admin Dashboard",
+    "stats": {
+      "totalRevenue": "Total Revenue",
+      "activeEvents": "Active Events",
+      "totalOrders": "Total Orders"
+    }
+  },
+  "manufacturer": {
+    "title": "Manufacturer Dashboard",
+    "stats": {
+      "myProducts": "My Products",
+      "upcomingEvents": "Upcoming Events",
+      "revenue": "Revenue"
+    }
+  }
+}
