@@ -18,12 +18,17 @@ export default function HomePage() {
   const { user, isAuthenticated, signOut } = useAuth();
 
   // Fetch real data from APIs
-  const { events: liveEvents, loading: liveLoading } = useLiveEvents();
-  const { events: upcomingEvents, loading: upcomingLoading } = useUpcomingEvents(3);
-  const { products: hotDeals, loading: dealsLoading } = useProducts({
+  const { events: liveEventsRaw, loading: liveLoading } = useLiveEvents();
+  const { events: upcomingEventsRaw, loading: upcomingLoading } = useUpcomingEvents(3);
+  const { products: hotDealsRaw, loading: dealsLoading } = useProducts({
     isActive: true,
     limit: 6,
   });
+
+  // Ensure data is always an array
+  const liveEvents = Array.isArray(liveEventsRaw) ? liveEventsRaw : [];
+  const upcomingEvents = Array.isArray(upcomingEventsRaw) ? upcomingEventsRaw : [];
+  const hotDeals = Array.isArray(hotDealsRaw) ? hotDealsRaw : [];
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -32,7 +37,7 @@ export default function HomePage() {
   const autoRotate = false;
 
   // Map live events to carousel format
-  const liveShows = (liveEvents || []).map((event) => ({
+  const liveShows = liveEvents.map((event) => ({
     id: event.id,
     factory: event.manufacturers?.companyName || 'FACTORY',
     name: event.title.toUpperCase(),
@@ -55,7 +60,7 @@ export default function HomePage() {
   };
 
   // Map upcoming events
-  const upcomingShows = (upcomingEvents || []).map((event) => {
+  const upcomingShows = upcomingEvents.map((event) => {
     const startTime = new Date(event.scheduledStartTime);
     const countdown = calculateCountdown(event.scheduledStartTime);
 
@@ -73,7 +78,7 @@ export default function HomePage() {
   });
 
   // Calculate discount percentage for products
-  const productsWithDiscounts = (hotDeals || [])
+  const productsWithDiscounts = hotDeals
     .filter(p => p.compareAtPrice && p.compareAtPrice > p.price)
     .map(product => ({
       id: product.id,
