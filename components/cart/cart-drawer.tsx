@@ -41,9 +41,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <p className="text-sm text-muted-foreground mb-6">
               Add some products to get started
             </p>
-            <Button onClick={onClose} asChild>
-              <Link href="/shop">Browse Products</Link>
-            </Button>
+            <Link href="/shop" onClick={onClose}>
+              <Button>Browse Products</Button>
+            </Link>
           </div>
         ) : (
           <>
@@ -119,18 +119,13 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 <span>{formatPrice(total)}</span>
               </div>
 
-              <Button className="w-full" size="lg" asChild onClick={onClose}>
-                <Link href="/checkout">Proceed to Checkout</Link>
-              </Button>
+              <Link href="/checkout" onClick={onClose} className="w-full">
+                <Button className="w-full" size="lg">Proceed to Checkout</Button>
+              </Link>
 
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={onClose}
-                asChild
-              >
-                <Link href="/shop">Continue Shopping</Link>
-              </Button>
+              <Link href="/shop" onClick={onClose} className="w-full">
+                <Button variant="outline" className="w-full">Continue Shopping</Button>
+              </Link>
             </SheetFooter>
           </>
         )}
