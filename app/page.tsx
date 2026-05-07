@@ -32,7 +32,7 @@ export default function HomePage() {
   const autoRotate = false;
 
   // Map live events to carousel format
-  const liveShows = liveEvents.map((event) => ({
+  const liveShows = (liveEvents || []).map((event) => ({
     id: event.id,
     factory: event.manufacturers?.companyName || 'FACTORY',
     name: event.title.toUpperCase(),
@@ -55,7 +55,7 @@ export default function HomePage() {
   };
 
   // Map upcoming events
-  const upcomingShows = upcomingEvents.map((event) => {
+  const upcomingShows = (upcomingEvents || []).map((event) => {
     const startTime = new Date(event.scheduledStartTime);
     const countdown = calculateCountdown(event.scheduledStartTime);
 
@@ -73,7 +73,7 @@ export default function HomePage() {
   });
 
   // Calculate discount percentage for products
-  const productsWithDiscounts = hotDeals
+  const productsWithDiscounts = (hotDeals || [])
     .filter(p => p.compareAtPrice && p.compareAtPrice > p.price)
     .map(product => ({
       id: product.id,
