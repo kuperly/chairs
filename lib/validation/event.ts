@@ -1,15 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Event status enum
+ * Event status enum - Broadcast status only
+ * Purchase availability is determined by time windows, not status
  */
 export const eventStatusEnum = z.enum([
-  'draft',
-  'scheduled',
-  'live',
-  'ended',
-  'purchase_window',
-  'closed',
+  'draft',      // Created, not ready to broadcast
+  'scheduled',  // Ready to go live at scheduled time
+  'live',       // Currently broadcasting
+  'ended',      // Broadcast finished (products may still be purchasable)
 ]);
 
 /**

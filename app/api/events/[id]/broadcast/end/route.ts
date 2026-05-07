@@ -3,7 +3,7 @@ import { withErrorHandling, successResponse, errorResponse } from '@/lib/utils/a
 import { requireSession } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions/check';
 import { PERMISSIONS } from '@/lib/permissions/definitions';
-import { supabase } from '@/lib/auth/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 interface RouteParams {
   params: {
@@ -22,6 +22,9 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }: Route
 
   // Check permission
   await requirePermission(session.user.id, PERMISSIONS.EVENT_BROADCAST);
+
+  // Create Supabase client
+  const supabase = await createClient();
 
   // Get event
   const { data: event, error: fetchError } = await supabase
@@ -43,12 +46,22 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }: Route
     );
   }
 
-  // Update event to purchase_window status
-  // Products can be purchased for 7 days after the event ends
+  // Optional: Validate time window - give grace period of 1 hour after scheduled end
+  const now = new Date();
+  const scheduledEnd = new Date(event.scheduledEndTime);
+  const oneHourAfter = new Date(scheduledEnd.getTime() + 60 * 60 * 1000);
+
+  if (now > oneHourAfter) {
+    // Still allow ending, but it's past the grace period
+    console.warn(`Ending broadcast past grace period for event ${event.id}`);
+  }
+
+  // Update event to ended status
+  // Products remain purchasable until purchaseWindowEndTime
   const { data: updatedEvent, error } = await supabase
     .from('live_events')
     .update({
-      status: 'purchase_window',
+      status: 'ended',
       actualEndTime: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })

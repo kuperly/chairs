@@ -4,7 +4,7 @@ import { requireSession } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions/check';
 import { PERMISSIONS } from '@/lib/permissions/definitions';
 import { startBroadcastSchema } from '@/lib/validation/event';
-import { supabase } from '@/lib/auth/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 interface RouteParams {
   params: {
@@ -24,6 +24,9 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }: Route
   // Check permission
   await requirePermission(session.user.id, PERMISSIONS.EVENT_BROADCAST);
 
+  // Create Supabase client
+  const supabase = await createClient();
+
   // Get event
   const { data: event, error: fetchError } = await supabase
     .from('live_events')
@@ -35,12 +38,34 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }: Route
     return errorResponse('Event not found', 404, 'EVENT_NOT_FOUND');
   }
 
-  // Validate event status - can only start scheduled or draft events
-  if (!['draft', 'scheduled'].includes(event.status)) {
+  // Validate event status - can only start draft, scheduled, or ended events (allow restarting)
+  if (!['draft', 'scheduled', 'ended'].includes(event.status)) {
     return errorResponse(
       `Cannot start broadcast from ${event.status} status`,
       400,
       'INVALID_EVENT_STATUS'
+    );
+  }
+
+  // Validate time window - can only start within scheduled time range
+  const now = new Date();
+  const scheduledStart = new Date(event.scheduledStartTime);
+  const scheduledEnd = new Date(event.scheduledEndTime);
+  const oneHourBefore = new Date(scheduledStart.getTime() - 60 * 60 * 1000);
+
+  if (now < oneHourBefore) {
+    return errorResponse(
+      `Event can only be started 1 hour before scheduled start time (${scheduledStart.toLocaleString()})`,
+      400,
+      'TOO_EARLY'
+    );
+  }
+
+  if (now > scheduledEnd) {
+    return errorResponse(
+      `Event scheduled time has ended (${scheduledEnd.toLocaleString()})`,
+      400,
+      'TOO_LATE'
     );
   }
 

@@ -9,7 +9,7 @@ export interface LiveEvent {
   scheduledEndTime: string;
   purchaseWindowEndTime: string | null;
   thumbnailUrl: string | null;
-  status: 'draft' | 'scheduled' | 'live' | 'ended' | 'purchase_window' | 'closed';
+  status: 'draft' | 'scheduled' | 'live' | 'ended';
   agoraChannelName: string | null;
   actualStartTime: string | null;
   actualEndTime: string | null;
@@ -34,7 +34,7 @@ export interface LiveEvent {
 }
 
 export interface UseEventsOptions {
-  status?: 'draft' | 'scheduled' | 'live' | 'ended' | 'purchase_window' | 'closed';
+  status?: 'draft' | 'scheduled' | 'live' | 'ended';
   manufacturerId?: string;
   upcoming?: boolean;
   limit?: number;
