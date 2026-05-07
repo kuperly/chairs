@@ -208,7 +208,7 @@ export default function OrdersManagementPage() {
                 className="pl-10"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(value) => value && setStatusFilter(value)}>
               <SelectTrigger className="w-full sm:w-[200px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -280,7 +280,7 @@ export default function OrdersManagementPage() {
                         <Select
                           value={order.status}
                           onValueChange={(value) =>
-                            updateOrderStatus(order.id, value)
+                            value && updateOrderStatus(order.id, value)
                           }
                         >
                           <SelectTrigger className="w-[140px]">
