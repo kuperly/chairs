@@ -65,8 +65,8 @@ export function useEvents(options: UseEventsOptions = {}): UseEventsResult {
 
       const response = await eventsApi.list(options);
 
-      setEvents(response.data.events || []);
-      setTotal(response.data.pagination?.total || 0);
+      setEvents(response.data || []);
+      setTotal(response.pagination?.total || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch events'));
       setEvents([]);
