@@ -95,8 +95,8 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
     }
   };
 
-  const updateOrderStatus = async (newStatus: string) => {
-    if (!order) return;
+  const updateOrderStatus = async (newStatus: string | null) => {
+    if (!order || !newStatus) return;
 
     try {
       const response = await fetch(`/api/orders/${params.id}/status`, {
