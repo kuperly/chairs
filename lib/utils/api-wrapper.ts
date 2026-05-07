@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * Standard API error response
@@ -26,9 +26,9 @@ export interface ApiSuccess<T = any> {
  * });
  */
 export function withErrorHandling(
-  handler: (req: Request, context?: any) => Promise<Response>
+  handler: (req: NextRequest, context?: any) => Promise<Response>
 ) {
-  return async (req: Request, context?: any): Promise<Response> => {
+  return async (req: NextRequest, context?: any): Promise<Response> => {
     try {
       return await handler(req, context);
     } catch (error) {
