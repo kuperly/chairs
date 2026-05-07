@@ -75,5 +75,9 @@
   "optionalDependencies": {
     "agora-rtc-sdk-ng": "^4.23.0",
     "agora-rtm-sdk": "^2.2.4"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": ">=10.0.0"
   }
 }
