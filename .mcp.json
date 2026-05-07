@@ -1,0 +1,39 @@
+{
+    "mcpServers": {
+        "context7": {
+            "type": "http",
+            "url": "https://mcp.context7.com/mcp",
+            "headers": {
+                "CONTEXT7_API_KEY": "ctx7sk-512d016a-a2b4-4a3a-913c-8323dd041784"
+            }
+        },
+        "playwright": {
+            "command": "npx",
+            "args": ["-y", "@executeautomation/playwright-mcp-server"]
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        },
+        "atlassian": {
+            "type": "sse",
+            "url": "https://mcp.atlassian.com/v1/sse"
+        },
+        "sentry": {
+            "type": "http",
+            "url": "https://mcp.sentry.dev/mcp"
+        },
+        "google_workspace": {
+            "type": "http",
+            "url": "https://google-workspace-mcp.placer.team/mcp"
+        },
+        "jenkins_mcp_server": {
+            "type": "sse",
+            "url": "https://jenkins-ci.placer.team/mcp-server/sse"
+        },
+        "figma-desktop": {
+            "type": "http",
+            "url": "http://127.0.0.1:3845/mcp"
+        }
+    }
+}
