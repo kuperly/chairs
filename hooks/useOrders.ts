@@ -60,8 +60,8 @@ export function useOrders(options: UseOrdersOptions = {}): UseOrdersResult {
 
       const response = await ordersApi.list(options);
 
-      setOrders(response.data.orders || []);
-      setTotal(response.data.pagination?.total || 0);
+      setOrders(response.data || []);
+      setTotal(response.pagination?.total || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch orders'));
       setOrders([]);

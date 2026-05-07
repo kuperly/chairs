@@ -56,8 +56,8 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsResult
 
       const response = await productsApi.list(options);
 
-      setProducts(response.data.products || []);
-      setTotal(response.data.pagination?.total || 0);
+      setProducts(response.data || []);
+      setTotal(response.pagination?.total || 0);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch products'));
       setProducts([]);
