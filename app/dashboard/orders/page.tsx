@@ -116,7 +116,10 @@ export default function OrdersManagementPage() {
     }
   };
 
-  const filteredOrders = orders.filter((order) => {
+  // Ensure orders is always an array
+  const safeOrders = Array.isArray(orders) ? orders : [];
+
+  const filteredOrders = safeOrders.filter((order) => {
     const matchesSearch =
       order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,11 +132,11 @@ export default function OrdersManagementPage() {
   });
 
   const getOrderStats = () => {
-    const total = orders.length;
-    const pending = orders.filter((o) => o.status === 'pending').length;
-    const processing = orders.filter((o) => o.status === 'processing').length;
-    const shipped = orders.filter((o) => o.status === 'shipped').length;
-    const totalRevenue = orders
+    const total = safeOrders.length;
+    const pending = safeOrders.filter((o) => o.status === 'pending').length;
+    const processing = safeOrders.filter((o) => o.status === 'processing').length;
+    const shipped = safeOrders.filter((o) => o.status === 'shipped').length;
+    const totalRevenue = safeOrders
       .filter((o) => o.status !== 'cancelled')
       .reduce((sum, order) => sum + order.totalAmount, 0);
 

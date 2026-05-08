@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,19 +19,7 @@ import {
   Square,
 } from 'lucide-react';
 import { useEvent } from '@/hooks/useEvents';
-
-// Dynamically import BroadcasterVideo with SSR disabled (Agora SDK needs browser APIs)
-const BroadcasterVideo = dynamic(
-  () => import('@/components/video/BroadcasterVideo').then(mod => ({ default: mod.BroadcasterVideo })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center">
-        <Loader2 className="w-16 h-16 text-primary animate-spin" />
-      </div>
-    ),
-  }
-);
+import { BroadcasterVideo } from '@/components/video/BroadcasterVideo';
 
 export default function BroadcastControlPage() {
   const params = useParams();
@@ -72,6 +59,88 @@ export default function BroadcastControlPage() {
     }
   }, [event, loading, router]);
 
+  // Initialize camera
+  const startCamera = async () => {
+    setInitializingCamera(true);
+    setCameraError(null);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          facingMode: 'user',
+        },
+        audio: true,
+      });
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      setCameraEnabled(true);
+      setMicEnabled(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      setCameraError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to access camera. Please check permissions.'
+      );
+    } finally {
+      setInitializingCamera(false);
+    }
+  };
+
+  // Stop camera
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setCameraEnabled(false);
+    setMicEnabled(false);
+  };
+
+  // Toggle camera
+  const toggleCamera = () => {
+    if (!streamRef.current) {
+      startCamera();
+      return;
+    }
+
+    const videoTrack = streamRef.current.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      setCameraEnabled(videoTrack.enabled);
+    }
+  };
+
+  // Toggle microphone
+  const toggleMic = () => {
+    if (!streamRef.current) return;
+
+    const audioTrack = streamRef.current.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled;
+      setMicEnabled(audioTrack.enabled);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
   const handleEndBroadcast = async () => {
     if (!confirm('Are you sure you want to end this broadcast?')) {
       return;
@@ -87,6 +156,9 @@ export default function BroadcastControlPage() {
       if (!response.ok) {
         throw new Error('Failed to end broadcast');
       }
+
+      // Stop camera before leaving
+      stopCamera();
 
       router.push('/dashboard/events');
     } catch (error) {
@@ -190,13 +262,161 @@ export default function BroadcastControlPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Video Preview & Controls */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Video Broadcaster */}
-            {event.agoraChannelName && (
-              <BroadcasterVideo
-                channelName={event.agoraChannelName}
-                eventId={eventId}
-              />
-            )}
+            {/* Camera Preview */}
+            <Card className="p-0 overflow-hidden">
+              <div className="relative aspect-video bg-black">
+                {/* Video Element for Camera Feed */}
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={`absolute inset-0 w-full h-full object-cover ${
+                    cameraEnabled ? 'block' : 'hidden'
+                  }`}
+                />
+
+                {/* Camera Off State */}
+                {!cameraEnabled && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+                    <div className="text-center space-y-4">
+                      {cameraError ? (
+                        <>
+                          <AlertCircle className="w-16 h-16 text-red-500 mx-auto" />
+                          <div className="space-y-2">
+                            <p className="text-xl font-bold text-white">Camera Error</p>
+                            <p className="text-white/70 text-sm max-w-md mx-auto">{cameraError}</p>
+                            <Button
+                              onClick={startCamera}
+                              className="bg-primary hover:bg-primary/90 mt-4"
+                            >
+                              Try Again
+                            </Button>
+                          </div>
+                        </>
+                      ) : initializingCamera ? (
+                        <>
+                          <Loader2 className="w-16 h-16 text-primary mx-auto animate-spin" />
+                          <p className="text-xl font-bold text-white">Initializing Camera...</p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-32 h-32 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
+                            <VideoOff className="w-16 h-16 text-gray-500" />
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-2xl font-bold text-white">Camera Off</p>
+                            <p className="text-white/70 text-sm max-w-md mx-auto">
+                              Click "Start Camera" below to begin broadcasting
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Live Indicator */}
+                <div className="absolute top-4 left-4 z-10">
+                  <Badge className="bg-red-600 text-white animate-pulse px-4 py-2 text-lg">
+                    🔴 BROADCASTING
+                  </Badge>
+                </div>
+
+                {/* Viewer Count */}
+                <div className="absolute top-4 right-4 z-10">
+                  <Badge className="bg-black/80 text-white backdrop-blur-sm px-4 py-2">
+                    <Users className="w-4 h-4 mr-2" />
+                    {analytics.currentViewers} watching
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Broadcast Controls */}
+              <div className="p-4 bg-card border-t border-border">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-3">
+                    {!streamRef.current ? (
+                      <Button
+                        size="lg"
+                        onClick={startCamera}
+                        disabled={initializingCamera}
+                        className="bg-primary hover:bg-primary/90"
+                      >
+                        {initializingCamera ? (
+                          <>
+                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            Starting Camera...
+                          </>
+                        ) : (
+                          <>
+                            <Video className="w-5 h-5 mr-2" />
+                            Start Camera
+                          </>
+                        )}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant={cameraEnabled ? 'default' : 'outline'}
+                          size="lg"
+                          onClick={toggleCamera}
+                          className={cameraEnabled ? 'bg-primary' : ''}
+                        >
+                          {cameraEnabled ? (
+                            <>
+                              <Video className="w-5 h-5 mr-2" />
+                              Camera On
+                            </>
+                          ) : (
+                            <>
+                              <VideoOff className="w-5 h-5 mr-2" />
+                              Camera Off
+                            </>
+                          )}
+                        </Button>
+
+                        <Button
+                          variant={micEnabled ? 'default' : 'outline'}
+                          size="lg"
+                          onClick={toggleMic}
+                          className={micEnabled ? 'bg-primary' : ''}
+                        >
+                          {micEnabled ? (
+                            <>
+                              <Mic className="w-5 h-5 mr-2" />
+                              Mic On
+                            </>
+                          ) : (
+                            <>
+                              <MicOff className="w-5 h-5 mr-2" />
+                              Mic Off
+                            </>
+                          )}
+                        </Button>
+
+                        <Button variant="outline" size="lg" onClick={stopCamera}>
+                          <Square className="w-5 h-5 mr-2" />
+                          Stop Camera
+                        </Button>
+                      </>
+                    )}
+
+                    <Button variant="outline" size="lg">
+                      <Settings className="w-5 h-5 mr-2" />
+                      Settings
+                    </Button>
+                  </div>
+
+                  <div className="text-sm text-muted-foreground">
+                    Stream Quality:{' '}
+                    <span className="font-medium text-foreground">
+                      {cameraEnabled ? 'HD (1080p)' : 'Off'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Card>
 
             {/* Live Analytics */}
             <Card className="p-6">

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/utils/api-wrapper';
 import { getSession, requireSession } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions/check';
@@ -64,8 +64,8 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     throw new Error(`Failed to fetch products: ${error.message}`);
   }
 
-  return successResponse({
-    products,
+  return NextResponse.json({
+    data: products || [],
     pagination: {
       total: count || 0,
       limit,

@@ -1,23 +1,34 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Header } from '@/components/layout/Header';
+import { useCartProtection } from '@/hooks/useCartProtection';
+import { useCart } from '@/lib/cart/context';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const { product, loading, error } = useProduct(params.id);
 
   // Fetch related products (same category)
-  const { products: relatedProducts } = useProducts({
+  const { products: relatedProductsRaw } = useProducts({
     category: product?.category,
     isActive: true,
     limit: 3,
   });
+
+  const { handleAddToCart, canAddToCart } = useCartProtection();
+  const { addItem, isInCart, getItemQuantity } = useCart();
+  const [quantity, setQuantity] = useState(1);
+
+  // Ensure related products is always an array
+  const relatedProducts = Array.isArray(relatedProductsRaw) ? relatedProductsRaw : [];
 
   // Loading state
   if (loading) {
@@ -94,47 +105,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-                <span className="text-2xl">🪑</span>
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-foreground">
-                  LIVE<span className="text-primary">CHAIRS</span>
-                </div>
-                <div className="text-xs text-muted-foreground">FACTORY LIVE</div>
-              </div>
-            </Link>
-
-            <nav className="hidden lg:flex gap-8">
-              <Link href="/live" className="text-sm font-medium text-foreground hover:text-primary">
-                LIVE SHOWS
-              </Link>
-              <Link href="/shop" className="text-sm font-medium text-primary">
-                ALL CHAIRS
-              </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
-                FACTORIES
-              </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
-                HOW IT WORKS
-              </Link>
-              <Link href="#" className="text-sm font-medium text-foreground hover:text-primary">
-                ABOUT US
-              </Link>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <ThemeToggle />
-              <Button size="sm" variant="outline">Cart (0)</Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Breadcrumbs */}
       <div className="border-b border-border bg-card/30">
@@ -256,21 +227,55 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <div className="space-y-3 pt-4">
                 <div className="flex gap-3">
                   <div className="flex items-center border border-border rounded-lg">
-                    <Button variant="ghost" size="sm" className="px-3">-</Button>
-                    <span className="px-4 font-semibold">1</span>
-                    <Button variant="ghost" size="sm" className="px-3">+</Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="px-3"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    >-</Button>
+                    <span className="px-4 font-semibold">{quantity}</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="px-3"
+                      onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                    >+</Button>
                   </div>
                   <Button
                     size="lg"
                     className="flex-1 text-lg font-bold"
                     disabled={product.stockQuantity === 0}
+                    onClick={() => handleAddToCart(() => {
+                      addItem({
+                        productId: product.id,
+                        name: product.name,
+                        price: product.price,
+                        imageUrl: product.imageUrls[0] || '/placeholder.png',
+                        maxStock: product.stockQuantity,
+                      }, quantity);
+                      alert(`Added ${quantity} item(s) to cart!`);
+                    })}
                   >
-                    {product.stockQuantity > 0 ? `Add to Cart - $${product.price.toFixed(2)}` : 'Out of Stock'}
+                    {product.stockQuantity > 0 ? (canAddToCart ? `Add to Cart - $${product.price.toFixed(2)}` : 'Login to Buy') : 'Out of Stock'}
                   </Button>
                 </div>
                 {product.stockQuantity > 0 && (
-                  <Button size="lg" variant="outline" className="w-full">
-                    Buy Now - Skip Cart
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleAddToCart(() => {
+                      addItem({
+                        productId: product.id,
+                        name: product.name,
+                        price: product.price,
+                        imageUrl: product.imageUrls[0] || '/placeholder.png',
+                        maxStock: product.stockQuantity,
+                      }, quantity);
+                      window.location.href = '/checkout';
+                    })}
+                  >
+                    {canAddToCart ? 'Buy Now - Skip Cart' : 'Login to Buy'}
                   </Button>
                 )}
               </div>

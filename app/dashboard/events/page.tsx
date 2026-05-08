@@ -11,10 +11,13 @@ import { useEvents } from '@/hooks/useEvents';
 
 export default function EventsPage() {
   const router = useRouter();
-  const { events, loading, refetch } = useEvents({ limit: 100 });
+  const { events: eventsRaw, loading, refetch } = useEvents({ limit: 100 });
   const [startingEventId, setStartingEventId] = useState<string | null>(null);
   const [endingEventId, setEndingEventId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Ensure events is always an array
+  const events = Array.isArray(eventsRaw) ? eventsRaw : [];
 
   const handleStartBroadcast = async (eventId: string) => {
     setError(null);

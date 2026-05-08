@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useCartStore } from '@/stores/cart';
-import { formatPrice } from '@/lib/utils/format';
-import { toast } from 'sonner';
+import { Header } from '@/components/layout/Header';
+import { useCart } from '@/lib/cart/context';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, updateQuantity, removeItem, getTotal, clearCart } =
-    useCartStore();
+  const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [shippingInfo, setShippingInfo] = useState({
@@ -28,10 +26,12 @@ export default function CheckoutPage() {
     country: '',
   });
 
-  const subtotal = getTotal();
+  const subtotal = totalPrice;
   const shipping = subtotal > 0 ? 15 : 0; // Flat shipping rate
   const tax = subtotal * 0.1; // 10% tax
   const total = subtotal + shipping + tax;
+
+  const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setShippingInfo({
@@ -70,11 +70,11 @@ export default function CheckoutPage() {
       clearCart();
 
       // Redirect to payment
-      toast.success('Order created! Redirecting to payment...');
+      alert('Order created! Redirecting to payment...');
       router.push(`/checkout/${order.id}`);
     } catch (error) {
       console.error('Checkout error:', error);
-      toast.error('Failed to create order. Please try again.');
+      alert('Failed to create order. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +82,9 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
         <Card className="max-w-md mx-auto">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
@@ -94,12 +96,15 @@ export default function CheckoutPage() {
             </Button>
           </CardContent>
         </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -152,7 +157,7 @@ export default function CheckoutPage() {
                         onClick={() =>
                           updateQuantity(item.productId, item.quantity + 1)
                         }
-                        disabled={item.quantity >= item.stockQuantity}
+                        disabled={item.quantity >= item.maxStock}
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
@@ -310,6 +315,7 @@ export default function CheckoutPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -2,18 +2,35 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Send } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useLiveEvents } from '@/hooks/useEvents';
 
+// Dynamically import ViewerVideo with SSR disabled (Agora SDK needs browser APIs)
+const ViewerVideo = dynamic(
+  () => import('@/components/video/ViewerVideo').then(mod => ({ default: mod.ViewerVideo })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="relative aspect-video bg-black rounded-lg overflow-hidden border-2 border-primary/30 flex items-center justify-center">
+        <Loader2 className="w-16 h-16 text-primary animate-spin" />
+      </div>
+    ),
+  }
+);
+
 export default function LivePage() {
   const [message, setMessage] = useState('');
-  const { events, loading, error } = useLiveEvents();
+  const { events: eventsRaw, loading, error } = useLiveEvents();
+
+  // Ensure events is always an array
+  const events = Array.isArray(eventsRaw) ? eventsRaw : [];
 
   // Get the first live event (assuming single live event at a time for POC)
   const liveEvent = events[0];
@@ -156,37 +173,12 @@ export default function LivePage() {
           {/* Left: Video + Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Video Player */}
-            <Card className="relative aspect-video bg-black overflow-hidden border-2 border-primary/30">
-              {/* Placeholder for video stream */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-black">
-                <div className="text-center space-y-4">
-                  <div className="w-24 h-24 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
-                    <div className="text-6xl">📹</div>
-                  </div>
-                  <p className="text-2xl font-bold text-white">Live Stream</p>
-                  <Badge className="bg-red-600 text-white text-lg px-6 py-2 animate-pulse">
-                    🔴 LIVE NOW
-                  </Badge>
-                  <p className="text-white/70 text-sm max-w-md mx-auto">
-                    Video streaming will be integrated with Agora.io
-                  </p>
-                </div>
-              </div>
-
-              {/* Viewer Count Overlay */}
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-black/80 text-white backdrop-blur-sm px-3 py-1.5">
-                  👥 {liveEvent.viewerCount.toLocaleString()} watching
-                </Badge>
-              </div>
-
-              {/* Live Indicator */}
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-red-600 text-white animate-pulse px-3 py-1.5">
-                  🔴 LIVE
-                </Badge>
-              </div>
-            </Card>
+            {liveEvent.agoraChannelName && (
+              <ViewerVideo
+                channelName={liveEvent.agoraChannelName}
+                viewerCount={liveEvent.viewerCount}
+              />
+            )}
 
             {/* Event Info */}
             <div className="space-y-4">

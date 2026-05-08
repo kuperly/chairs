@@ -1,23 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Header } from '@/components/layout/Header';
 import { useEvents, useLiveEvents } from '@/hooks/useEvents';
 import { useProducts } from '@/hooks/useProducts';
 import { useRecentOrders } from '@/hooks/useOrders';
+import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import { useMemo } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function DashboardPage() {
+  // Protect route
+  const { loading: authLoading } = useProtectedRoute();
+
   // Fetch real data
-  const { events: allEvents, loading: eventsLoading } = useEvents({ limit: 100 });
-  const { events: liveEvents } = useLiveEvents();
-  const { products, loading: productsLoading } = useProducts({ limit: 100 });
-  const { orders, loading: ordersLoading, total: totalOrders } = useRecentOrders(5);
+  const { events: allEventsRaw, loading: eventsLoading } = useEvents({ limit: 100 });
+  const { events: liveEventsRaw } = useLiveEvents();
+  const { products: productsRaw, loading: productsLoading } = useProducts({ limit: 100 });
+  const { orders: ordersRaw, loading: ordersLoading, total: totalOrders } = useRecentOrders(5);
+
+  // Ensure data is always an array
+  const allEvents = Array.isArray(allEventsRaw) ? allEventsRaw : [];
+  const liveEvents = Array.isArray(liveEventsRaw) ? liveEventsRaw : [];
+  const products = Array.isArray(productsRaw) ? productsRaw : [];
+  const orders = Array.isArray(ordersRaw) ? ordersRaw : [];
 
   // Calculate stats from real data
   const stats = useMemo(() => {
@@ -89,48 +99,18 @@ export default function DashboardPage() {
       });
   }, [allEvents]);
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              {/* Logo */}
-              <Link href="/">
-                <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
-                  <Image
-                    src="/logo.png"
-                    alt="LiveChairs Logo"
-                    fill
-                    className="object-contain object-left"
-                    priority
-                  />
-                </div>
-              </Link>
-              <nav className="hidden md:flex items-center gap-6">
-                <Link href="/dashboard" className="text-primary font-semibold text-sm">Dashboard</Link>
-                <Link href="/dashboard/events" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Events</Link>
-                <Link href="/dashboard/products" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Products</Link>
-                <Link href="/dashboard/orders" className="text-foreground hover:text-primary text-sm font-semibold transition-colors">Orders</Link>
-              </nav>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary">
-                🌐 EN
-              </button>
-              <button className="p-2 hover:bg-muted rounded-full">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </button>
-              <ThemeToggle />
-              <Button variant="outline" size="sm" className="font-bold">Settings</Button>
-              <Button size="sm" className="bg-primary hover:bg-primary/90 text-black font-bold">Logout</Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/utils/api-wrapper';
 import { requireSession } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions/check';
@@ -62,8 +62,10 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     throw new Error(`Failed to fetch events: ${error.message}`);
   }
 
-  return successResponse({
-    events,
+  // Return in PaginatedResponse format that matches the hook expectations
+  // Don't use successResponse here to avoid double-wrapping
+  return NextResponse.json({
+    data: events || [],
     pagination: {
       total: count || 0,
       limit,

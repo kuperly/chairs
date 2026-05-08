@@ -110,7 +110,10 @@ export default function ProductsManagementPage() {
     }
   };
 
-  const filteredProducts = products.filter((product) =>
+  // Ensure products is always an array
+  const safeProducts = Array.isArray(products) ? products : [];
+
+  const filteredProducts = safeProducts.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

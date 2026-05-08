@@ -5,18 +5,14 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar, Send, User, LogOut } from 'lucide-react';
+import { Header } from '@/components/layout/Header';
+import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { useLiveEvents, useUpcomingEvents } from '@/hooks/useEvents';
 import { useProducts } from '@/hooks/useProducts';
-import { useAuth } from '@/lib/auth/context';
 
 export default function HomePage() {
-  // Auth
-  const { user, isAuthenticated, signOut } = useAuth();
-
   // Fetch real data from APIs
   const { events: liveEventsRaw, loading: liveLoading } = useLiveEvents();
   const { events: upcomingEventsRaw, loading: upcomingLoading } = useUpcomingEvents(3);
@@ -31,7 +27,6 @@ export default function HomePage() {
   const hotDeals = Array.isArray(hotDealsRaw) ? hotDealsRaw : [];
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Auto-rotate carousel - disabled for now
   const autoRotate = false;
@@ -77,18 +72,23 @@ export default function HomePage() {
     };
   });
 
-  // Calculate discount percentage for products
-  const productsWithDiscounts = hotDeals
-    .filter(p => p.compareAtPrice && p.compareAtPrice > p.price)
-    .map(product => ({
+  // Map products with optional discount calculation
+  const productsWithDiscounts = hotDeals.map(product => {
+    const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
+    const discount = hasDiscount && product.compareAtPrice
+      ? Math.round((1 - product.price / product.compareAtPrice) * 100)
+      : 0;
+    return {
       id: product.id,
       name: product.name.toUpperCase(),
-      discount: Math.round((1 - product.price / (product.compareAtPrice || product.price)) * 100),
+      discount,
       originalPrice: product.compareAtPrice || 0,
       salePrice: product.price,
       image: product.imageUrls[0] || 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&q=80',
-      features: [product.category, 'In Stock', 'Free Shipping']
-    }));
+      features: [product.category, 'In Stock', 'Free Shipping'],
+      hasDiscount,
+    };
+  });
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -112,95 +112,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/">
-              <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
-                <Image
-                  src="/logo.png"
-                  alt="LiveChairs Logo"
-                  fill
-                  className="object-contain object-left"
-                  priority
-                />
-              </div>
-            </Link>
-
-            {/* Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                LIVE SHOWS
-              </Link>
-              <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                ALL CHAIRS
-              </Link>
-              <Link href="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                FACTORIES
-              </Link>
-              <Link href="#how-it-works" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                HOW IT WORKS
-              </Link>
-              <Link href="#" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                ABOUT US
-              </Link>
-            </nav>
-
-            {/* Right side */}
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary">
-                🌐 EN
-              </button>
-
-              {isAuthenticated ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="p-2 hover:bg-muted rounded-full flex items-center gap-2"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="text-sm font-medium hidden lg:inline">{user?.email?.split('@')[0]}</span>
-                  </button>
-
-                  {showUserMenu && (
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-md shadow-lg py-1 z-50">
-                      <Link href="/dashboard" className="block px-4 py-2 text-sm hover:bg-muted">
-                        Dashboard
-                      </Link>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          signOut();
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link href="/login">
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <User className="w-4 h-4" />
-                    Login
-                  </Button>
-                </Link>
-              )}
-
-              <ThemeToggle />
-              <Link href={isAuthenticated ? "/live" : "/register"}>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm px-6">
-                  {isAuthenticated ? 'JOIN LIVE' : 'REGISTER FOR LIVE'}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="py-8 lg:py-12 bg-gradient-to-b from-muted/30 to-background">
@@ -669,11 +581,13 @@ export default function HomePage() {
                   <Card key={deal.id} className="flex-shrink-0 w-[280px] overflow-hidden hover:border-primary transition-all hover:shadow-xl group">
                     <Link href={`/shop/${deal.id}`}>
                       <div className="relative">
-                        <div className="absolute top-3 left-3 z-10">
-                          <Badge className="bg-red-600 text-white text-sm font-bold px-3 py-1">
-                            -{deal.discount}%
-                          </Badge>
-                        </div>
+                        {deal.hasDiscount && (
+                          <div className="absolute top-3 left-3 z-10">
+                            <Badge className="bg-red-600 text-white text-sm font-bold px-3 py-1">
+                              -{deal.discount}%
+                            </Badge>
+                          </div>
+                        )}
 
                         <div className="relative aspect-[4/5] bg-muted">
                           <Image
@@ -692,9 +606,11 @@ export default function HomePage() {
                           </h3>
 
                           <div className="flex items-baseline gap-2 mb-3">
-                            <span className="text-xs text-muted-foreground line-through">
-                              ${deal.originalPrice.toFixed(2)}
-                            </span>
+                            {deal.hasDiscount && (
+                              <span className="text-xs text-muted-foreground line-through">
+                                ${deal.originalPrice.toFixed(2)}
+                              </span>
+                            )}
                             <span className="text-2xl font-bold text-primary">
                               ${deal.salePrice.toFixed(2)}
                             </span>

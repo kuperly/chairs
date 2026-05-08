@@ -164,7 +164,10 @@ export default function UsersManagementPage() {
     }
   };
 
-  const filteredUsers = users.filter((user) => {
+  // Ensure users is always an array
+  const safeUsers = Array.isArray(users) ? users : [];
+
+  const filteredUsers = safeUsers.filter((user) => {
     const matchesSearch =
       user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -176,13 +179,13 @@ export default function UsersManagementPage() {
   });
 
   const getUserStats = () => {
-    const total = users.length;
-    const active = users.filter((u) => u.isActive).length;
-    const admins = users.filter((u) => u.role?.name === 'admin').length;
-    const manufacturers = users.filter(
+    const total = safeUsers.length;
+    const active = safeUsers.filter((u) => u.isActive).length;
+    const admins = safeUsers.filter((u) => u.role?.name === 'admin').length;
+    const manufacturers = safeUsers.filter(
       (u) => u.role?.name === 'manufacturer_owner'
     ).length;
-    const customers = users.filter((u) => u.role?.name === 'customer').length;
+    const customers = safeUsers.filter((u) => u.role?.name === 'customer').length;
 
     return { total, active, admins, manufacturers, customers };
   };
