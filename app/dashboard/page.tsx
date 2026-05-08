@@ -301,24 +301,30 @@ export default function DashboardPage() {
             Quick Actions
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
-              <span className="text-3xl">📦</span>
-              <span>Add Product</span>
-            </Button>
+            <Link href="/dashboard/products">
+              <Button variant="outline" className="h-24 flex-col gap-2 font-bold w-full">
+                <span className="text-3xl">📦</span>
+                <span>Add Product</span>
+              </Button>
+            </Link>
             <Link href="/dashboard/events/create">
               <Button variant="outline" className="h-24 flex-col gap-2 font-bold w-full">
                 <span className="text-3xl">📅</span>
                 <span>Schedule Event</span>
               </Button>
             </Link>
-            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
-              <span className="text-3xl">📊</span>
-              <span>View Analytics</span>
-            </Button>
-            <Button variant="outline" className="h-24 flex-col gap-2 font-bold">
-              <span className="text-3xl">⚙️</span>
-              <span>Settings</span>
-            </Button>
+            <Link href="/dashboard/orders">
+              <Button variant="outline" className="h-24 flex-col gap-2 font-bold w-full">
+                <span className="text-3xl">📊</span>
+                <span>View Analytics</span>
+              </Button>
+            </Link>
+            <Link href="/dashboard/settings">
+              <Button variant="outline" className="h-24 flex-col gap-2 font-bold w-full">
+                <span className="text-3xl">⚙️</span>
+                <span>Settings</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
