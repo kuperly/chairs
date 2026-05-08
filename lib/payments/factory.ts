@@ -5,6 +5,7 @@
 
 import { PaymentProvider, PaymentProviderType } from './types';
 import { MockPaymentProvider } from './providers/mock';
+import { MeshulamPaymentProvider } from './providers/meshulam';
 
 /**
  * Get the active payment provider based on environment configuration
@@ -43,11 +44,11 @@ export function getPaymentProvider(): PaymentProvider {
       if (!process.env.MESHULAM_API_KEY || !process.env.MESHULAM_PAGE_CODE) {
         throw new Error('MESHULAM_API_KEY and MESHULAM_PAGE_CODE are required');
       }
-      // return new MeshulamPaymentProvider({
-      //   apiKey: process.env.MESHULAM_API_KEY,
-      //   pageCode: process.env.MESHULAM_PAGE_CODE,
-      // });
-      throw new Error('Meshulam provider not yet implemented. Set PAYMENT_PROVIDER=mock');
+      return new MeshulamPaymentProvider({
+        apiKey: process.env.MESHULAM_API_KEY,
+        pageCode: process.env.MESHULAM_PAGE_CODE,
+        environment: (process.env.PAYMENT_ENVIRONMENT as 'test' | 'production') || 'test',
+      });
 
     case PaymentProviderType.CARDCOM:
       if (!process.env.CARDCOM_API_KEY || !process.env.CARDCOM_TERMINAL) {

@@ -34,9 +34,13 @@ export default function PaymentPage({
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState<string>('loading...');
 
   useEffect(() => {
     fetchOrder();
+    // Get payment provider from env
+    const provider = process.env.NEXT_PUBLIC_PAYMENT_PROVIDER || 'mock';
+    setPaymentProvider(provider);
   }, [params.orderId]);
 
   const fetchOrder = async () => {
@@ -60,7 +64,7 @@ export default function PaymentPage({
     setIsProcessing(true);
 
     try {
-      // Create Stripe payment intent
+      // Create payment intent (works with any provider)
       const response = await fetch('/api/payments/create-intent', {
         method: 'POST',
         headers: {
@@ -75,12 +79,14 @@ export default function PaymentPage({
         throw new Error('Failed to create payment intent');
       }
 
-      const { clientSecret } = await response.json();
+      const data = await response.json();
+      const { clientSecret, provider, paymentIntentId } = data.data;
 
-      // For POC, simulate payment success
-      // In production, use Stripe Elements here
-      if (process.env.NEXT_PUBLIC_USE_MOCKS === 'true') {
-        // Mock payment flow
+      console.log('Payment provider:', provider);
+
+      // Handle payment based on provider
+      if (provider === 'mock') {
+        // Mock payment flow - simulate processing
         setTimeout(async () => {
           // Update order status to paid
           await fetch(`/api/orders/${params.orderId}/status`, {
@@ -96,10 +102,19 @@ export default function PaymentPage({
           toast.success('Payment successful!');
           router.push(`/checkout/success?orderId=${params.orderId}`);
         }, 2000);
+      } else if (provider === 'meshulam') {
+        // Meshulam - redirect to hosted payment page
+        // clientSecret contains the payment page URL
+        console.log('Redirecting to Meshulam payment page:', clientSecret);
+        window.location.href = clientSecret;
+      } else if (provider === 'stripe') {
+        // Stripe - would use Stripe Elements here
+        // For now, show message
+        toast.error('Stripe integration pending');
+        setIsProcessing(false);
       } else {
-        // Real Stripe integration would go here
-        // For now, redirect to mock payment page
-        router.push(`/checkout/mock-payment?orderId=${params.orderId}`);
+        // Unknown provider
+        throw new Error(`Unknown payment provider: ${provider}`);
       }
     } catch (error) {
       console.error('Payment error:', error);
@@ -191,9 +206,13 @@ export default function PaymentPage({
               <span className="font-medium">Credit Card</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
+              {paymentProvider === 'mock'
                 ? 'Mock payment mode - Payment will be simulated'
-                : 'Secure payment powered by Stripe'}
+                : paymentProvider === 'meshulam'
+                ? 'Secure payment powered by Meshulam (Israeli)'
+                : paymentProvider === 'stripe'
+                ? 'Secure payment powered by Stripe'
+                : `Payment provider: ${paymentProvider}`}
             </p>
           </div>
 
