@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { withErrorHandling, successResponse, errorResponse } from '@/lib/utils/api-wrapper';
 import { requireSession } from '@/lib/auth/session';
 import { supabase } from '@/lib/auth/supabase';
+import { getPaymentProvider, getPaymentProviderConfig } from '@/lib/payments/factory';
 import { z } from 'zod';
 
 const createPaymentIntentSchema = z.object({
@@ -10,9 +11,10 @@ const createPaymentIntentSchema = z.object({
 
 /**
  * POST /api/payments/create-intent
- * Create a Stripe payment intent for an order
- * For POC: Returns mock client secret
- * For Production: Would create real Stripe payment intent
+ * Create a payment intent using configured payment provider
+ * Provider is selected via environment variables:
+ * - PAYMENT_PROVIDER=mock|stripe|tranzila|meshulam|cardcom
+ * - PAYMENT_ENABLED=true|false
  */
 export const dynamic = 'force-dynamic';
 
@@ -48,23 +50,43 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     );
   }
 
-  // TODO: For production, create real Stripe payment intent
-  // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  // const paymentIntent = await stripe.paymentIntents.create({
-  //   amount: Math.round(order.totalAmount * 100), // Convert to cents
-  //   currency: 'usd',
-  //   metadata: {
-  //     orderId: order.id,
-  //     orderNumber: order.orderNumber,
-  //   },
-  // });
+  // Get payment provider (uses feature flags and env config)
+  const paymentProvider = getPaymentProvider();
+  const config = getPaymentProviderConfig();
 
-  // For POC, return mock client secret
-  const mockClientSecret = `mock_secret_${orderId}_${Date.now()}`;
+  console.log(`Creating payment intent with provider: ${config.provider}`);
 
-  return successResponse({
-    clientSecret: mockClientSecret,
-    orderId: order.id,
-    amount: order.totalAmount,
-  });
+  try {
+    // Create payment intent using configured provider
+    const paymentIntent = await paymentProvider.createPaymentIntent({
+      amount: order.totalAmount,
+      currency: 'ILS', // Default to Israeli Shekels
+      orderId: order.id,
+      customer: {
+        email: session.user.email || '',
+        name: order.shippingAddress?.fullName || '',
+        phone: order.shippingAddress?.phone,
+      },
+      metadata: {
+        orderNumber: order.orderNumber,
+        customerId: session.user.id,
+      },
+    });
+
+    return successResponse({
+      clientSecret: paymentIntent.clientSecret,
+      paymentIntentId: paymentIntent.id,
+      orderId: order.id,
+      amount: order.totalAmount,
+      provider: config.provider,
+      environment: config.environment,
+    });
+  } catch (error) {
+    console.error('Payment intent creation failed:', error);
+    return errorResponse(
+      'Failed to create payment intent',
+      500,
+      'PAYMENT_INTENT_CREATION_FAILED'
+    );
+  }
 });
