@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Header } from '@/components/layout/Header';
 import { Loader2, Share2, Heart } from 'lucide-react';
 import { LiveChat } from '@/components/chat/LiveChat';
 import { useEvent } from '@/hooks/useEvents';
@@ -96,29 +96,7 @@ export default function LiveEventPage({ params }: { params: { id: string } }) {
   if (!liveEvent) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="border-b border-border bg-background sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <Link href="/">
-                <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
-                  <Image
-                    src="/logo.png"
-                    alt="LiveChairs Logo"
-                    fill
-                    className="object-contain object-left"
-                    priority
-                  />
-                </div>
-              </Link>
-
-              <div className="flex items-center gap-3">
-                <ThemeToggle />
-                <Button size="sm" variant="outline">Cart (0)</Button>
-              </div>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* No Live Event */}
         <div className="container mx-auto px-4 py-16">
@@ -159,33 +137,7 @@ export default function LiveEventPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/">
-              <div className="h-12 sm:h-14 w-auto relative" style={{ width: '200px' }}>
-                <Image
-                  src="/logo.png"
-                  alt="LiveChairs Logo"
-                  fill
-                  className="object-contain object-left"
-                  priority
-                />
-              </div>
-            </Link>
-
-            <div className="flex items-center gap-3">
-              <Badge className="bg-red-600 text-white animate-pulse hidden sm:flex">
-                🔴 LIVE NOW
-              </Badge>
-              <ThemeToggle />
-              <Button size="sm" variant="outline">Cart (0)</Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 lg:py-8">
