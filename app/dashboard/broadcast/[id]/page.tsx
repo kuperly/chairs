@@ -13,7 +13,6 @@ import {
   MessageSquare,
   Loader2,
   Eye,
-  DollarSign,
   Square,
 } from 'lucide-react';
 import { LiveChat } from '@/components/chat/LiveChat';
@@ -43,16 +42,58 @@ export default function BroadcastControlPage() {
   const currentViewers = useViewerCount(eventId);
 
   const [ending, setEnding] = useState(false);
+  const [chatMessageCount, setChatMessageCount] = useState(0);
 
-  // Mock analytics (TODO: Replace with real analytics)
-  const [analytics] = useState({
-    peakViewers: 245,
-    totalViews: 1420,
-    chatMessages: 89,
-    productClicks: 34,
-    orders: 12,
-    revenue: 3589.88,
-  });
+  // Fetch real-time chat message count
+  useEffect(() => {
+    if (!eventId) return;
+
+    const fetchChatCount = async () => {
+      try {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+
+        const { count } = await supabase
+          .from('chat_messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', eventId);
+
+        setChatMessageCount(count || 0);
+      } catch (error) {
+        console.error('Error fetching chat count:', error);
+      }
+    };
+
+    fetchChatCount();
+
+    // Subscribe to new messages
+    const subscribeToChat = async () => {
+      const { createClient } = await import('@/utils/supabase/client');
+      const supabase = createClient();
+
+      const channel = supabase
+        .channel(`chat-count-${eventId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'chat_messages',
+            filter: `event_id=eq.${eventId}`,
+          },
+          () => {
+            setChatMessageCount(prev => prev + 1);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
+
+    subscribeToChat();
+  }, [eventId]);
 
   // Protect route - only allow access if event is LIVE
   useEffect(() => {
@@ -193,49 +234,18 @@ export default function BroadcastControlPage() {
             {/* Live Analytics */}
             <Card className="p-6">
               <h2 className="text-lg font-bold mb-4">Live Analytics</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Current Viewers</p>
-                  <p className="text-2xl font-bold text-primary">{currentViewers}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Peak Viewers</p>
-                  <p className="text-2xl font-bold">{analytics.peakViewers}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Views</p>
-                  <p className="text-2xl font-bold">{analytics.totalViews}</p>
+                  <p className="text-3xl font-bold text-primary">{currentViewers}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Chat Messages</p>
-                  <p className="text-2xl font-bold">{analytics.chatMessages}</p>
+                  <p className="text-3xl font-bold">{chatMessageCount}</p>
                 </div>
               </div>
             </Card>
 
-            {/* Sales Analytics */}
-            <Card className="p-6">
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-600" />
-                Live Sales
-              </h2>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Orders</p>
-                  <p className="text-3xl font-bold text-green-600">{analytics.orders}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Product Clicks</p>
-                  <p className="text-3xl font-bold">{analytics.productClicks}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Revenue</p>
-                  <p className="text-3xl font-bold text-green-600">
-                    ${analytics.revenue.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </Card>
 
             {/* Featured Products */}
             <Card className="p-6">

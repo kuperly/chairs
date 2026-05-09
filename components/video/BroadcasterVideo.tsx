@@ -28,12 +28,80 @@ export function BroadcasterVideo({ channelName, eventId }: BroadcasterVideoProps
     agoraClient.setClientRole('host');
     setClient(agoraClient);
 
-    return () => {
-      leaveChannel();
-    };
-  }, []);
+    let audioTrack: IMicrophoneAudioTrack | null = null;
+    let videoTrack: ICameraVideoTrack | null = null;
 
-  const joinChannel = async () => {
+    // Auto-start broadcasting when component mounts
+    // This ensures broadcast continues after page reload
+    const initBroadcast = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Get token from API
+        const response = await fetch('/api/agora/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channelName,
+            role: 'publisher',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to get Agora token');
+        }
+
+        const { token, uid, appId } = await response.json();
+
+        // Join channel
+        await agoraClient.join(appId, channelName, token, uid);
+
+        // Create local tracks
+        [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+
+        setLocalAudioTrack(audioTrack);
+        setLocalVideoTrack(videoTrack);
+
+        // Play local video
+        if (videoContainerRef.current) {
+          videoTrack.play(videoContainerRef.current);
+        }
+
+        // Publish tracks
+        await agoraClient.publish([audioTrack, videoTrack]);
+
+        setIsJoined(true);
+        console.log('Auto-started broadcast on channel:', channelName);
+      } catch (err) {
+        console.error('Error auto-starting broadcast:', err);
+        setError(err instanceof Error ? err.message : 'Failed to start broadcast');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initBroadcast();
+
+    return () => {
+      const cleanup = async () => {
+        if (audioTrack) {
+          audioTrack.stop();
+          audioTrack.close();
+        }
+        if (videoTrack) {
+          videoTrack.stop();
+          videoTrack.close();
+        }
+        if (agoraClient) {
+          await agoraClient.leave();
+        }
+      };
+      cleanup();
+    };
+  }, [channelName]);
+
+  const retryBroadcast = async () => {
     if (!client) return;
 
     try {
@@ -74,28 +142,13 @@ export function BroadcasterVideo({ channelName, eventId }: BroadcasterVideoProps
       await client.publish([audioTrack, videoTrack]);
 
       setIsJoined(true);
-      console.log('Successfully joined and published to channel:', channelName);
+      console.log('Successfully retried broadcast on channel:', channelName);
     } catch (err) {
-      console.error('Error joining channel:', err);
+      console.error('Error retrying broadcast:', err);
       setError(err instanceof Error ? err.message : 'Failed to start broadcast');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const leaveChannel = async () => {
-    if (localAudioTrack) {
-      localAudioTrack.stop();
-      localAudioTrack.close();
-    }
-    if (localVideoTrack) {
-      localVideoTrack.stop();
-      localVideoTrack.close();
-    }
-    if (client) {
-      await client.leave();
-    }
-    setIsJoined(false);
   };
 
   const toggleMute = () => {
@@ -118,30 +171,27 @@ export function BroadcasterVideo({ channelName, eventId }: BroadcasterVideoProps
       <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
         <div ref={videoContainerRef} className="w-full h-full" />
 
-        {!isJoined && (
+        {!isJoined && isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-black">
             <div className="text-center space-y-4">
-              <div className="text-6xl">📹</div>
-              <p className="text-white text-xl font-bold">Ready to Broadcast</p>
+              <Loader2 className="w-16 h-16 text-primary animate-spin" />
+              <p className="text-white text-xl font-bold">Starting Broadcast...</p>
+            </div>
+          </div>
+        )}
+
+        {!isJoined && !isLoading && error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-900/20 to-black">
+            <div className="text-center space-y-4 px-4">
+              <div className="text-6xl">⚠️</div>
+              <p className="text-white text-xl font-bold">Broadcast Error</p>
+              <p className="text-red-400 text-sm">{error}</p>
               <Button
-                onClick={joinChannel}
-                disabled={isLoading}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-8 py-6"
+                onClick={retryBroadcast}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold"
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    🔴 Start Broadcasting
-                  </>
-                )}
+                🔴 Retry Broadcast
               </Button>
-              {error && (
-                <p className="text-red-400 text-sm mt-2">{error}</p>
-              )}
             </div>
           </div>
         )}
@@ -177,15 +227,6 @@ export function BroadcasterVideo({ channelName, eventId }: BroadcasterVideoProps
           >
             {isVideoOff ? <VideoOff className="mr-2 h-5 w-5" /> : <Video className="mr-2 h-5 w-5" />}
             {isVideoOff ? 'Turn On Video' : 'Turn Off Video'}
-          </Button>
-
-          <Button
-            onClick={leaveChannel}
-            variant="destructive"
-            size="lg"
-            className="font-bold"
-          >
-            End Broadcast
           </Button>
         </div>
       )}

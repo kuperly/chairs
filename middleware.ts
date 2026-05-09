@@ -98,7 +98,7 @@ export async function middleware(request: NextRequest) {
         roles!inner (
           role_permissions (
             permissions (
-              code
+              name
             )
           )
         )
@@ -108,7 +108,7 @@ export async function middleware(request: NextRequest) {
 
     const roleData = userData?.roles as any;
     const permissions = roleData?.role_permissions?.map(
-      (rp: any) => rp.permissions.code
+      (rp: any) => rp.permissions.name
     ) || [];
 
     const canCreateOrders = permissions.includes('order.create');
@@ -122,14 +122,14 @@ export async function middleware(request: NextRequest) {
   // For manufacturer-only routes, check if user has product.create permission
   if (isManufacturerRoute) {
     // Get user's permissions from database
-    const { data: userData } = await supabase
+    const { data: userData, error: userError } = await supabase
       .from('users')
       .select(`
         id,
         roles!inner (
           role_permissions (
             permissions (
-              code
+              name
             )
           )
         )
@@ -137,12 +137,24 @@ export async function middleware(request: NextRequest) {
       .eq('id', session.user.id)
       .single();
 
+    console.log('[Middleware] Dashboard access check:', {
+      userId: session.user.id,
+      userEmail: session.user.email,
+      userData: userData,
+      userError: userError,
+      hasUserData: !!userData,
+    });
+
     const roleData = userData?.roles as any;
+    console.log('[Middleware] Role data:', roleData);
+
     const permissions = roleData?.role_permissions?.map(
-      (rp: any) => rp.permissions.code
+      (rp: any) => rp.permissions.name
     ) || [];
 
     const canCreateProducts = permissions.includes('product.create');
+
+    console.log('[Middleware] Permissions check:', { permissions, canCreateProducts });
 
     // If user doesn't have permission to create products, redirect to home
     if (!canCreateProducts) {
@@ -160,7 +172,7 @@ export async function middleware(request: NextRequest) {
         roles!inner (
           role_permissions (
             permissions (
-              code
+              name
             )
           )
         )
@@ -170,7 +182,7 @@ export async function middleware(request: NextRequest) {
 
     const roleData = userData?.roles as any;
     const permissions = roleData?.role_permissions?.map(
-      (rp: any) => rp.permissions.code
+      (rp: any) => rp.permissions.name
     ) || [];
 
     const canCreateProducts = permissions.includes('product.create');
