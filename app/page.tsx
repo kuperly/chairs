@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
-import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar, Send } from 'lucide-react';
+import { FakeChat } from '@/components/chat/FakeChat';
+import { Clock, MessageSquare, Tag, Truck, Shield, CreditCard, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
 import { useLiveEvents, useUpcomingEvents } from '@/hooks/useEvents';
 import { useProducts } from '@/hooks/useProducts';
 
@@ -100,15 +100,6 @@ export default function HomePage() {
     }, 5000);
     return () => clearInterval(timer);
   }, [liveShows.length, autoRotate]);
-
-  // Mock chat messages (not in database yet)
-  const chatMessages = [
-    { name: 'Avi from Israel', message: 'Amazing quality! 🔥', avatar: '👤' },
-    { name: 'Daniel', message: 'Do you ship to Israel?', avatar: '👤' },
-    { name: 'LiveChairs Team', message: 'Yes, we do! Shipping is included in the price.', avatar: '👤' },
-    { name: 'Michael', message: 'These prices are insane!', avatar: '👤' },
-    { name: 'Eyal Gaming', message: 'Which chair is best for long hours?', avatar: '👤' }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -325,39 +316,9 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Right: Live Chat */}
+            {/* Right: Live Chat (Fake for homepage) */}
             <div className="lg:col-span-3">
-              <Card className="h-[500px] flex flex-col">
-                <div className="flex items-center justify-between p-4 border-b border-border">
-                  <h3 className="font-bold text-foreground">LIVE CHAT</h3>
-                  <Badge variant="outline" className="text-xs">
-                    ● 243 online
-                  </Badge>
-                </div>
-
-                <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                  {chatMessages.map((msg, idx) => (
-                    <div key={idx} className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white text-xs">
-                          {msg.name.charAt(0)}
-                        </div>
-                        <span className="font-semibold text-sm text-foreground">{msg.name}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground ml-10">{msg.message}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="p-4 border-t border-border">
-                  <div className="flex gap-2">
-                    <Input placeholder="Type a message..." className="flex-1" />
-                    <Button size="icon" className="bg-primary hover:bg-primary/90">
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </Card>
+              <FakeChat />
             </div>
           </div>
         </div>
