@@ -1,0 +1,100 @@
+/**
+ * Agora Channel Query API
+ * Gets real-time channel statistics from Agora servers
+ */
+
+interface AgoraChannelUser {
+  uid: string;
+}
+
+interface AgoraChannelResponse {
+  success: boolean;
+  data: {
+    channel_exist: boolean;
+    mode: number; // 1 = live broadcasting
+    total: number; // total users in channel
+    users?: AgoraChannelUser[];
+  };
+}
+
+/**
+ * Query Agora for channel statistics
+ * @param channelName - The Agora channel name
+ * @returns Number of users currently in the channel (excluding hosts)
+ */
+export async function getChannelViewerCount(channelName: string): Promise<number> {
+  const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID;
+  const customerId = process.env.AGORA_CUSTOMER_ID;
+  const customerSecret = process.env.AGORA_CUSTOMER_SECRET;
+
+  if (!appId || !customerId || !customerSecret) {
+    console.error('Missing Agora credentials for channel query');
+    return 0;
+  }
+
+  try {
+    // Agora RESTful API endpoint
+    const url = `https://api.agora.io/dev/v1/channel/user/${appId}/${channelName}`;
+
+    // Create Basic Auth header
+    const credentials = Buffer.from(`${customerId}:${customerSecret}`).toString('base64');
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Agora channel query failed:', response.status, response.statusText);
+      return 0;
+    }
+
+    const data: AgoraChannelResponse = await response.json();
+
+    if (!data.success || !data.data.channel_exist) {
+      // Channel doesn't exist or is empty
+      return 0;
+    }
+
+    // Return total users minus 1 (the broadcaster is counted too)
+    // In live broadcasting mode, hosts are also counted
+    const totalUsers = data.data.total || 0;
+    return Math.max(0, totalUsers - 1); // Subtract the host/broadcaster
+
+  } catch (error) {
+    console.error('Error querying Agora channel:', error);
+    return 0;
+  }
+}
+
+/**
+ * Update the database with the latest viewer count from Agora
+ * @param eventId - The event ID
+ * @param channelName - The Agora channel name
+ */
+export async function syncViewerCount(eventId: string, channelName: string): Promise<number> {
+  const count = await getChannelViewerCount(channelName);
+
+  // Update database
+  try {
+    const { createClient } = await import('@/utils/supabase/server');
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from('live_events')
+      .update({ viewerCount: count })
+      .eq('id', eventId);
+
+    if (error) {
+      console.error('Failed to update viewer count in database:', error);
+    }
+
+    return count;
+  } catch (error) {
+    console.error('Error syncing viewer count:', error);
+    return count;
+  }
+}
