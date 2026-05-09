@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/utils/supabase/client';
 import { useAuth } from '@/lib/auth/context';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Send, Loader2 } from 'lucide-react';
 
 interface ChatMessage {
@@ -29,7 +30,8 @@ interface LiveChatProps {
 }
 
 export function LiveChat({ eventId, className = '' }: LiveChatProps) {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const { user } = useCurrentUser();
   const supabase = createClient();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
