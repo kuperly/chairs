@@ -345,34 +345,34 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </TabsList>
 
               <TabsContent value="description" className="mt-6">
-                <div className="prose prose-gray max-w-none">
-                  <div className="space-y-4">
-                    <p className="text-foreground leading-relaxed text-lg">
+                <div className="max-w-none">
+                  <div className="space-y-6">
+                    <p className="text-foreground leading-relaxed text-base">
                       {product.description}
                     </p>
 
-                    <div className="border-t border-border pt-4 mt-4">
-                      <h3 className="text-lg font-semibold text-foreground mb-3">Product Details</h3>
-                      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
+                    <div className="border-t border-border pt-6">
+                      <h3 className="text-xl font-semibold text-foreground mb-4">Product Details</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
                           <dt className="text-sm font-medium text-muted-foreground">Manufacturer</dt>
-                          <dd className="text-base text-foreground">{product.manufacturers?.companyName || 'N/A'}</dd>
+                          <dd className="text-base text-foreground font-medium">{product.manufacturers?.companyName || 'N/A'}</dd>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                           <dt className="text-sm font-medium text-muted-foreground">Category</dt>
-                          <dd className="text-base text-foreground">{product.category}</dd>
+                          <dd className="text-base text-foreground font-medium">{product.category}</dd>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                           <dt className="text-sm font-medium text-muted-foreground">Stock Status</dt>
-                          <dd className="text-base text-foreground">
+                          <dd className="text-base text-foreground font-medium">
                             {product.isActive ? (product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock') : 'Inactive'}
                           </dd>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                           <dt className="text-sm font-medium text-muted-foreground">Available Quantity</dt>
-                          <dd className="text-base text-foreground">{product.stockQuantity} units</dd>
+                          <dd className="text-base text-foreground font-medium">{product.stockQuantity} units</dd>
                         </div>
-                      </dl>
+                      </div>
                     </div>
                   </div>
                 </div>
