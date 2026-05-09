@@ -89,9 +89,6 @@ export function Header() {
                 <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   SHOP
                 </Link>
-                <Link href="/#how-it-works" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                  HOW IT WORKS
-                </Link>
               </>
             ) : isBackofficeUser ? (
               // Backoffice Navigation (Manufacturer/Admin)
@@ -242,9 +239,6 @@ export function Header() {
                   </Link>
                   <Link href="/shop" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
                     SHOP
-                  </Link>
-                  <Link href="/#how-it-works" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
-                    HOW IT WORKS
                   </Link>
                 </>
               ) : isBackofficeUser ? (

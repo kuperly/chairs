@@ -8,6 +8,7 @@ export async function middleware(request: NextRequest) {
   const publicRoutes = [
     '/',
     '/live',
+    '/shop',
     '/login',
     '/register',
     '/api',
@@ -15,7 +16,6 @@ export async function middleware(request: NextRequest) {
 
   // Customer-only routes (require order.create permission)
   const customerOnlyRoutes = [
-    '/shop',
     '/checkout',
     '/profile',
   ];

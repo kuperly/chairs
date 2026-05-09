@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/context';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { PERMISSIONS } from '@/lib/permissions/definitions';
+import { toast } from 'sonner';
 
 export function useCartProtection() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export function useCartProtection() {
 
     if (!hasPermission(PERMISSIONS.ORDER_CREATE)) {
       // User is logged in but doesn't have permission to order (e.g., manufacturer)
-      alert('Only customers can add items to cart');
+      toast.error('Only customers can add items to cart');
       return false;
     }
 
