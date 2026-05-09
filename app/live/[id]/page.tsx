@@ -148,7 +148,7 @@ export default function LiveEventPage({ params }: { params: { id: string } }) {
             {liveEvent.agoraChannelName && (
               <ViewerVideo
                 channelName={liveEvent.agoraChannelName}
-                viewerCount={liveEvent.viewerCount}
+                eventId={liveEvent.id}
               />
             )}
 

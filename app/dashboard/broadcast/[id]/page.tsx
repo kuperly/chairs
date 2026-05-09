@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { LiveChat } from '@/components/chat/LiveChat';
 import { useEvent } from '@/hooks/useEvents';
+import { useViewerCount } from '@/hooks/useViewerTracking';
 import { toast } from 'sonner';
 
 // Dynamically import BroadcasterVideo with SSR disabled (Agora SDK needs browser APIs)
@@ -39,12 +40,12 @@ export default function BroadcastControlPage() {
   const eventId = params.id as string;
 
   const { event, loading, refetch } = useEvent(eventId);
+  const currentViewers = useViewerCount(eventId);
 
   const [ending, setEnding] = useState(false);
 
-  // Mock analytics
+  // Mock analytics (TODO: Replace with real analytics)
   const [analytics] = useState({
-    currentViewers: 127,
     peakViewers: 245,
     totalViews: 1420,
     chatMessages: 89,
@@ -195,7 +196,7 @@ export default function BroadcastControlPage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Current Viewers</p>
-                  <p className="text-2xl font-bold text-primary">{analytics.currentViewers}</p>
+                  <p className="text-2xl font-bold text-primary">{currentViewers}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Peak Viewers</p>

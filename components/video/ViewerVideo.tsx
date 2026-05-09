@@ -4,13 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import AgoraRTC, { IAgoraRTCClient, IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
+import { useViewerTracking } from '@/hooks/useViewerTracking';
 
 interface ViewerVideoProps {
   channelName: string;
-  viewerCount?: number;
+  eventId: string;
 }
 
-export function ViewerVideo({ channelName, viewerCount = 0 }: ViewerVideoProps) {
+export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
+  const viewerCount = useViewerTracking(eventId);
   const [client, setClient] = useState<IAgoraRTCClient | null>(null);
   const [isJoined, setIsJoined] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
