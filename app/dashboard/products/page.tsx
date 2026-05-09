@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/lib/auth/context';
 import { formatPrice } from '@/lib/utils/format';
 import { toast } from 'sonner';
@@ -57,7 +58,8 @@ export default function ProductsManagementPage() {
         throw new Error('Failed to fetch products');
       }
       const data = await response.json();
-      setProducts(data.products || []);
+      // API returns { data: [...], pagination: {...} }
+      setProducts(data.data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
       toast.error('Failed to load products');
@@ -126,8 +128,10 @@ export default function ProductsManagementPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">Product Management</h1>
           <p className="text-muted-foreground mt-1">
@@ -261,12 +265,13 @@ export default function ProductsManagementPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <p>Total Products: {filteredProducts.length}</p>
-        <p>
-          Active: {filteredProducts.filter((p) => p.isActive).length} | Inactive:{' '}
-          {filteredProducts.filter((p) => !p.isActive).length}
-        </p>
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <p>Total Products: {filteredProducts.length}</p>
+          <p>
+            Active: {filteredProducts.filter((p) => p.isActive).length} | Inactive:{' '}
+            {filteredProducts.filter((p) => !p.isActive).length}
+          </p>
+        </div>
       </div>
     </div>
   );

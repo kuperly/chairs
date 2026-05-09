@@ -15,6 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Header } from '@/components/layout/Header';
 import {
   Select,
   SelectContent,
@@ -76,7 +77,8 @@ export default function UsersManagementPage() {
         throw new Error('Failed to fetch users');
       }
       const data = await response.json();
-      setUsers(data.users || []);
+      // API returns { data: { users: [...], pagination: {...} } }
+      setUsers(data.data?.users || []);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to load users');
@@ -92,7 +94,8 @@ export default function UsersManagementPage() {
         throw new Error('Failed to fetch roles');
       }
       const data = await response.json();
-      setRoles(data.roles || []);
+      // API returns { data: [...] }
+      setRoles(data.data || []);
     } catch (error) {
       console.error('Error fetching roles:', error);
     }
@@ -201,8 +204,10 @@ export default function UsersManagementPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold">User Management</h1>
         <p className="text-muted-foreground mt-1">
           Manage users, roles, and permissions
@@ -399,8 +404,9 @@ export default function UsersManagementPage() {
         </CardContent>
       </Card>
 
-      <div className="text-sm text-muted-foreground">
-        Showing {filteredUsers.length} of {users.length} users
+        <div className="text-sm text-muted-foreground">
+          Showing {filteredUsers.length} of {users.length} users
+        </div>
       </div>
     </div>
   );
