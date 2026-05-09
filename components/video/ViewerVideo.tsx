@@ -19,7 +19,9 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
-  const [hasJoinedAgora, setHasJoinedAgora] = useState(false);
+
+  // Use ref instead of state to avoid closure issues in cleanup
+  const hasJoinedAgoraRef = useRef(false);
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
@@ -89,12 +91,12 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
         console.log('Agora connection state changed:', { curState, prevState, reason });
 
         // If we disconnect and previously joined, decrement count
-        if (curState === 'DISCONNECTED' && hasJoinedAgora) {
+        if (curState === 'DISCONNECTED' && hasJoinedAgoraRef.current) {
           try {
             await supabase.rpc('decrement_viewer_count', {
               event_id: eventId,
             });
-            setHasJoinedAgora(false);
+            hasJoinedAgoraRef.current = false;
             console.log('Decremented viewer count due to disconnection');
           } catch (err) {
             console.error('Error decrementing viewer count on disconnect:', err);
@@ -105,7 +107,7 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
       // Join channel
       await agoraClient.join(appId, channelName, token, uid);
       setIsJoined(true);
-      console.log('Successfully joined channel as viewer:', channelName);
+      console.log('Successfully joined channel as viewer:', channelName, 'with UID:', uid);
 
       // Increment viewer count after successfully joining Agora
       try {
@@ -116,7 +118,7 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
         if (error) {
           console.error('Failed to increment viewer count:', error);
         } else {
-          setHasJoinedAgora(true);
+          hasJoinedAgoraRef.current = true;
           console.log('Incremented viewer count to:', data);
         }
       } catch (err) {
@@ -132,7 +134,7 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
 
   const leaveChannel = async (agoraClient: IAgoraRTCClient) => {
     // Decrement viewer count if we successfully joined Agora before
-    if (hasJoinedAgora) {
+    if (hasJoinedAgoraRef.current) {
       try {
         const { data, error } = await supabase.rpc('decrement_viewer_count', {
           event_id: eventId,
@@ -150,7 +152,7 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
 
     await agoraClient.leave();
     setIsJoined(false);
-    setHasJoinedAgora(false);
+    hasJoinedAgoraRef.current = false;
   };
 
   return (

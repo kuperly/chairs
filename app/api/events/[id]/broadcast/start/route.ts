@@ -86,6 +86,7 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }: Route
       status: 'live',
       agoraChannelName: channelName,
       actualStartTime: new Date().toISOString(),
+      viewerCount: 0, // Reset viewer count when starting broadcast
       updatedAt: new Date().toISOString(),
     })
     .eq('id', id)
