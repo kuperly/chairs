@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Share2, Heart } from 'lucide-react';
 import { LiveChat } from '@/components/chat/LiveChat';
-import { useLiveEvents } from '@/hooks/useEvents';
+import { useEvent } from '@/hooks/useEvents';
+import { toast } from 'sonner';
 
 // Dynamically import ViewerVideo with SSR disabled (Agora SDK needs browser APIs)
 const ViewerVideo = dynamic(
@@ -24,14 +25,44 @@ const ViewerVideo = dynamic(
   }
 );
 
-export default function LivePage() {
-  const { events: eventsRaw, loading, error } = useLiveEvents();
+export default function LiveEventPage({ params }: { params: { id: string } }) {
+  const eventId = params.id;
+  const { event: liveEvent, loading, error } = useEvent(eventId);
 
-  // Ensure events is always an array
-  const events = Array.isArray(eventsRaw) ? eventsRaw : [];
+  // Handle share event
+  const handleShare = async () => {
+    if (!liveEvent) return;
 
-  // Get the first live event (assuming single live event at a time for POC)
-  const liveEvent = events[0];
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: liveEvent.title,
+          text: `Watch live: ${liveEvent.title}`,
+          url: window.location.href,
+        });
+        toast.success('Shared successfully!');
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          copyToClipboard();
+        }
+      }
+    } else {
+      copyToClipboard();
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Link copied to clipboard!');
+  };
+
+  // Handle follow factory
+  const handleFollow = () => {
+    if (!liveEvent?.manufacturers) return;
+
+    // TODO: Implement actual follow functionality
+    toast.success(`Following ${liveEvent.manufacturers.companyName}!`);
+  };
 
   // Loading state
   if (loading) {
@@ -187,13 +218,13 @@ export default function LivePage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
+                <Button onClick={handleShare} className="bg-primary hover:bg-primary/90 text-black font-bold">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
                   </svg>
                   Share Event
                 </Button>
-                <Button variant="outline" className="font-bold">
+                <Button onClick={handleFollow} variant="outline" className="font-bold">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>

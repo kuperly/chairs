@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Header } from '@/components/layout/Header';;
 import { useProducts, useProductCategories } from '@/hooks/useProducts';
+import { useLiveEvents } from '@/hooks/useEvents';
 import { useState } from 'react';
 
 export default function ShopPage() {
@@ -24,6 +25,11 @@ export default function ShopPage() {
 
   // Fetch categories
   const { categories: categoriesRaw } = useProductCategories();
+
+  // Check for live events
+  const { events: liveEventsRaw } = useLiveEvents();
+  const liveEvents = Array.isArray(liveEventsRaw) ? liveEventsRaw : [];
+  const hasLiveEvent = liveEvents.length > 0;
 
   // Ensure data is always an array
   const products = Array.isArray(productsRaw) ? productsRaw : [];
@@ -48,22 +54,23 @@ export default function ShopPage() {
 
 
       {/* Live Event Banner - Only show when there's an active event */}
-      {/* TODO: Make this conditional based on actual live events */}
-      <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-2 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <Badge className="bg-white text-red-600 animate-pulse px-2 py-0.5 text-xs">🔴 LIVE</Badge>
-              <span className="font-medium hidden sm:inline">Factory Tour - Special Prices!</span>
+      {hasLiveEvent && liveEvents[0] && (
+        <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-2 shadow-sm">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-sm">
+                <Badge className="bg-white text-red-600 animate-pulse px-2 py-0.5 text-xs">🔴 LIVE</Badge>
+                <span className="font-medium hidden sm:inline">{liveEvents[0].title}</span>
+              </div>
+              <Link href={`/live/${liveEvents[0].id}`}>
+                <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 h-7 text-xs">
+                  Watch Now →
+                </Button>
+              </Link>
             </div>
-            <Link href="/live">
-              <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 h-7 text-xs">
-                Watch Now →
-              </Button>
-            </Link>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Page Header */}
       <section className="border-b border-border/50">
