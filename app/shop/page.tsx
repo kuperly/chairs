@@ -47,17 +47,18 @@ export default function ShopPage() {
       <Header />
 
 
-      {/* Live Event Banner - TODO: Fetch from API */}
-      <div className="bg-red-600 text-white py-3">
+      {/* Live Event Banner - Only show when there's an active event */}
+      {/* TODO: Make this conditional based on actual live events */}
+      <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-2 shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
-              <Badge className="bg-white text-red-600 animate-pulse">🔴 LIVE</Badge>
-              <span className="font-semibold">Office Chair Factory Tour - Special Prices Now!</span>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Badge className="bg-white text-red-600 animate-pulse px-2 py-0.5 text-xs">🔴 LIVE</Badge>
+              <span className="font-medium hidden sm:inline">Factory Tour - Special Prices!</span>
             </div>
             <Link href="/live">
-              <Button size="sm" className="bg-white text-black font-bold hover:bg-white/90">
-                Watch Live →
+              <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 h-7 text-xs">
+                Watch Now →
               </Button>
             </Link>
           </div>
@@ -144,66 +145,66 @@ export default function ShopPage() {
                   <p className="text-muted-foreground text-lg">No products found</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {products.map((product) => (
-                    <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary hover:shadow-xl transition-all">
+                    <Card key={product.id} className="overflow-hidden group cursor-pointer hover:border-primary hover:shadow-lg transition-all">
                       <Link href={`/shop/${product.id}`}>
                         {/* Product Image */}
-                        <div className="relative aspect-square bg-muted">
+                        <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                           <Image
                             src={product.imageUrls[0] || '/placeholder-product.jpg'}
                             alt={product.name}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
 
                           {/* Savings Badge */}
                           {product.compareAtPrice && (
-                            <Badge className="absolute top-2 right-2 bg-green-600 text-white">
+                            <Badge className="absolute top-2 right-2 bg-green-600 text-white text-xs z-10">
                               Save {getSavingsPercent(product.price, product.compareAtPrice)}%
                             </Badge>
                           )}
 
                           {/* Low Stock Warning */}
                           {product.stockQuantity > 0 && product.stockQuantity < 10 && (
-                            <Badge className="absolute top-2 left-2 bg-orange-600 text-white">
+                            <Badge className="absolute top-2 left-2 bg-orange-600 text-white text-xs z-10">
                               Only {product.stockQuantity} left!
                             </Badge>
                           )}
 
                           {/* Out of Stock */}
                           {product.stockQuantity === 0 && (
-                            <Badge className="absolute top-2 left-2 bg-gray-600 text-white">
+                            <Badge className="absolute top-2 left-2 bg-gray-600 text-white text-xs z-10">
                               Out of Stock
                             </Badge>
                           )}
 
-                          {/* Quick View on Hover */}
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <Button className="bg-primary hover:bg-primary/90 text-black font-bold">
-                              Quick View
+                          {/* Quick View on Hover - covers entire image */}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-[5]">
+                            <Button size="sm" className="bg-primary hover:bg-primary/90 text-black font-bold">
+                              View Details
                             </Button>
                           </div>
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-4 space-y-3">
+                        <div className="p-3 space-y-2">
                           <div>
-                            <Badge variant="secondary" className="mb-2 text-xs">
+                            <Badge variant="secondary" className="mb-1.5 text-xs">
                               {product.category}
                             </Badge>
-                            <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+                            <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2">
                               {product.name}
                             </h3>
                           </div>
 
                           {/* Price */}
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-bold text-primary">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-lg font-bold text-primary">
                               ₪{product.price.toLocaleString()}
                             </span>
                             {product.compareAtPrice && (
-                              <span className="text-sm text-muted-foreground line-through">
+                              <span className="text-xs text-muted-foreground line-through">
                                 ₪{product.compareAtPrice.toLocaleString()}
                               </span>
                             )}
@@ -211,23 +212,14 @@ export default function ShopPage() {
 
                           {/* Stock Status */}
                           {product.stockQuantity > 0 ? (
-                            <p className="text-sm text-green-600 font-semibold">
+                            <p className="text-xs text-green-600 font-medium">
                               ✓ In Stock
                             </p>
                           ) : (
-                            <p className="text-sm text-red-600 font-semibold">
+                            <p className="text-xs text-red-600 font-medium">
                               ✗ Out of Stock
                             </p>
                           )}
-
-                          {/* CTA Button */}
-                          <Button
-                            className="w-full bg-primary hover:bg-primary/90 text-black font-bold"
-                            size="sm"
-                            disabled={product.stockQuantity === 0}
-                          >
-                            {product.stockQuantity > 0 ? 'BUY NOW' : 'Notify Me'}
-                          </Button>
                         </div>
                       </Link>
                     </Card>
