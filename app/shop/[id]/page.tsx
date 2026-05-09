@@ -331,15 +331,15 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
           {/* Details Tabs */}
           <div className="mt-12">
-            <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-start border-b border-border rounded-none bg-transparent p-0">
-                <TabsTrigger value="description" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+            <Tabs defaultValue="description" className="w-full flex flex-col">
+              <TabsList className="w-full justify-start border-b border-border rounded-none bg-transparent p-0 h-auto">
+                <TabsTrigger value="description" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">
                   Description
                 </TabsTrigger>
-                <TabsTrigger value="features" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <TabsTrigger value="features" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">
                   Features
                 </TabsTrigger>
-                <TabsTrigger value="specs" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                <TabsTrigger value="specs" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">
                   Specifications
                 </TabsTrigger>
               </TabsList>
