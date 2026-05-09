@@ -83,9 +83,6 @@ export function Header() {
                 <Link href="/" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   HOME
                 </Link>
-                <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                  LIVE SHOWS
-                </Link>
                 <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   SHOP
                 </Link>
@@ -116,9 +113,6 @@ export function Header() {
               <>
                 <Link href="/" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   HOME
-                </Link>
-                <Link href="/live" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                  LIVE SHOWS
                 </Link>
                 <Link href="/shop" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
                   SHOP
@@ -234,9 +228,6 @@ export function Header() {
                   <Link href="/" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
                     HOME
                   </Link>
-                  <Link href="/live" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
-                    LIVE SHOWS
-                  </Link>
                   <Link href="/shop" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
                     SHOP
                   </Link>
@@ -267,9 +258,6 @@ export function Header() {
                 <>
                   <Link href="/" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
                     HOME
-                  </Link>
-                  <Link href="/live" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
-                    LIVE SHOWS
                   </Link>
                   <Link href="/shop" className="px-3 py-2 text-sm font-semibold rounded-md hover:bg-muted transition-colors">
                     SHOP

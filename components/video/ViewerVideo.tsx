@@ -184,10 +184,17 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-black">
           <div className="text-center space-y-4">
             <div className="text-6xl">📹</div>
-            <p className="text-white text-xl font-bold">Waiting for broadcast to start...</p>
+            <p className="text-white text-xl font-bold">
+              {isJoined ? 'Waiting for broadcast to start...' : 'Connecting to stream...'}
+            </p>
             <Badge className="bg-yellow-600 text-white text-lg px-6 py-2">
-              Standby
+              {isJoined ? 'Standby' : 'Connecting'}
             </Badge>
+            {isJoined && (
+              <p className="text-white/70 text-sm max-w-md">
+                The broadcaster hasn't started streaming yet. Please wait or check back in a moment.
+              </p>
+            )}
           </div>
         </div>
       )}

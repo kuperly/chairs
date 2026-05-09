@@ -112,11 +112,19 @@ export default function HomePage() {
             {/* Left: Hero Text & CTA */}
             <div className="lg:col-span-3 space-y-6">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-foreground leading-tight mb-4">
-                  {liveShows.length} LIVE SHOWS.<br />
-                  {liveShows.length} FACTORIES.<br />
-                  1 <span className="text-primary">UNBEATABLE<br />EXPERIENCE.</span>
-                </h1>
+                {liveShows.length > 0 ? (
+                  <h1 className="text-3xl lg:text-4xl font-bold text-foreground leading-tight mb-4">
+                    {liveShows.length} LIVE SHOW{liveShows.length > 1 ? 'S' : ''}.<br />
+                    {liveShows.length} FACTOR{liveShows.length > 1 ? 'IES' : 'Y'}.<br />
+                    1 <span className="text-primary">UNBEATABLE<br />EXPERIENCE.</span>
+                  </h1>
+                ) : (
+                  <h1 className="text-3xl lg:text-4xl font-bold text-foreground leading-tight mb-4">
+                    PREMIUM<br />
+                    OFFICE<br />
+                    <span className="text-primary">FURNITURE.</span>
+                  </h1>
+                )}
                 <p className="text-base text-muted-foreground">
                   Real products. Real prices.<br />
                   Real time.

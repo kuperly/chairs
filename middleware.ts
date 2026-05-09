@@ -20,6 +20,11 @@ export async function middleware(request: NextRequest) {
     '/profile',
   ];
 
+  // Manufacturer/Admin-only routes (require product.create permission)
+  const manufacturerOnlyRoutes = [
+    '/dashboard',
+  ];
+
   // Check if the route is public
   const isPublicRoute = publicRoutes.some(route => {
     if (route === '/') return pathname === '/';
@@ -29,6 +34,9 @@ export async function middleware(request: NextRequest) {
 
   // Check if it's a customer-only route
   const isCustomerRoute = customerOnlyRoutes.some(route => pathname.startsWith(route));
+
+  // Check if it's a manufacturer-only route
+  const isManufacturerRoute = manufacturerOnlyRoutes.some(route => pathname.startsWith(route));
 
   // Allow public routes without authentication check
   if (isPublicRoute) {
@@ -108,6 +116,37 @@ export async function middleware(request: NextRequest) {
     // If user doesn't have permission to create orders, redirect to dashboard
     if (!canCreateOrders) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
+  // For manufacturer-only routes, check if user has product.create permission
+  if (isManufacturerRoute) {
+    // Get user's permissions from database
+    const { data: userData } = await supabase
+      .from('users')
+      .select(`
+        id,
+        roles!inner (
+          role_permissions (
+            permissions (
+              code
+            )
+          )
+        )
+      `)
+      .eq('id', session.user.id)
+      .single();
+
+    const roleData = userData?.roles as any;
+    const permissions = roleData?.role_permissions?.map(
+      (rp: any) => rp.permissions.code
+    ) || [];
+
+    const canCreateProducts = permissions.includes('product.create');
+
+    // If user doesn't have permission to create products, redirect to home
+    if (!canCreateProducts) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
