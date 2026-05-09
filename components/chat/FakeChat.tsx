@@ -22,8 +22,8 @@ const FAKE_MESSAGES: FakeMessage[] = [
   { id: 3, user: 'Emma R.', message: 'Just ordered 2! Amazing deal!' },
   { id: 4, user: 'Michael T.', message: 'Do you ship to Tel Aviv?' },
   { id: 5, user: 'Lisa B.', message: '🔥 This is amazing!' },
-  { id: 6, user: 'Alex W.', message: 'Best prices I've seen!' },
-  { id: 7, user: 'Rachel S.', message: 'Can't wait for mine to arrive!' },
+  { id: 6, user: 'Alex W.', message: "Best prices I've seen!" },
+  { id: 7, user: 'Rachel S.', message: "Can't wait for mine to arrive!" },
   { id: 8, user: 'Tom H.', message: 'Just added to cart!' },
 ];
 
