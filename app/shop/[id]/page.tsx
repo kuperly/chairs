@@ -226,57 +226,71 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
               {/* Add to Cart Section */}
               <div className="space-y-3 pt-4">
-                <div className="flex gap-3">
-                  <div className="flex items-center border border-border rounded-lg">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="px-3"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >-</Button>
-                    <span className="px-4 font-semibold">{quantity}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="px-3"
-                      onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                    >+</Button>
-                  </div>
+                {canAddToCart ? (
+                  // Logged in customers see both buttons
+                  <>
+                    <div className="flex gap-3">
+                      <div className="flex items-center border border-border rounded-lg">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="px-3"
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        >-</Button>
+                        <span className="px-4 font-semibold">{quantity}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="px-3"
+                          onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
+                        >+</Button>
+                      </div>
+                      <Button
+                        size="lg"
+                        className="flex-1 text-lg font-bold"
+                        disabled={product.stockQuantity === 0}
+                        onClick={() => handleAddToCart(() => {
+                          addItem({
+                            productId: product.id,
+                            name: product.name,
+                            price: product.price,
+                            imageUrl: product.imageUrls[0] || '/placeholder.png',
+                            maxStock: product.stockQuantity,
+                          }, quantity);
+                          toast.success(`Added ${quantity} item(s) to cart!`);
+                        })}
+                      >
+                        {product.stockQuantity > 0 ? `Add to Cart - $${(product.price * quantity).toFixed(2)}` : 'Out of Stock'}
+                      </Button>
+                    </div>
+                    {product.stockQuantity > 0 && (
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => handleAddToCart(() => {
+                          addItem({
+                            productId: product.id,
+                            name: product.name,
+                            price: product.price,
+                            imageUrl: product.imageUrls[0] || '/placeholder.png',
+                            maxStock: product.stockQuantity,
+                          }, quantity);
+                          window.location.href = '/checkout';
+                        })}
+                      >
+                        Buy Now - Skip Cart
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  // Not logged in - single login button
                   <Button
                     size="lg"
-                    className="flex-1 text-lg font-bold"
-                    disabled={product.stockQuantity === 0}
-                    onClick={() => handleAddToCart(() => {
-                      addItem({
-                        productId: product.id,
-                        name: product.name,
-                        price: product.price,
-                        imageUrl: product.imageUrls[0] || '/placeholder.png',
-                        maxStock: product.stockQuantity,
-                      }, quantity);
-                      toast.success(`Added ${quantity} item(s) to cart!`);
-                    })}
+                    className="w-full text-lg font-bold"
+                    onClick={() => handleAddToCart(() => {})}
                   >
-                    {product.stockQuantity > 0 ? (canAddToCart ? `Add to Cart - $${product.price.toFixed(2)}` : 'Login to Buy') : 'Out of Stock'}
-                  </Button>
-                </div>
-                {product.stockQuantity > 0 && (
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => handleAddToCart(() => {
-                      addItem({
-                        productId: product.id,
-                        name: product.name,
-                        price: product.price,
-                        imageUrl: product.imageUrls[0] || '/placeholder.png',
-                        maxStock: product.stockQuantity,
-                      }, quantity);
-                      window.location.href = '/checkout';
-                    })}
-                  >
-                    {canAddToCart ? 'Buy Now - Skip Cart' : 'Login to Buy'}
+                    Login to Buy
                   </Button>
                 )}
               </div>
@@ -332,7 +346,35 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
               <TabsContent value="description" className="mt-6">
                 <div className="prose prose-gray max-w-none">
-                  <p className="text-foreground leading-relaxed">{product.description}</p>
+                  <div className="space-y-4">
+                    <p className="text-foreground leading-relaxed text-lg">
+                      {product.description}
+                    </p>
+
+                    <div className="border-t border-border pt-4 mt-4">
+                      <h3 className="text-lg font-semibold text-foreground mb-3">Product Details</h3>
+                      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <dt className="text-sm font-medium text-muted-foreground">Manufacturer</dt>
+                          <dd className="text-base text-foreground">{product.manufacturers?.companyName || 'N/A'}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-muted-foreground">Category</dt>
+                          <dd className="text-base text-foreground">{product.category}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-muted-foreground">Stock Status</dt>
+                          <dd className="text-base text-foreground">
+                            {product.isActive ? (product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock') : 'Inactive'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-muted-foreground">Available Quantity</dt>
+                          <dd className="text-base text-foreground">{product.stockQuantity} units</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
 
