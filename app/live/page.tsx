@@ -6,10 +6,9 @@ import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Send, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { LiveChat } from '@/components/chat/LiveChat';
 import { useLiveEvents } from '@/hooks/useEvents';
 
 // Dynamically import ViewerVideo with SSR disabled (Agora SDK needs browser APIs)
@@ -26,7 +25,6 @@ const ViewerVideo = dynamic(
 );
 
 export default function LivePage() {
-  const [message, setMessage] = useState('');
   const { events: eventsRaw, loading, error } = useLiveEvents();
 
   // Ensure events is always an array
@@ -34,15 +32,6 @@ export default function LivePage() {
 
   // Get the first live event (assuming single live event at a time for POC)
   const liveEvent = events[0];
-
-  // Mock chat messages (not in database yet for POC)
-  const chatMessages = [
-    { id: 1, user: 'Avi from Israel', message: 'Amazing quality! 🔥', time: '2m ago' },
-    { id: 2, user: 'Sarah M.', message: 'Does it come with a warranty?', time: '3m ago' },
-    { id: 3, user: 'Mike R.', message: 'Just ordered one! Great deal!', time: '5m ago' },
-    { id: 4, user: 'Daniel', message: 'Do you ship to Israel?', time: '6m ago' },
-    { id: 5, user: 'LiveChairs Team', message: 'Yes! We ship worldwide 🌍', time: '6m ago' }
-  ];
 
   // Loading state
   if (loading) {
@@ -267,62 +256,10 @@ export default function LivePage() {
 
           {/* Right: Chat */}
           <div className="lg:col-span-1">
-            <Card className="h-[600px] lg:h-[calc(100vh-12rem)] flex flex-col">
-              {/* Chat Header */}
-              <div className="p-4 border-b border-border bg-card">
-                <div className="flex items-center justify-between mb-1">
-                  <h2 className="font-bold text-foreground">LIVE CHAT</h2>
-                  <Badge variant="outline" className="text-xs">
-                    ● {liveEvent.viewerCount} online
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Ask questions, get answers in real-time
-                </p>
-              </div>
-
-              {/* Chat Messages */}
-              <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                {chatMessages.map((msg) => (
-                  <div key={msg.id} className="space-y-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white text-xs font-bold">
-                        {msg.user.charAt(0)}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-semibold text-sm text-foreground">
-                          {msg.user}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {msg.time}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground ml-10">
-                      {msg.message}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Chat Input */}
-              <div className="p-4 border-t border-border bg-card">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Type a message..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button size="icon" className="bg-primary hover:bg-primary/90 text-black">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  💬 Chat powered by Agora RTM
-                </p>
-              </div>
-            </Card>
+            <LiveChat
+              eventId={liveEvent.id}
+              className="h-[600px] lg:h-[calc(100vh-12rem)]"
+            />
           </div>
         </div>
       </div>

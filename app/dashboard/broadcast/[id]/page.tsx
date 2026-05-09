@@ -7,18 +7,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import {
   ArrowLeft,
-  Users,
   ShoppingBag,
   MessageSquare,
-  Send,
   Loader2,
   Eye,
   DollarSign,
   Square,
 } from 'lucide-react';
+import { LiveChat } from '@/components/chat/LiveChat';
 import { useEvent } from '@/hooks/useEvents';
 
 // Dynamically import BroadcasterVideo with SSR disabled (Agora SDK needs browser APIs)
@@ -41,15 +39,7 @@ export default function BroadcastControlPage() {
 
   const { event, loading, refetch } = useEvent(eventId);
 
-  const [message, setMessage] = useState('');
   const [ending, setEnding] = useState(false);
-
-  // Mock chat messages
-  const [chatMessages] = useState([
-    { id: 1, user: 'Avi from Israel', message: 'Amazing quality! 🔥', time: '2m ago' },
-    { id: 2, user: 'Sarah M.', message: 'Does it come with a warranty?', time: '3m ago' },
-    { id: 3, user: 'Mike R.', message: 'Just ordered one! Great deal!', time: '5m ago' },
-  ]);
 
   // Mock analytics
   const [analytics] = useState({
@@ -290,59 +280,10 @@ export default function BroadcastControlPage() {
 
           {/* Right Column - Live Chat */}
           <div className="lg:col-span-1">
-            <Card className="h-[800px] lg:h-[calc(100vh-8rem)] flex flex-col sticky top-24">
-              {/* Chat Header */}
-              <div className="p-4 border-b border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <h2 className="font-bold flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5" />
-                    LIVE CHAT
-                  </h2>
-                  <Badge variant="outline" className="text-xs">
-                    ● {analytics.currentViewers} online
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Monitor and respond to customer questions
-                </p>
-              </div>
-
-              {/* Chat Messages */}
-              <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                {chatMessages.map((msg) => (
-                  <div key={msg.id} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white text-xs font-bold">
-                        {msg.user.charAt(0)}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-semibold text-sm">{msg.user}</span>
-                        <span className="text-xs text-muted-foreground">{msg.time}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground ml-10">{msg.message}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Chat Input */}
-              <div className="p-4 border-t border-border">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Reply to viewers..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button size="icon" className="bg-primary hover:bg-primary/90">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  💬 Chat powered by Agora RTM
-                </p>
-              </div>
-            </Card>
+            <LiveChat
+              eventId={eventId}
+              className="h-[800px] lg:h-[calc(100vh-8rem)] sticky top-24"
+            />
           </div>
         </div>
       </div>
