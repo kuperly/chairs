@@ -227,8 +227,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 export function useCart() {
   const context = useContext(CartContext);
+
+  // If no CartProvider (e.g., manufacturer users), return empty cart
   if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
+    return {
+      items: [],
+      itemCount: 0,
+      totalPrice: 0,
+      addItem: async () => {},
+      removeItem: async () => {},
+      updateQuantity: async () => {},
+      clearCart: async () => {},
+      isInCart: () => false,
+      getItemQuantity: () => 0,
+      loading: false,
+    };
   }
+
   return context;
 }

@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/lib/auth/context";
-import { CartProvider } from "@/lib/cart/context";
+import { ConditionalCartProvider } from "@/components/providers/ConditionalCartProvider";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -31,9 +31,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <CartProvider>
+            <ConditionalCartProvider>
               {children}
-            </CartProvider>
+            </ConditionalCartProvider>
           </AuthProvider>
           <Toaster position="top-center" richColors />
         </ThemeProvider>
