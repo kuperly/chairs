@@ -22,9 +22,22 @@ npx supabase db push
 - Creates `decrement_viewer_count(event_id UUID)` - Atomically decrements viewer count (minimum 0)
 - Grants execute permissions to authenticated and anonymous users
 
+## How Tracking Works (Agora-Based)
+
+The viewer count now tracks **actual Agora video stream connections**:
+
+1. **Viewer Opens Page** → ViewerVideo component loads
+2. **Agora Connection Succeeds** → Viewer count +1 (via `increment_viewer_count`)
+3. **Viewer Watches Stream** → Count reflects active Agora connections
+4. **Viewer Leaves/Closes Tab** → Count -1 (via `decrement_viewer_count`)
+5. **Connection Drops** → Agora SDK detects disconnect, count -1 automatically
+
+This ensures the count reflects **real viewers actually watching the stream**, not just page visitors.
+
 ## Verification
 
 After applying, the viewer count should update in real-time:
 - Open a live event page as a viewer
+- **Wait for Agora connection to succeed** (video loads)
 - Open the broadcast dashboard for the same event
-- The viewer count should increment/decrement as viewers join/leave
+- The viewer count should increment/decrement as viewers join/leave Agora

@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import AgoraRTC, { IAgoraRTCClient, IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
-import { useViewerTracking } from '@/hooks/useViewerTracking';
+import { useViewerCount } from '@/hooks/useViewerTracking';
+import { createClient } from '@/utils/supabase/client';
 
 interface ViewerVideoProps {
   channelName: string;
@@ -12,14 +13,16 @@ interface ViewerVideoProps {
 }
 
 export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
-  const viewerCount = useViewerTracking(eventId);
+  const viewerCount = useViewerCount(eventId);
   const [client, setClient] = useState<IAgoraRTCClient | null>(null);
   const [isJoined, setIsJoined] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
+  const [hasJoinedAgora, setHasJoinedAgora] = useState(false);
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     // Initialize Agora client
@@ -81,10 +84,44 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
         setRemoteUsers((prev) => prev.filter((u) => u.uid !== user.uid));
       });
 
+      // Handle connection state changes (e.g., disconnections)
+      agoraClient.on('connection-state-change', async (curState, prevState, reason) => {
+        console.log('Agora connection state changed:', { curState, prevState, reason });
+
+        // If we disconnect and previously joined, decrement count
+        if (curState === 'DISCONNECTED' && hasJoinedAgora) {
+          try {
+            await supabase.rpc('decrement_viewer_count', {
+              event_id: eventId,
+            });
+            setHasJoinedAgora(false);
+            console.log('Decremented viewer count due to disconnection');
+          } catch (err) {
+            console.error('Error decrementing viewer count on disconnect:', err);
+          }
+        }
+      });
+
       // Join channel
       await agoraClient.join(appId, channelName, token, uid);
       setIsJoined(true);
       console.log('Successfully joined channel as viewer:', channelName);
+
+      // Increment viewer count after successfully joining Agora
+      try {
+        const { data, error } = await supabase.rpc('increment_viewer_count', {
+          event_id: eventId,
+        });
+
+        if (error) {
+          console.error('Failed to increment viewer count:', error);
+        } else {
+          setHasJoinedAgora(true);
+          console.log('Incremented viewer count to:', data);
+        }
+      } catch (err) {
+        console.error('Error incrementing viewer count:', err);
+      }
     } catch (err) {
       console.error('Error joining channel:', err);
       setError(err instanceof Error ? err.message : 'Failed to join stream');
@@ -94,8 +131,26 @@ export function ViewerVideo({ channelName, eventId }: ViewerVideoProps) {
   };
 
   const leaveChannel = async (agoraClient: IAgoraRTCClient) => {
+    // Decrement viewer count if we successfully joined Agora before
+    if (hasJoinedAgora) {
+      try {
+        const { data, error } = await supabase.rpc('decrement_viewer_count', {
+          event_id: eventId,
+        });
+
+        if (error) {
+          console.error('Failed to decrement viewer count:', error);
+        } else {
+          console.log('Decremented viewer count to:', data);
+        }
+      } catch (err) {
+        console.error('Error decrementing viewer count:', err);
+      }
+    }
+
     await agoraClient.leave();
     setIsJoined(false);
+    setHasJoinedAgora(false);
   };
 
   return (
