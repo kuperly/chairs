@@ -14,6 +14,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useAuth } from '@/lib/auth/context';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Send, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ChatMessage {
   id: string;
@@ -119,7 +120,7 @@ export function LiveChat({ eventId, className = '' }: LiveChatProps) {
       setNewMessage('');
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('Failed to send message. Please try again.');
+      toast.error('Failed to send message. Please try again.');
     } finally {
       setIsSending(false);
     }

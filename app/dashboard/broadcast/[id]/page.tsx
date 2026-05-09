@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { LiveChat } from '@/components/chat/LiveChat';
 import { useEvent } from '@/hooks/useEvents';
+import { toast } from 'sonner';
 
 // Dynamically import BroadcasterVideo with SSR disabled (Agora SDK needs browser APIs)
 const BroadcasterVideo = dynamic(
@@ -56,7 +57,7 @@ export default function BroadcastControlPage() {
   useEffect(() => {
     if (!loading && event) {
       if (event.status !== 'live') {
-        alert('This event is not live. You can only access the broadcast control panel for live events.');
+        toast.error('This event is not live. You can only access the broadcast control panel for live events.');
         router.push('/dashboard/events');
       }
     }
@@ -80,7 +81,7 @@ export default function BroadcastControlPage() {
 
       router.push('/dashboard/events');
     } catch (error) {
-      alert('Failed to end broadcast');
+      toast.error('Failed to end broadcast');
       setEnding(false);
     }
   };

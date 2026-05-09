@@ -9,6 +9,7 @@ import { Header } from '@/components/layout/Header';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { loading: authLoading } = useProtectedRoute();
@@ -45,10 +46,10 @@ export default function SettingsPage() {
         throw new Error('Failed to update settings');
       }
 
-      alert('Settings updated successfully!');
+      toast.success('Settings updated successfully!');
     } catch (error) {
       console.error('Settings update error:', error);
-      alert('Failed to update settings. Please try again.');
+      toast.error('Failed to update settings. Please try again.');
     } finally {
       setSaving(false);
     }

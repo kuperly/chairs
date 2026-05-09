@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Header } from '@/components/layout/Header';
 import { useCart } from '@/lib/cart/context';
+import { toast } from 'sonner';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -70,11 +71,11 @@ export default function CheckoutPage() {
       clearCart();
 
       // Redirect to payment
-      alert('Order created! Redirecting to payment...');
+      toast.success('Order created! Redirecting to payment...');
       router.push(`/checkout/${order.id}`);
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to create order. Please try again.');
+      toast.error('Failed to create order. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

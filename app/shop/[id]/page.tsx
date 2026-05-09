@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/layout/Header';
 import { useCartProtection } from '@/hooks/useCartProtection';
 import { useCart } from '@/lib/cart/context';
+import { toast } from 'sonner';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
@@ -253,7 +254,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                         imageUrl: product.imageUrls[0] || '/placeholder.png',
                         maxStock: product.stockQuantity,
                       }, quantity);
-                      alert(`Added ${quantity} item(s) to cart!`);
+                      toast.success(`Added ${quantity} item(s) to cart!`);
                     })}
                   >
                     {product.stockQuantity > 0 ? (canAddToCart ? `Add to Cart - $${product.price.toFixed(2)}` : 'Login to Buy') : 'Out of Stock'}
