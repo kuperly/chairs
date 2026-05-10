@@ -11,8 +11,10 @@ interface AgoraChannelResponse {
   success: boolean;
   data: {
     channel_exist: boolean;
-    mode: number; // 1 = live broadcasting
-    total: number; // total users in channel
+    mode: number; // 1 = communication, 2 = live broadcasting
+    total?: number; // total users (deprecated, use broadcasters + audience)
+    broadcasters?: number[]; // array of broadcaster UIDs
+    audience?: number[]; // array of audience UIDs
     users?: AgoraChannelUser[];
   };
 }
@@ -77,18 +79,17 @@ export async function getChannelViewerCount(channelName: string): Promise<number
       return 0;
     }
 
-    // Return total users minus 1 (the broadcaster is counted too)
-    // In live broadcasting mode, hosts are also counted
-    const totalUsers = data.data.total || 0;
-    const viewerCount = Math.max(0, totalUsers - 1);
+    // Count the audience array - these are the viewers (broadcasters are separate)
+    const audienceCount = data.data.audience?.length || 0;
+    const broadcasterCount = data.data.broadcasters?.length || 0;
 
     console.log('[Agora] Calculated viewer count:', {
-      totalUsers,
-      viewerCount,
-      audienceOnly: totalUsers - 1,
+      audienceCount,
+      broadcasterCount,
+      totalUsers: audienceCount + broadcasterCount,
     });
 
-    return viewerCount;
+    return audienceCount;
 
   } catch (error) {
     console.error('Error querying Agora channel:', error);
