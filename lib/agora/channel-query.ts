@@ -39,6 +39,12 @@ export async function getChannelViewerCount(channelName: string): Promise<number
     // Create Basic Auth header
     const credentials = Buffer.from(`${customerId}:${customerSecret}`).toString('base64');
 
+    console.log('[Agora Channel Query]', {
+      channelName,
+      url,
+      hasCredentials: !!credentials,
+    });
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -47,22 +53,42 @@ export async function getChannelViewerCount(channelName: string): Promise<number
       },
     });
 
+    console.log('[Agora Response]', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
+
     if (!response.ok) {
-      console.error('Agora channel query failed:', response.status, response.statusText);
+      const errorText = await response.text();
+      console.error('Agora channel query failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
       return 0;
     }
 
     const data: AgoraChannelResponse = await response.json();
+    console.log('[Agora Data]', JSON.stringify(data, null, 2));
 
     if (!data.success || !data.data.channel_exist) {
-      // Channel doesn't exist or is empty
+      console.log('[Agora] Channel does not exist or is empty');
       return 0;
     }
 
     // Return total users minus 1 (the broadcaster is counted too)
     // In live broadcasting mode, hosts are also counted
     const totalUsers = data.data.total || 0;
-    return Math.max(0, totalUsers - 1); // Subtract the host/broadcaster
+    const viewerCount = Math.max(0, totalUsers - 1);
+
+    console.log('[Agora] Calculated viewer count:', {
+      totalUsers,
+      viewerCount,
+      audienceOnly: totalUsers - 1,
+    });
+
+    return viewerCount;
 
   } catch (error) {
     console.error('Error querying Agora channel:', error);
