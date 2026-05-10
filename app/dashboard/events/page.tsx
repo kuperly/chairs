@@ -109,18 +109,18 @@ export default function EventsPage() {
       {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Dashboard
+                <Button variant="ghost" size="sm" className="h-9">
+                  <ArrowLeft className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to Dashboard</span>
                 </Button>
               </Link>
-              <h1 className="text-xl font-bold">Manage Events</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Manage Events</h1>
             </div>
-            <Link href="/dashboard/events/create">
-              <Button className="bg-primary hover:bg-primary/90">
+            <Link href="/dashboard/events/create" className="w-full sm:w-auto">
+              <Button className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
                 Create Event
               </Button>
             </Link>
@@ -182,11 +182,11 @@ export default function EventsPage() {
               const canEnd = event.status === 'live' && now <= oneHourAfter;
 
               return (
-                <Card key={event.id} className="p-6">
-                  <div className="flex items-start gap-6">
-                    {/* Thumbnail */}
+                <Card key={event.id} className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    {/* Thumbnail - hidden on mobile */}
                     {event.thumbnailUrl && (
-                      <div className="w-32 h-32 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                      <div className="hidden sm:block w-32 h-32 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                         <img
                           src={event.thumbnailUrl}
                           alt={event.title}
@@ -196,17 +196,17 @@ export default function EventsPage() {
                     )}
 
                     {/* Event Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4 mb-2">
+                    <div className="flex-1 min-w-0 w-full">
+                      <div className="flex flex-col gap-4 mb-2">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="text-xl font-bold">{event.title}</h3>
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                            <h3 className="text-lg sm:text-xl font-bold">{event.title}</h3>
                             {getStatusBadge(event.status, event.purchaseWindowEndTime)}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">
+                          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                             {event.description}
                           </p>
-                          <div className="flex flex-wrap gap-4 text-sm">
+                          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-sm">
                             <div>
                               <span className="text-muted-foreground">Manufacturer: </span>
                               <span className="font-medium">
@@ -222,9 +222,9 @@ export default function EventsPage() {
                             </div>
                             {canStartByStatus && !canStartByTime && (
                               <div>
-                                <Badge variant="outline" className="text-yellow-600">
+                                <Badge variant="outline" className="text-yellow-600 text-xs">
                                   {now < oneHourBefore
-                                    ? `Available ${Math.ceil((oneHourBefore.getTime() - now.getTime()) / (1000 * 60))}min before start`
+                                    ? 'Event time has passed'
                                     : 'Event time has passed'}
                                 </Badge>
                               </div>
@@ -239,13 +239,13 @@ export default function EventsPage() {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                           {canStart && (
                             <Button
                               size="sm"
                               onClick={() => handleStartBroadcast(event.id)}
                               disabled={isStarting}
-                              className="bg-red-600 hover:bg-red-700 text-white"
+                              className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto"
                             >
                               {isStarting ? (
                                 <>
@@ -263,10 +263,10 @@ export default function EventsPage() {
 
                           {canEnd && (
                             <>
-                              <Link href={`/dashboard/broadcast/${event.id}`}>
+                              <Link href={`/dashboard/broadcast/${event.id}`} className="w-full sm:w-auto">
                                 <Button
                                   size="sm"
-                                  className="bg-red-600 hover:bg-red-700 text-white"
+                                  className="bg-red-600 hover:bg-red-700 text-white w-full"
                                 >
                                   <Play className="w-4 h-4 mr-2" />
                                   Enter Broadcast
@@ -277,6 +277,7 @@ export default function EventsPage() {
                                 variant="outline"
                                 onClick={() => handleEndBroadcast(event.id)}
                                 disabled={isEnding}
+                                className="w-full sm:w-auto"
                               >
                                 {isEnding ? (
                                   <>
@@ -295,14 +296,14 @@ export default function EventsPage() {
 
                           {(event.status === 'draft' || event.status === 'scheduled') && (
                             <>
-                              <Link href={`/dashboard/events/edit/${event.id}`}>
-                                <Button size="sm" variant="outline">
+                              <Link href={`/dashboard/events/edit/${event.id}`} className="w-full sm:w-auto">
+                                <Button size="sm" variant="outline" className="w-full">
                                   <Edit className="w-4 h-4 mr-2" />
                                   Edit
                                 </Button>
                               </Link>
                               {event.status === 'draft' && (
-                                <Button size="sm" variant="outline">
+                                <Button size="sm" variant="outline" className="w-full sm:w-auto">
                                   <Trash2 className="w-4 h-4 mr-2" />
                                   Delete
                                 </Button>
