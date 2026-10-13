@@ -1,0 +1,46 @@
+<section class="section page-width cart-page" data-cart-page>
+  <h1 class="h1">{{ 'cart.title' | t }}</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart-page__grid">
+      <ul class="cart-lines" role="list">
+        {%- for item in cart.items -%}
+          {% render 'cart-line', item: item %}
+        {%- endfor -%}
+      </ul>
+      <aside class="cart-page__summary">
+        {%- if section.settings.show_note -%}
+          <label class="field">
+            <span>{{ 'cart.note' | t }}</span>
+            <textarea name="note" rows="3">{{ cart.note }}</textarea>
+          </label>
+        {%- endif -%}
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <p class="cart-line__discount">{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</p>
+        {%- endfor -%}
+        <div class="cart-total">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <strong>{{ cart.total_price | money_with_currency }}</strong>
+        </div>
+        <p class="small muted">{{ 'cart.taxes_and_shipping' | t }}</p>
+        <button type="submit" name="checkout" class="button button--full">{{ 'cart.checkout' | t }}</button>
+        {%- if additional_checkout_buttons -%}
+          <div class="additional-checkout">{{ content_for_additional_checkout_buttons }}</div>
+        {%- endif -%}
+      </aside>
+    </form>
+  {%- else -%}
+    <div class="cart-empty">
+      <p>{{ 'cart.empty' | t }}</p>
+      <a href="{{ routes.collections_url | append: '/shop-all' }}" class="button">{{ 'cart.continue_shopping' | t }}</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "עגלת קניות",
+  "settings": [
+    { "type": "checkbox", "id": "show_note", "label": "אפשר הערה להזמנה", "default": true }
+  ]
+}
+{% endschema %}

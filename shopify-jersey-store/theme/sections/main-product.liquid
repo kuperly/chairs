@@ -1,0 +1,208 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign show_personalization = false
+  if product.tags contains 'personalizable' and settings.personalization_product != blank
+    assign show_personalization = true
+  endif
+  assign show_patch = false
+  if product.tags contains 'patch-available' and settings.patch_product != blank
+    assign show_patch = true
+  endif
+-%}
+
+<product-page class="product page-width section" data-product-id="{{ product.id }}">
+  <div class="product__gallery">
+    <div class="product__media-main" data-media-main>
+      {%- for media in product.media -%}
+        <div class="product__media-item{% if media.id == product.selected_or_first_available_variant.featured_media.id or forloop.first and current_variant.featured_media == blank %} is-active{% endif %}" data-media-id="{{ media.id }}">
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              {{ media | image_url: width: 1400 | image_tag: loading: 'eager', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 55vw, 100vw' }}
+            {%- when 'video' -%}
+              {{ media | video_tag: controls: true, image_size: '1100x' }}
+            {%- when 'external_video' -%}
+              {{ media | external_video_tag }}
+            {%- else -%}
+              {{ media | media_tag }}
+          {%- endcase -%}
+        </div>
+      {%- else -%}
+        <div class="product__media-item is-active">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder' }}</div>
+      {%- endfor -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+      <div class="product__thumbs" role="list">
+        {%- for media in product.media -%}
+          <button type="button" class="product__thumb" data-thumb="{{ media.id }}" aria-label="{{ 'products.view_image' | t: index: forloop.index }}">
+            {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy' }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="product__info">
+    {%- if product.vendor != blank -%}<p class="eyebrow">{{ product.vendor }}</p>{%- endif -%}
+    <h1 class="h2 product__title">{{ product.title }}</h1>
+    <div data-price-container>{% render 'price', product: product, variant: current_variant %}</div>
+
+    {%- form 'product', product, id: 'ProductForm', class: 'product-form', novalidate: 'novalidate', data-product-form: '' -%}
+      <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <fieldset class="option" data-option-index="{{ forloop.index0 }}">
+            <legend class="option__label">
+              {{ option.name }}: <span data-option-value>{{ option.selected_value }}</span>
+              {%- assign option_name = option.name | downcase -%}
+              {%- if settings.size_chart_page != blank -%}
+                {%- if option_name == 'size' or option_name == 'מידה' -%}
+                  <button type="button" class="link option__size-chart" data-modal-open="SizeChart">{{ 'products.size_chart' | t }}</button>
+                {%- endif -%}
+              {%- endif -%}
+            </legend>
+            <div class="option__values">
+              {%- for value in option.values -%}
+                <label class="pill">
+                  <input type="radio" name="option-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+                  <span>{{ value }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      {%- if show_personalization -%}
+        <details class="personalize" data-personalize open>
+          <summary>
+            <strong>{{ 'products.personalize_title' | t }}</strong>
+            <span class="muted">{{ settings.personalization_price_label }}</span>
+          </summary>
+          <div class="personalize__fields">
+            <label>
+              <span>{{ 'products.custom_name' | t }}</span>
+              <input type="text" name="properties[{{ 'products.custom_name' | t }}]" maxlength="{{ settings.name_max_length }}" data-personalize-name autocomplete="off" pattern="[A-Za-z֐-׿ .'\-]*">
+            </label>
+            <label>
+              <span>{{ 'products.custom_number' | t }}</span>
+              <input type="text" inputmode="numeric" name="properties[{{ 'products.custom_number' | t }}]" maxlength="2" pattern="[0-9]{0,2}" data-personalize-number autocomplete="off">
+            </label>
+          </div>
+          <p class="small muted">{{ 'products.personalize_note' | t }}</p>
+        </details>
+      {%- endif -%}
+
+      {%- if show_patch -%}
+        <label class="checkbox">
+          <input type="checkbox" name="properties[{{ 'products.patch' | t }}]" value="{{ 'products.yes' | t }}" data-patch>
+          <span>{{ 'products.add_patch' | t }} <span class="muted">{{ settings.patch_price_label }}</span></span>
+        </label>
+      {%- endif -%}
+
+      <div class="product-form__actions">
+        <quantity-input class="qty">
+          <button type="button" data-qty-change="-1" aria-label="{{ 'cart.decrease' | t }}">−</button>
+          <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'cart.quantity' | t }}">
+          <button type="button" data-qty-change="1" aria-label="{{ 'cart.increase' | t }}">+</button>
+        </quantity-input>
+        <button type="submit" name="add" class="button button--full" data-add-button {% unless current_variant.available %}disabled{% endunless %}>
+          {%- if current_variant.available -%}{{ 'products.add_to_cart' | t }}{%- else -%}{{ 'products.sold_out' | t }}{%- endif -%}
+        </button>
+      </div>
+      <p class="form-error" data-form-error hidden></p>
+      {{ form | payment_button }}
+    {%- endform -%}
+
+    {%- if settings.product_shipping_note != blank -%}
+      <div class="product__note">{% render 'icon', icon: 'truck' %}<div class="rte">{{ settings.product_shipping_note }}</div></div>
+    {%- endif -%}
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'collapsible' -%}
+          <details class="accordion" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.heading }} {% render 'icon', icon: 'chevron' %}</summary>
+            <div class="rte">
+              {{ block.settings.content }}
+              {%- if block.settings.page != blank -%}{{ block.settings.page.content }}{%- endif -%}
+            </div>
+          </details>
+        {%- when 'description' -%}
+          {%- if product.description != blank -%}
+            <details class="accordion" open {{ block.shopify_attributes }}>
+              <summary>{{ 'products.description' | t }} {% render 'icon', icon: 'chevron' %}</summary>
+              <div class="rte">{{ product.description }}</div>
+            </details>
+          {%- endif -%}
+        {%- when '@app' -%}
+          {% render block %}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <script type="application/json" data-product-json>
+    {
+      "variants": {{ product.variants | json }},
+      "personalizationVariantId": {% if show_personalization %}{{ settings.personalization_product.selected_or_first_available_variant.id | json }}{% else %}null{% endif %},
+      "patchVariantId": {% if show_patch %}{{ settings.patch_product.selected_or_first_available_variant.id | json }}{% else %}null{% endif %},
+      "moneyFormat": {{ shop.money_format | json }},
+      "productTitle": {{ product.title | json }}
+    }
+  </script>
+</product-page>
+
+{%- if settings.size_chart_page != blank -%}
+  <dialog id="SizeChart" class="modal">
+    <div class="modal__header">
+      <h2 class="h4">{{ settings.size_chart_page.title }}</h2>
+      <button type="button" class="icon-button" data-modal-close aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    </div>
+    <div class="rte">{{ settings.size_chart_page.content }}</div>
+  </dialog>
+{%- endif -%}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.featured_image -%}
+    "image": [{{ product.featured_image | image_url: width: 1200 | prepend: "https:" | json }}],
+    {%- endif -%}
+    "description": {{ product.description | strip_html | json }},
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": [
+      {%- for variant in product.variants -%}
+      {
+        "@type": "Offer",
+        {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+        "availability": "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+        "price": {{ variant.price | divided_by: 100.00 | json }},
+        "priceCurrency": {{ cart.currency.iso_code | json }},
+        "url": {{ request.origin | append: variant.url | json }}
+      }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "עמוד מוצר",
+  "blocks": [
+    { "type": "@app" },
+    { "type": "description", "name": "תיאור מוצר", "limit": 1 },
+    {
+      "type": "collapsible",
+      "name": "אקורדיון",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "כותרת", "default": "משלוחים והחזרות" },
+        { "type": "richtext", "id": "content", "label": "תוכן" },
+        { "type": "page", "id": "page", "label": "או תוכן מעמוד" }
+      ]
+    }
+  ]
+}
+{% endschema %}

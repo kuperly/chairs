@@ -1,0 +1,10 @@
+Handle,Title,Body (HTML),Vendor,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Image Src,Image Position,Image Alt Text,Status
+example-home-jersey-26-27,חולצת בית 26/27 – שם הקבוצה,<p>חולצת בית לעונת 26/27. בד נושם וסמל רקום.</p>,Brand,Football Jersey,"premier-league, home, new, personalizable, patch-available",TRUE,מידה,S,EX-HOME-S,200,shopify,10,deny,manual,249,299,TRUE,TRUE,https://example.com/front.jpg,1,חולצת בית – חזית,active
+example-home-jersey-26-27,,,,,,,,M,EX-HOME-M,200,shopify,10,deny,manual,249,299,TRUE,TRUE,https://example.com/back.jpg,2,חולצת בית – גב,
+example-home-jersey-26-27,,,,,,,,L,EX-HOME-L,200,shopify,10,deny,manual,249,299,TRUE,TRUE,,,,
+example-home-jersey-26-27,,,,,,,,XL,EX-HOME-XL,200,shopify,10,deny,manual,249,299,TRUE,TRUE,,,,
+example-home-jersey-26-27,,,,,,,,XXL,EX-HOME-XXL,200,shopify,10,deny,manual,249,299,TRUE,TRUE,,,,
+example-nba-jersey,גופיית NBA – שם הקבוצה,<p>גופיית כדורסל רשמית.</p>,Brand,Basketball Jersey,"basketball, nba, jersey, personalizable",TRUE,מידה,S,EX-NBA-S,180,shopify,5,deny,manual,239,,TRUE,TRUE,,,,active
+example-nba-jersey,,,,,,,,M,EX-NBA-M,180,shopify,5,deny,manual,239,,TRUE,TRUE,,,,
+example-nba-jersey,,,,,,,,L,EX-NBA-L,180,shopify,5,deny,manual,239,,TRUE,TRUE,,,,
+example-nba-jersey,,,,,,,,XL,EX-NBA-XL,180,shopify,5,deny,manual,239,,TRUE,TRUE,,,,

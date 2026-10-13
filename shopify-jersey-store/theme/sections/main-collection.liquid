@@ -1,0 +1,36 @@
+<section class="section page-width">
+  <div class="collection-hero">
+    <h1 class="h1">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="rte muted">{{ collection.description }}</div>
+    {%- endif -%}
+  </div>
+
+  {%- paginate collection.products by section.settings.per_page -%}
+    {% render 'facets', results: collection, url: collection.url %}
+
+    {%- if collection.products.size > 0 -%}
+      <div class="grid grid--{{ section.settings.columns }}" id="ProductGrid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="center muted section">{{ 'collections.empty' | t }}</p>
+    {%- endif -%}
+
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{
+  "name": "קולקציה",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "מוצרים בעמוד", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "select", "id": "columns", "label": "עמודות בדסקטופ", "options": [
+      { "value": "3", "label": "3" }, { "value": "4", "label": "4" }, { "value": "5", "label": "5" }
+    ], "default": "4" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,109 @@
+{
+  "general": {
+    "account": "החשבון שלי",
+    "close": "סגירה",
+    "country": "מדינה / מטבע",
+    "error": "משהו השתבש. נסו שוב.",
+    "main_menu": "תפריט ראשי",
+    "menu": "תפריט",
+    "next": "הבא",
+    "not_found": "העמוד שחיפשתם לא נמצא.",
+    "page": "עמוד {{ page }}",
+    "pagination": "ניווט בין עמודים",
+    "previous": "הקודם",
+    "search": "חיפוש",
+    "skip_to_content": "דילוג לתוכן",
+    "view_all": "לכל המוצרים"
+  },
+  "cart": {
+    "checkout": "לתשלום מאובטח",
+    "continue_shopping": "המשיכו לקנות",
+    "decrease": "הפחתת כמות",
+    "empty": "העגלה שלכם ריקה",
+    "free_shipping_remaining": "עוד {{ amount }} למשלוח חינם",
+    "free_shipping_unlocked": "מגיע לכם משלוח חינם! 🎉",
+    "increase": "הוספת כמות",
+    "note": "הערה להזמנה",
+    "quantity": "כמות",
+    "remove": "הסרה",
+    "subtotal": "סה״כ",
+    "taxes_and_shipping": "המחיר כולל מע״מ. משלוח והנחות מחושבים בתשלום.",
+    "title": "עגלת קניות",
+    "view_cart": "צפייה בעגלה"
+  },
+  "collections": {
+    "all_collections": "כל הקטגוריות",
+    "apply": "החלה",
+    "clear_all": "ניקוי הכל",
+    "empty": "אין מוצרים התואמים לסינון.",
+    "filter": "סינון",
+    "price_from": "ממחיר",
+    "price_to": "עד מחיר",
+    "product_count": {
+      "one": "מוצר אחד",
+      "other": "{{ count }} מוצרים"
+    },
+    "sort_by": "מיון:"
+  },
+  "contact": {
+    "email": "אימייל",
+    "message": "הודעה",
+    "name": "שם",
+    "order_number": "מספר הזמנה (אם יש)",
+    "phone": "טלפון",
+    "send": "שליחה",
+    "success": "תודה! נחזור אליכם בהקדם."
+  },
+  "gift_card": {
+    "expired": "כרטיס המתנה פג תוקף או מושבת",
+    "print": "הדפסה",
+    "shop": "לחנות",
+    "title": "כרטיס מתנה"
+  },
+  "newsletter": {
+    "email": "כתובת אימייל",
+    "notify_me": "עדכנו אותי",
+    "submit": "הרשמה",
+    "success": "נרשמתם בהצלחה!"
+  },
+  "password": {
+    "enter": "כניסה",
+    "enter_with_password": "כניסה עם סיסמה",
+    "password": "סיסמה"
+  },
+  "products": {
+    "add_patch": "הוספת פאץ' ליגה",
+    "add_to_cart": "הוספה לעגלה",
+    "adding": "מוסיף...",
+    "custom_name": "שם",
+    "custom_number": "מספר",
+    "description": "פרטי המוצר",
+    "for_jersey": "עבור",
+    "from_price": "החל מ-{{ price }}",
+    "new": "חדש",
+    "patch": "פאץ'",
+    "personalizable": "הדפסת שם",
+    "personalize_note": "שם באותיות לועזיות. חולצה עם הדפסה אישית אינה ניתנת להחזרה.",
+    "personalize_title": "הדפסת שם ומספר",
+    "placeholder_title": "שם המוצר",
+    "sale": "מבצע",
+    "size_chart": "טבלת מידות",
+    "sold_out": "אזל מהמלאי",
+    "view_image": "תמונה {{ index }}",
+    "yes": "כן"
+  },
+  "search": {
+    "no_results": "לא נמצאו תוצאות. נסו שם של קבוצה או שחקן.",
+    "placeholder": "חיפוש קבוצה, שחקן או נבחרת...",
+    "results_for": {
+      "one": "תוצאה אחת עבור \"{{ terms }}\"",
+      "other": "{{ count }} תוצאות עבור \"{{ terms }}\""
+    },
+    "title": "חיפוש"
+  },
+  "tracking": {
+    "email_hint": "מספר המעקב נשלח גם במייל אישור המשלוח.",
+    "my_orders": "להזמנות שלי",
+    "with_account": "התחברו עם האימייל שאיתו הזמנתם כדי לראות את סטטוס ההזמנה ומספר המעקב."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "type_heading_font": "assistant_n8",
+      "type_body_font": "assistant_n4",
+      "color_background": "#ffffff",
+      "color_text": "#111111",
+      "color_accent": "#0b3d2e",
+      "color_accent_contrast": "#ffffff",
+      "color_sale": "#d7263d",
+      "page_width": 1400,
+      "border_radius": 8,
+      "personalization_price_label": "+₪40",
+      "patch_price_label": "+₪20",
+      "name_max_length": 12
+    }
+  }
+}

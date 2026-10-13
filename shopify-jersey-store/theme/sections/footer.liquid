@@ -1,0 +1,106 @@
+<footer class="footer">
+  <div class="page-width footer__grid">
+    {%- for block in section.blocks -%}
+      <div class="footer__col" {{ block.shopify_attributes }}>
+        {%- case block.type -%}
+          {%- when 'menu' -%}
+            <h3 class="footer__heading">{{ block.settings.heading | default: block.settings.menu.title }}</h3>
+            <ul role="list">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- when 'text' -%}
+            <h3 class="footer__heading">{{ block.settings.heading }}</h3>
+            <div class="rte">{{ block.settings.text }}</div>
+          {%- when 'newsletter' -%}
+            <h3 class="footer__heading">{{ block.settings.heading }}</h3>
+            {%- form 'customer', class: 'newsletter' -%}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              {%- if form.posted_successfully? -%}
+                <p class="form-success">{{ 'newsletter.success' | t }}</p>
+              {%- else -%}
+                <div class="newsletter__row">
+                  <input type="email" name="contact[email]" required placeholder="{{ 'newsletter.email' | t }}" aria-label="{{ 'newsletter.email' | t }}">
+                  <button type="submit" class="button">{{ 'newsletter.submit' | t }}</button>
+                </div>
+                {{ form.errors | default_errors }}
+              {%- endif -%}
+            {%- endform -%}
+        {%- endcase -%}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <div class="page-width footer__bottom">
+    <div class="footer__social">
+      {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', icon: 'instagram' %}</a>{%- endif -%}
+      {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">{% render 'icon', icon: 'facebook' %}</a>{%- endif -%}
+      {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">{% render 'icon', icon: 'tiktok' %}</a>{%- endif -%}
+    </div>
+
+    {%- if localization.available_countries.size > 1 -%}
+      {%- form 'localization', class: 'footer__localization' -%}
+        <select name="country_code" aria-label="{{ 'general.country' | t }}" onchange="this.form.submit()">
+          {%- for country in localization.available_countries -%}
+            <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+              {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+            </option>
+          {%- endfor -%}
+        </select>
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- if section.settings.show_payment_icons -%}
+      <ul class="footer__payments" role="list">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <p class="small">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}</p>
+
+    <ul class="footer__policies small" role="list">
+      {%- for policy in shop.policies -%}
+        <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "כותרת תחתונה",
+  "max_blocks": 5,
+  "settings": [
+    { "type": "checkbox", "id": "show_payment_icons", "label": "הצג אמצעי תשלום", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "תפריט",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "כותרת" },
+        { "type": "link_list", "id": "menu", "label": "תפריט", "default": "footer" }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "טקסט",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "כותרת", "default": "שירות לקוחות" },
+        { "type": "richtext", "id": "text", "label": "טקסט", "default": "<p>זמינים בוואטסאפ א׳–ה׳ 10:00–18:00</p>" }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "ניוזלטר",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "כותרת", "default": "הצטרפו למועדון" }
+      ]
+    }
+  ]
+}
+{% endschema %}

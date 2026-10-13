@@ -1,0 +1,14 @@
+<article class="section page-width">
+  <header class="center">
+    <h1 class="h1">{{ article.title }}</h1>
+    <p class="small muted">{{ article.published_at | time_tag: format: 'date' }}</p>
+  </header>
+  {%- if article.image -%}
+    <div class="narrow">{{ article.image | image_url: width: 1400 | image_tag: loading: 'eager', widths: '700, 1000, 1400' }}</div>
+  {%- endif -%}
+  <div class="rte narrow">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{ "name": "כתבה" }
+{% endschema %}

@@ -1,0 +1,101 @@
+{
+  "sections": {
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "icon": "lock", "title": "תשלום מאובטח", "text": "אשראי, Bit, Apple Pay" } },
+        "t2": { "type": "item", "settings": { "icon": "truck", "title": "משלוח חינם", "text": "בהזמנה מעל ₪299" } },
+        "t3": { "type": "item", "settings": { "icon": "return", "title": "החלפה עד 14 יום", "text": "בלי שאלות" } },
+        "t4": { "type": "item", "settings": { "icon": "users", "title": "אלפי לקוחות מרוצים", "text": "" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4"]
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "height": 75,
+        "overlay": 35,
+        "alignment": "center",
+        "rating_text": "4.9 מתוך 5 · מעל 1,000 ביקורות",
+        "heading": "החולצה של הקבוצה שלך. עם השם שלך.",
+        "text": "<p>חולצות כדורגל וכדורסל לעונה החדשה, רטרו וילדים · הדפסת שם ומספר</p>",
+        "button_label": "לכל החולצות",
+        "button_link": "shopify://collections/shop-all",
+        "button2_label": "מונדיאל 2026",
+        "button2_link": "shopify://collections/world-cup-2026"
+      }
+    },
+    "leagues": {
+      "type": "collection-tiles",
+      "settings": { "heading": "קנו לפי ליגה", "style": "circle" },
+      "blocks": {
+        "l1": { "type": "collection", "settings": { "collection": "premier-league" } },
+        "l2": { "type": "collection", "settings": { "collection": "la-liga" } },
+        "l3": { "type": "collection", "settings": { "collection": "serie-a" } },
+        "l4": { "type": "collection", "settings": { "collection": "bundesliga" } },
+        "l5": { "type": "collection", "settings": { "collection": "ligue-1" } },
+        "l6": { "type": "collection", "settings": { "collection": "national-teams" } },
+        "l7": { "type": "collection", "settings": { "collection": "retro" } },
+        "l8": { "type": "collection", "settings": { "collection": "nba-jerseys" } }
+      },
+      "block_order": ["l1", "l2", "l3", "l4", "l5", "l6", "l7", "l8"]
+    },
+    "world_cup": {
+      "type": "featured-collection",
+      "settings": { "heading": "מונדיאל 2026", "collection": "world-cup-2026", "limit": 8, "columns": "4", "layout": "slider", "show_view_all": true }
+    },
+    "promo": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "מהדורה מוגבלת",
+        "heading": "החולצה שכולם מחפשים",
+        "text": "<p>כמות מוגבלת במלאי. כולל אפשרות להדפסת שם, מספר ופאץ'.</p>",
+        "button_label": "לרכישה",
+        "button_link": "shopify://collections/new-arrivals",
+        "image_last": false
+      }
+    },
+    "new": {
+      "type": "featured-collection",
+      "settings": { "heading": "חדש במלאי", "collection": "new-arrivals", "limit": 8, "columns": "4", "layout": "slider", "show_view_all": true }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "settings": { "heading": "מה הלקוחות אומרים", "subheading": "" },
+      "blocks": {
+        "r1": { "type": "review", "settings": { "rating": 5, "text": "הגיע מהר, איכות מעולה וההדפסה בדיוק כמו בחולצה המקורית.", "author": "דניאל, תל אביב" } },
+        "r2": { "type": "review", "settings": { "rating": 5, "text": "הזמנתי לבן שלי סט ילדים – מושלם. שירות מהיר בוואטסאפ.", "author": "מיכל, חיפה" } },
+        "r3": { "type": "review", "settings": { "rating": 5, "text": "החלפתי מידה בלי שום בעיה. אזמין שוב.", "author": "אור, באר שבע" } }
+      },
+      "block_order": ["r1", "r2", "r3"]
+    },
+    "search": {
+      "type": "player-search",
+      "settings": { "heading": "מחפשים שחקן או קבוצה?", "text": "הקלידו שם שחקן, קבוצה או נבחרת", "placeholder": "למשל: מסי, ריאל מדריד, לייקרס" },
+      "blocks": {
+        "s1": { "type": "term", "settings": { "term": "ברצלונה" } },
+        "s2": { "type": "term", "settings": { "term": "ריאל מדריד" } },
+        "s3": { "type": "term", "settings": { "term": "ארגנטינה" } },
+        "s4": { "type": "term", "settings": { "term": "לייקרס" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"]
+    },
+    "kids": {
+      "type": "featured-collection",
+      "settings": { "heading": "ילדים", "collection": "kids", "limit": 8, "columns": "4", "layout": "slider", "show_view_all": true }
+    },
+    "nba": {
+      "type": "featured-collection",
+      "settings": { "heading": "NBA", "collection": "nba-jerseys", "limit": 8, "columns": "4", "layout": "slider", "show_view_all": true }
+    },
+    "training": {
+      "type": "featured-collection",
+      "settings": { "heading": "אימון 26/27", "collection": "training", "limit": 8, "columns": "4", "layout": "slider", "show_view_all": true }
+    },
+    "best": {
+      "type": "featured-collection",
+      "settings": { "heading": "הנמכרים ביותר", "collection": "best-sellers", "limit": 8, "columns": "4", "layout": "grid", "show_view_all": true }
+    }
+  },
+  "order": ["trust", "hero", "leagues", "world_cup", "promo", "new", "reviews", "search", "kids", "nba", "training", "best"]
+}

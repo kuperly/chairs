@@ -1,0 +1,49 @@
+<section class="trust-bar">
+  <ul class="trust-bar__list page-width" role="list">
+    {%- for block in section.blocks -%}
+      <li class="trust-bar__item" {{ block.shopify_attributes }}>
+        {% render 'icon', icon: block.settings.icon %}
+        <div>
+          <strong>{{ block.settings.title }}</strong>
+          {%- if block.settings.text != blank -%}<span>{{ block.settings.text }}</span>{%- endif -%}
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "פס אמון",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "פריט",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "אייקון", "options": [
+          { "value": "lock", "label": "תשלום מאובטח" },
+          { "value": "truck", "label": "משלוח" },
+          { "value": "return", "label": "החזרה" },
+          { "value": "users", "label": "לקוחות" },
+          { "value": "shirt", "label": "חולצה" },
+          { "value": "star", "label": "כוכב" }
+        ], "default": "truck" },
+        { "type": "text", "id": "title", "label": "כותרת", "default": "משלוח חינם" },
+        { "type": "text", "id": "text", "label": "טקסט", "default": "בהזמנה מעל ₪299" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "פס אמון",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "lock", "title": "תשלום מאובטח", "text": "אשראי, Bit, Apple Pay" } },
+        { "type": "item", "settings": { "icon": "truck", "title": "משלוח חינם", "text": "בהזמנה מעל ₪299" } },
+        { "type": "item", "settings": { "icon": "return", "title": "החלפה עד 14 יום", "text": "בלי שאלות" } },
+        { "type": "item", "settings": { "icon": "users", "title": "אלפי לקוחות מרוצים", "text": "" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

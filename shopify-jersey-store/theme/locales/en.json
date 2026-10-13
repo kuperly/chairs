@@ -1,0 +1,109 @@
+{
+  "general": {
+    "account": "Account",
+    "close": "Close",
+    "country": "Country / currency",
+    "error": "Something went wrong. Please try again.",
+    "main_menu": "Main menu",
+    "menu": "Menu",
+    "next": "Next",
+    "not_found": "The page you were looking for does not exist.",
+    "page": "Page {{ page }}",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "search": "Search",
+    "skip_to_content": "Skip to content",
+    "view_all": "View all"
+  },
+  "cart": {
+    "checkout": "Secure checkout",
+    "continue_shopping": "Continue shopping",
+    "decrease": "Decrease quantity",
+    "empty": "Your cart is empty",
+    "free_shipping_remaining": "{{ amount }} away from free shipping",
+    "free_shipping_unlocked": "You've unlocked free shipping! 🎉",
+    "increase": "Increase quantity",
+    "note": "Order note",
+    "quantity": "Quantity",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "taxes_and_shipping": "Taxes included. Shipping and discounts calculated at checkout.",
+    "title": "Cart",
+    "view_cart": "View cart"
+  },
+  "collections": {
+    "all_collections": "All collections",
+    "apply": "Apply",
+    "clear_all": "Clear all",
+    "empty": "No products match these filters.",
+    "filter": "Filter",
+    "price_from": "From price",
+    "price_to": "To price",
+    "product_count": {
+      "one": "1 product",
+      "other": "{{ count }} products"
+    },
+    "sort_by": "Sort by:"
+  },
+  "contact": {
+    "email": "Email",
+    "message": "Message",
+    "name": "Name",
+    "order_number": "Order number (optional)",
+    "phone": "Phone",
+    "send": "Send",
+    "success": "Thanks! We'll get back to you soon."
+  },
+  "gift_card": {
+    "expired": "This gift card has expired or is disabled",
+    "print": "Print",
+    "shop": "Shop now",
+    "title": "Gift card"
+  },
+  "newsletter": {
+    "email": "Email address",
+    "notify_me": "Notify me",
+    "submit": "Subscribe",
+    "success": "You're subscribed!"
+  },
+  "password": {
+    "enter": "Enter",
+    "enter_with_password": "Enter using password",
+    "password": "Password"
+  },
+  "products": {
+    "add_patch": "Add league patch",
+    "add_to_cart": "Add to cart",
+    "adding": "Adding...",
+    "custom_name": "Name",
+    "custom_number": "Number",
+    "description": "Details",
+    "for_jersey": "For",
+    "from_price": "From {{ price }}",
+    "new": "New",
+    "patch": "Patch",
+    "personalizable": "Personalize",
+    "personalize_note": "Latin letters only. Personalized jerseys cannot be returned.",
+    "personalize_title": "Add name & number",
+    "placeholder_title": "Product title",
+    "sale": "Sale",
+    "size_chart": "Size chart",
+    "sold_out": "Sold out",
+    "view_image": "Image {{ index }}",
+    "yes": "Yes"
+  },
+  "search": {
+    "no_results": "No results. Try a team or player name.",
+    "placeholder": "Search team, player or nation...",
+    "results_for": {
+      "one": "1 result for \"{{ terms }}\"",
+      "other": "{{ count }} results for \"{{ terms }}\""
+    },
+    "title": "Search"
+  },
+  "tracking": {
+    "email_hint": "Your tracking number is also in the shipping confirmation email.",
+    "my_orders": "My orders",
+    "with_account": "Sign in with the email you ordered with to see your order status and tracking number."
+  }
+}
