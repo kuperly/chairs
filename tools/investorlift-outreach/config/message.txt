@@ -1,0 +1,10 @@
+Hi {{contact}},
+
+My name is Guy, I'm an active buyer looking for off-market deals in {{markets}}.
+I saw your listing at {{example_address}} and it's right in my buy box.
+
+What I buy: {{buybox_summary}}.
+I can close fast with cash. Please add me to your buyers list and send me anything that fits.
+
+Thanks,
+Guy

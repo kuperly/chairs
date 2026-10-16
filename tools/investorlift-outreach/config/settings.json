@@ -1,0 +1,12 @@
+{
+  "startUrl": "https://investorlift.com/marketplace",
+  "maxScrolls": 40,
+  "dailySendLimit": 20,
+  "minDelaySec": 60,
+  "maxDelaySec": 180,
+  "selectors": {
+    "contactButton": "button:has-text(\"Contact\"), button:has-text(\"Message\"), a:has-text(\"Contact\")",
+    "messageBox": "textarea",
+    "sendButton": "button:has-text(\"Send\")"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "investorlift-outreach",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "login": "node src/login.mjs",
+    "collect": "node src/collect.mjs",
+    "inspect": "node src/inspect.mjs",
+    "match": "node src/match.mjs",
+    "send": "node src/send.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "states": ["TX", "OH", "IN"],
+  "cities": [],
+  "zips": [],
+  "propertyTypes": ["single family", "sfr", "duplex", "multi"],
+  "minPrice": 40000,
+  "maxPrice": 250000,
+  "minBeds": 2,
+  "minYearBuilt": 0,
+  "minMatchingDeals": 1
+}
